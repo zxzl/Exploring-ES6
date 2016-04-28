@@ -112,21 +112,32 @@ arguments doesn’t track the current values of parameters, anymore.
 this is undefined in non-method functions. In non-strict mode, it refers to the global object (window), which meant that global variables were created if you called a constructor without new.
 Strict mode is a good example of why versioning is tricky: Even though it enables a cleaner version of JavaScript, its adoption is still relatively low. The main reasons are that it breaks some existing code, can slow down execution and is a hassle to add to files (let alone interactive command lines). I love the idea of strict mode and don’t nearly use it often enough.
 
-### 3.2.1 Supporting sloppy (non-strict) mode
-One JavaScript means that we can’t give up on sloppy mode: it will continue to be around (e.g. in HTML attributes). Therefore, we can’t build ECMAScript 6 on top of strict mode, we must add its features to both strict mode and non-strict mode (a.k.a. sloppy mode). Otherwise, strict mode would be a different version of the language and we’d be back to versioning. Unfortunately, two ECMAScript 6 features are difficult to add to sloppy mode: let declarations and block-level function declarations. Let’s examine why that is and how to add them, anyway.
+### 3.2.1 슬로피 모드 지원(non-strict)
 
-### 3.2.2 let declarations in sloppy mode
+One JavaScript는 슬로피 모드를 포기 할 수 없다는 것을 의미한다. : 이것은 계속 될 것이다(예: HTML속성에서). 그러므로 우리는 스트릭트 모드 위에서 ECMAScript6의 빌드를 할 수 없고, 이 특징들을 스트릭트 모드와 슬로피 모드 양 쪽에 추가해야만한다. 그렇지 않으면 스트릭트 모드는 언어의 다른 버전이 될 수도 있고 우린 versioning을 다시 겪게 된다. 불행하게도, ECMAScript6 특징 중 2가지가 슬로피 모드에 추가되기에 어렵다. let선언과 블록레벨 함수 선언이다. 왜 이것들이 어렵고, 어떻게 추가하는지 알아보자.   means that we can’t give up on sloppy mode: it will continue to be around (e.g. in HTML attributes). Therefore, we can’t build ECMAScript 6 on top of strict mode, we must add its features to both strict mode and non-strict mode (a.k.a. sloppy mode). Otherwise, strict mode would be a different version of the language and we’d be back to versioning. Unfortunately, two ECMAScript 6 features are difficult to add to sloppy mode: let declarations and block-level function declarations. Let’s examine why that is and how to add them, anyway.
+
+
+### 3.2.2 슬로피 모드에서의 let 선언
+let은 블록 스코프 변수의 선언을 가능케한다. 이것은 슬로피 모드에서 적용되기는 어렵다. 왜냐하면 let은 스트릭트모드에서만 예약어이기 때문이다. 다음 2개의 문은 ES5 슬로피 모드에서 유효하다. 
 let enables you to declare block-scoped variables. It is difficult to add to sloppy mode, because let is only a reserved word in strict mode. That is, the following two statements are legal ES5 sloppy code:
 
+```javascript
 var let = [];
 let[x] = 'abc';
+```
+ECMAScript6 의 스트릭트 모드에서는 라인1에서 예외가 발생한다. 왜냐하면 예약어인 let이 변수 이름으로 사용되었기 때문이다. 그리고 두번째 라인은 let변수 선언으로 해석된다. (해체를 사용하고 있다.)
 In strict ECMAScript 6, you get an exception in line 1, because you are using the reserved word let as a variable name. And the statement in line 2 is interpreted as a let variable declaration (that uses destructuring).
 
+ECMAScript6 슬로피모드에서는, 첫 번째 라인에서 예외가 발생하지 않는다. 그러나 두 번째 라인은 여전히 let 변수로 해석된다. let 식별자의 이러한 사용 방법은 ES6로 해석되도 지장이 없는 웹에서는 드문 광경이다. let선언을 쓰는 다른 방법들은 슬로피 ES5 문법으로 오인될 수 없다.
 In sloppy ECMAScript 6, the first line does not cause an exception, but the second line is still interpreted as a let declaration. This way of using the identifier let is so rare on the web that ES6 can afford to make this interpretation. Other ways of writing let declarations can’t be mistaken for sloppy ES5 syntax:
 
+```javascript
 let foo = 123;
 let {x,y} = computeCoordinates();
-3.2.3 Block-level function declarations in sloppy mode
+```
+
+### 3.2.3 슬로피모드에서의 블록레벨 함수 선언 Block-level function declarations in sloppy mode
+ECMAScript 5 스트릭트 모드에는 블록 안에서의 함수선언을 금지한다. 이 사양은 슬로피 모드에서는 허용된다. 그러나 그 함수들이 어떻게 동작해야하는지에 대해서는 명시하지 않는다. 이런 이유로 자바스크립트의 다양한 구현은 그것들을 지원한다. 그러나 그것들을 다르게 다룬다.
 ECMAScript 5 strict mode forbids function declarations in blocks. The specification allowed them in sloppy mode, but didn’t specify how they should behave. Hence, various implementations of JavaScript support them, but handle them differently.
 
 ECMAScript 6 wants a function declaration in a block to be local to that block. That is OK as an extension of ES5 strict mode, but breaks some sloppy code. Therefore, ES6 provides “web legacy compatibility semantics” for browsers that lets function declarations in blocks exist at function scope.
