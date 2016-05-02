@@ -1,8 +1,16 @@
-25. Promises for asynchronous programming
+# 25. 비동기 프로그래밍을 위한 Promise 
+<sub>Promises for asynchronous programming</sub>
 
-This chapter is an introduction to asynchronous programming via Promises in general and the ECMAScript 6 Promise API in particular. The previous chapter explains the foundations of asynchronous programming in JavaScript. You can consult it whenever there is something that you don’t understand in this chapter.
+이번 장은 ECMAScript 6 Promise API 를 통한 비동기 프로그래밍 소개이다.
 
-25.1 Overview
+이전 장에서는 자바스크립트의 비동기 프로그래밍 기초를 설명한다. 이 장에서 이해할 수 없는 것이 있다면 이전 장을 참고할 수 있겠다.
+
+<sub>This chapter is an introduction to asynchronous programming via Promises in general and the ECMAScript 6 Promise API in particular. The previous chapter explains the foundations of asynchronous programming in JavaScript. You can consult it whenever there is something that you don’t understand in this chapter.</sub>
+
+## 25.1 개요 Overview
+
+Promise 는 비동기 계산 결과를 전달받기 위한 콜백의 대안이다. Promise 는 더이상 비동기 함수 구현의 노력이 필요라지 않으며, 그 함수 사용자들에게 여러 이득을 제공한다.
+
 Promises are an alternative to callbacks for delivering the results of an asynchronous computation. They require more effort from implementors of asynchronous functions, but provide several benefits for users of those functions.
 
 The following function returns a result asynchronously, via a Promise:
