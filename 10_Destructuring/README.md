@@ -12,7 +12,7 @@ const obj = { first: 'Jane', last: 'Doe' };
 const {first: f, last: l} = obj;
 // f = 'Jane'; l = 'Doe'
 
-// {prop} is short for {prop: prop}
+// {prop} 은 {prop: prop} 의 축약형이다.
 const {first, last} = obj;
 // first = 'Jane'; last = 'Doe'
 ```    
