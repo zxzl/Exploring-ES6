@@ -145,16 +145,19 @@ ECMAScript 6 wants a function declaration in a block to be local to that block. 
 ### 3.2.4 Other keywords
 The identifiers yield and static are only reserved in ES5 strict mode. ECMAScript 6 uses context-specific syntax rules to make them work in sloppy mode:
 
+슬로피 모드에서, yield는 제너레이터 함수 안에서만 예약된 키워드이다.
 In sloppy mode, yield is only a reserved word inside a generator function.
 static is currently only used inside class literals, which are implicitly strict (see below).
-3.2.5 Implicit strict mode
+
+### 3.2.5 Implicit strict mode
 The bodies of modules and classes are implicitly in strict mode in ECMAScript 6 – there is no need for the 'use strict' marker. Given that virtually all of our code will live in modules in the future, ECMAScript 6 effectively upgrades the whole language to strict mode.
 
 The bodies of other constructs (such as arrow functions and generator functions) could have been made implicitly strict, too. But given how small these constructs usually are, using them in sloppy mode would have resulted in code that is fragmented between the two modes. Classes and especially modules are large enough to make fragmentation less of an issue.
-
+### 3.2.6 수정될 수 없는 것들
 ### 3.2.6 Things that can’t be fixed
 The downside of One JavaScript is that you can’t fix existing quirks, especially the following two.
 
+첫 째, typeof null 은 문자열 'object'가 아니라 'null'을 리턴해야한다. TC39는 이 것을 고치려고 노력했지만 그렇게 되면 기존 코드를 망가뜨리게 된다.
 First, typeof null should return the string 'null' and not 'object'. TC39 tried fixing it, but it broke existing code. On the other hand, adding new results for new kinds of operands is OK, because current JavaScript engines already occasionally return custom values for host objects. One example are ECMAScript 6’s symbols:
 
 > typeof Symbol.iterator
@@ -166,7 +169,9 @@ ECMAScript 6 does introduce a few minor breaking changes (nothing you’re likel
 
 Annex D: Corrections and Clarifications in ECMAScript 2015 with Possible Compatibility Impact
 Annex E: Additions and Changes That Introduce Incompatibilities with Prior Editions
-### 3.4 Conclusion
+
+### 3.4 결론
+One JavaScript 는 이전버전과 완벽히 호환되는 ECMAScript 6를 만드는 것을 의미한다. 
 One JavaScript means making ECMAScript 6 completely backwards compatible. It is great that that succeeded. Especially appreciated is that modules (and thus most of our code) are implicitly in strict mode.
 
 In the short term, adding ES6 constructs to both strict mode and sloppy mode is more work when it comes to writing the language specification and to implementing it in engines. In the long term, both the spec and engines profit from the language not being forked (less bloat etc.). Programmers profit immediately from One JavaScript, because it makes it easier to get started with ECMAScript 6.
