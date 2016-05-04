@@ -142,7 +142,8 @@ ECMAScript 5 strict mode forbids function declarations in blocks. The specificat
 
 ECMAScript 6 wants a function declaration in a block to be local to that block. That is OK as an extension of ES5 strict mode, but breaks some sloppy code. Therefore, ES6 provides “web legacy compatibility semantics” for browsers that lets function declarations in blocks exist at function scope.
 
-### 3.2.4 Other keywords
+### 3.2.4 다른 키워드들
+yield와 static 식별자는 ES5 스트릭트 모드에서만 예약되어 있다. ECMAScript 6 는 슬로피 모드에서 이것들을 만들기 위해 컨텍스트 한정 문법을 사용한다.
 The identifiers yield and static are only reserved in ES5 strict mode. ECMAScript 6 uses context-specific syntax rules to make them work in sloppy mode:
 
 슬로피 모드에서, yield는 제너레이터 함수 안에서만 예약된 키워드이다.
