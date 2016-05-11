@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Proxy Protocol</title>
+</head>
+<body>
+<div id="console"></div>
+<script>
+const Protocol = (()=>{
+	const [METHOD, PROTOCOL] = Array.from(new Array(2), v=>Symbol); 
+	const mapping = new WeakMap();
+	const trap = {
+		get(target, key){
+			if(key in target) return target[key];
+			const cls = target.constructor;
+			if(mapping.has(cls)){
+				const methods = mapping.get(cls);
+				if(methods.has(key)) return methods.get(key).bind(target);
+			}
+		}
+	};
+	const trapCombine = (targetTrap)=>({
+		trap:targetTrap,
+		get(target, key){
+			const result = trap.get(target.key);
+			return result === undefined ? this.trap.get(target, key) : result;
+		}
+	});
+	return class Protocol{
+		static add(cls, ...protocols){
+			if(!mapping.has(cls)) mapping.set(cls, new Map());
+			const map = mapping.get(cls);
+			if(!map.has(PROTOCOL)) map.set(PROTOCOL, new Set());
+			const protocolList = map.get(PROTOCOL);
+			protocols.forEach(protocol=>{
+				if(protocolList.has(protocol)) throw "재등록시도";
+				else protocolList.add(protocol);
+				protocol[METHOD].forEach(method=>{
+					if(map.has(method.name)) throw "등록된메서드명";
+					else map.set(method.name, method);
+				});
+			});
+		}
+		static remove(cls, ...protocols){
+			if(!mapping.has(cls)) return;
+			const map = mapping.get(cls);
+			if(!map.has(PROTOCOL)) return;
+			const protocolList = map.get(PROTOCOL);
+			protocols.forEach(protocol=>{
+				protocolList.delete(protocol);
+				protocol[METHOD].forEach(method=>map.delete(method.name));
+			});
+		}
+		static of(target, ...protocols){
+			const cls = target.constructor;
+			if(!mapping.has(cls)) return false;
+			const map = mapping.get(cls);
+			if(!map.has(PROTOCOL)) return false;
+			const protocolList = map.get(PROTOCOL);
+			for(let protocol of protocols){
+				if(!protocolList.has(protocol)) return false;
+			}
+			return true;
+		}
+		static instantiate(target, targetTrap = false){
+			return new Proxy(target, !targetTrap ? trap : trapCombine(targerTrap));
+		}
+		constructor(...methods){
+			this[METHOD] = methods.filter(m=>typeof m == 'function' && 'prototype' in m && m.name);
+		}
+	};
+})();
+
+const Runnable = new Protocol(
+	function run(){
+		return 'Runnable.run';
+	},
+	function runReady(){
+		return 'Runnable.runReady';
+	}
+);
+const Walkable = new Protocol(
+	function walk(){
+		return 'Walkable.walk';
+	},
+	function walkReady(){
+		return 'Walkable.walkReady';
+	}
+);
+const Animal = class{
+	sleep(){
+		return 'Animal.sleep';
+	}
+};
+const Dog = class extends Animal{
+	constructor(){
+		super();
+		return Protocol.instantiate(this);
+	}
+	walk(){
+		return 'Dog.walk';
+	}
+};
+Protocol.add(Dog, Runnable, Walkable);
+
+const dog = new Dog();
+document.getElementById('console').innerHTML = 'sleep,run,runReady,walk,walkReady'.split(',').reduce((p,c)=>`${p} dog.${c}() = '${dog[c]()}'<br>`,'');
+</script>
+</body>
+</html>
