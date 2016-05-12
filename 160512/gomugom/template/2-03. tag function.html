@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<pre id="pre"></pre>
+<script>
+(_=>{
+    let logger = document.getElementById('pre');
+    console.log = (message) => {
+        if (typeof message == 'object') {
+            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+        } else {
+            logger.innerHTML += message + '<br />';
+        }
+    }
+})();
+
+const tags = (strings, ...expressions) => {
+  console.log(strings);
+  console.log(expressions);
+};
+const a = '발라 모굴리스',
+      b = '발라 도하에리스';
+const str = tags `${a}${b}`;
+	
+</script>
+</body>
+</html>

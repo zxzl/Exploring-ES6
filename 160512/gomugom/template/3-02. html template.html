@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<pre id="pre"></pre>
+<script>
+(_=>{
+    let logger = document.getElementById('pre');
+    console.log = (message) => {
+        if (typeof message == 'object') {
+            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+        } else {
+            logger.innerHTML += message + '<br />';
+        }
+    }
+})();
+function htmlEscape(str) {
+  return str.replace(/</g, '&lt;');
+}
+
+let characters = [{
+  name: 'Aria Stark',
+  lines: ['A girl has no name.']
+}, {
+  name: 'John Snow',
+  lines: [
+    'You know nothing, John Snow.', 
+    'Winter is coming.'
+  ]
+}];
+
+const html = characters.reduce((pC, cC) => {
+    let {name, lines} = cC;
+    return `${pC || ''}<article>
+  <h1>${name}</h1>
+  <ul>${lines.reduce((pL, cL) => {
+  return `${pL || ''}
+    <li>${cL}</li>`
+  }, 0)}
+  </ul>
+</article>
+`}, 0);
+
+console.log(htmlEscape(html));
+document.body.innerHTML += html;
+
+</script>
+</body>
+</html>

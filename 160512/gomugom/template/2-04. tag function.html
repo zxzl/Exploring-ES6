@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<pre id="pre"></pre>
+<script>
+(_=>{
+    let logger = document.getElementById('pre');
+    console.log = (message) => {
+        if (typeof message == 'object') {
+            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+        } else {
+            logger.innerHTML += message + '<br />';
+        }
+    }
+})();
+
+const a = '발라 모굴리스',
+      b = '발라 도하에리스',
+      c = '윈터 이즈 커밍';
+const str = `${a}
+${b}\n${c}`;
+const rawStr = String.raw `${a}
+${b}\n${c}`;
+
+console.log(str);
+console.log(rawStr);
+	
+</script>
+</body>
+</html>

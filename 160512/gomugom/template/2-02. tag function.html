@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<pre id="pre"></pre>
+<script>
+(_=>{
+    let logger = document.getElementById('pre');
+    console.log = (message) => {
+        if (typeof message == 'object') {
+            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+        } else {
+            logger.innerHTML += message + '<br />';
+        }
+    }
+})();
+
+const tags = (str, ...ex) => {
+  console.log(Array.isArray(str));
+  console.log(str.constructor.name);
+}
+const str = tags ``
+	
+</script>
+</body>
+</html>

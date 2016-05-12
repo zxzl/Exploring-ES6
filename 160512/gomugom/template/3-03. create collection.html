@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<pre id="pre"></pre>
+<script>
+(_=>{
+    let logger = document.getElementById('pre');
+    console.log = (message) => {
+        if (typeof message == 'object') {
+          logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
+        } else {
+            logger.innerHTML += message + '<br />';
+        }
+    }
+})();
+
+
+const createCollection = {
+  Map(keys, ...vals){
+    const m = new Map();
+    vals.forEach((val, i) => {
+      m.set(keys[i].trim(), val);
+    });
+    return m;
+  },
+  WMap(keys, ...vals){
+    const wm = new WeakMap();
+    for (let i = 0; i < vals.length; i+=2) {
+      wm.set(vals[i], vals[i+1]);
+    }
+    return wm;
+  },
+};
+
+const map = createCollection.Map `
+  name  ${'아이유'}
+  age   ${23}
+  greet ${n => n + ' 포에버'}
+`;
+
+const wkeys = [
+  {ioi1 : '최유정'},
+  {ioi2 : '김청하'}
+];
+const wmap = createCollection.WMap `
+  ${wkeys[0]} ${'so cute'} 
+  ${wkeys[1]} ${'i like her'}
+`;
+
+console.log('Map 및 weakMap 리스트는 console창에서 확인하세요.');
+console.dir(map);
+console.dir(wmap);
+
+console.log(map.get('greet')('애쓰다'));
+console.log(wmap.get(wkeys[0]));
+
+</script>
+</body>
+</html>
