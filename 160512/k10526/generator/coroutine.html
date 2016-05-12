@@ -1,0 +1,61 @@
+<html>
+<body>
+  <button id='button'>up</button>
+  <div id='display'></div>
+  <script>
+  function coroutine(gen){
+  return function(...args){
+    const genObj = gen(...args);
+    genObj.next();
+    return genObj;
+  }
+}
+const print = coroutine(function* (){
+    const el = document.getElementById('display');
+    while(true){
+        const [data, attr] = yield;
+        el.style.fontSize = attr.fontSize||'medium';
+        el.style.color = attr.color||'#000000';
+        el.innerHTML = data;
+    }
+});
+const bigFont = coroutine(function* (target){
+    while(true){
+        const [data, attr] = yield;
+        if(data >= 10){
+            attr.fontSize = 'xx-large';
+        }
+        target.next([data, attr]);
+    }	
+});
+const colorFont = coroutine(function* (target){
+    while(true){
+        const [data,attr] = yield;
+        if(data%2){
+            attr.color='#FF0000';
+        }
+        target.next([data,attr]);
+    }
+});
+const makeAttr = coroutine(function* (target){
+    while(true){
+        target.next([yield, {}]);
+    }
+});
+const incNumber = coroutine(function* (target){
+    while(true){
+        target.next((yield)+1);
+    }
+});
+const extractNumber = coroutine(function* (target){
+    const el = document.getElementById('display');
+    while(true){
+        yield;
+        target.next(Number(el.innerHTML||0));
+    }
+});
+const o = extractNumber(incNumber(makeAttr(colorFont(bigFont(print())))));
+document.getElementById('button').addEventListener('click', function(){o.next()});
+  </script>
+</body>
+</html>
