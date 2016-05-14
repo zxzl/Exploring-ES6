@@ -35,9 +35,33 @@
 		return function(dest){return new Of(dest);};
 	})();
 	Dest = (function(){
-		var DEST = Symbol(), stack = [], parse, Var, Dest,
+		var DEST = Symbol(), parse, destructuring, Var, Dest,
+			rObj = /(\{[^\{\[\]\}]*\})/g, rArr = /(\[[^\{\[\]\}]*\])/g, 
+			arr = [[]], obj = [[]], a = 0, o = 0, ad = 0, od = 0, at = arr[0], ot = obj[0],
+			oR = function(v){return ot[o] = v, '@o_'+ depth+'_' + (o++) + '@';},
+			aR = function(v){return ot[o] = v, '@a_'+ depth+'_' + (o++) + '@';},
 			rO = /(@o_[^@]+@)/g, rA = /(@a_[^@]+@)/g;
+		Dest = function(dest){
+			var loop, r = {};
+			arr.length = obj.length = 0, a = o = ad = od = 0, at = arr[0] = [], ot = obj[0] = [],
+			dest = dest.trim();
+			do{
+				loop = 0;
+				if(rObj.test(dest)) dest = dest.replace(rObj, oR), ot[++od] = [], loop = 1;
+				if(rArr.test(dest)) dest = dest.replace(rArr, oA), at[++ad] = [], loop = 1;
+			}while(loop);
+			
+			if(rO.test(dest) || rA.test(dest)) parse(dest, r, arr, obj);
+			else throw 1;
+			this[DEST] = r;
+		};
+		Dest.prototype.value = function(v){
+			var result = {};
+			destructuring(this[DEST], v, result);
+			return result;
+		};
 		Var = function(k){this.k = k;};
+		Var.prototype.toString = function(){return this.k;};
 		parse = function(dest, r, arr, obj){
 			dest = dest.trim();
 			if(rO.test(dest)){
@@ -61,27 +85,17 @@
 			}else if(dest){
 				return new Var(dest);
 			}
-		}
-		Dest = function(dest){
-			var rObj = /(\{[^\{\[\]\}]*\})/g, rArr = /(\[[^\{\[\]\}]*\])/g, 
-				arr = [[]], obj = [[]], a = 0, o = 0, ad = 0, od = 0, at = arr[0], ot = obj[0],
-				oR = function(v){return ot[o] = v, '@o_'+ depth+'_' + (o++) + '@';},
-				aR = function(v){return ot[o] = v, '@a_'+ depth+'_' + (o++) + '@';},
-				loop, r = {};
-			dest = dest.trim();
-			do{
-				loop = 0;
-				if(rObj.test(dest)) dest = dest.replace(rObj, oR), ot[++od] = [], loop = 1;
-				if(rArr.test(dest)) dest = dest.replace(rArr, oA), at[++ad] = [], loop = 1;
-			}while(loop);
-			
-			if(rO.test(dest) || rA.test(dest)) parse(dest, r, arr, obj);
-			else throw 1;
-			this[DEST] = r;
 		};
-		Dest.prototype.value = function(v){
-			var target = this[DEST], result = {};
-			
+		destructuring = function(target, v, result){
+			var k, key;
+			for(k in target){
+				key = target[k];
+				if(key instanceof Var){
+					result[key] = v[k];
+				}else if(key && typeof key == 'object'){
+					destructuring(key, v[k], result);
+				}
+			}
 		};
 	})();
 	
