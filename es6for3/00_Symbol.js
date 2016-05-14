@@ -4,7 +4,7 @@ if(!window.Symbol)(function(){
 	var uuid = 0,
 		Sym = function(id){this[ID] = id;},
 		Symbol = function(i, v){
-			return Object.freeze(new Sym('@@Symbol@@::' + (uuid++));
+			return Object.freeze(new Sym('@@Symbol@@::' + (uuid++)));
 		},
 		ID = new Sym(),
 		keys = {},
