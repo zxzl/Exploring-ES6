@@ -1,6 +1,5 @@
 (function(){
 	"use strict"
-	var Iter, For, Dest, Spread, Rest;
 	if(typeof Object.freeze != 'function') Object.freeze = function(v){return v;};
 	if(!window.Symbol)(function(){
 		var uuid = 0,
@@ -20,92 +19,105 @@
 		Symbol.iterator = Object.freeze(new Sym('@@iterator'));
 		window.Symbol = Object.freeze(Symbol);
 	})();
-	For = (function(){
+	window.Iter = (function(){
+		var DATA = Symbol(), LEN = Symbol(), CURR = Symbol(), RETURN = Symbol(),
+			Iter = function(v){
+				this[DATA] = v;
+				this[LEN] = v.len;
+				this[CURR] = 0;
+				this[RETURN] = {done:false};
+			};
+		Iter.prototype.next = function(){
+			if(this.curr < this.len) this.r.value = this.v[this.curr++], this.r.done = false;
+			else this.r.value = undefind, this.r.done = true;
+			return this.r;
+		};
+	})();
+	window.For = (function(){
 		var DEST = Symbol(), Of;
-		Of = function(d){this[DEST] = new Dest(d);};
+		Of = function(d){this[DEST] = d;};
 		Of.prototype.of = function(iter, f){
 			var cnt = 100000, val, dest = this[DEST];
 			iter = iter['@@iterator']();
 			while(cnt--){
 				val = iter.next();
 				if(val.done) break;
-				else f(null, dest.value(val.value));
+				else f(null, Dest(val.value));
 			}
 		};
 		return function(dest){return new Of(dest);};
 	})();
-	Dest = (function(){
-		var DEST = Symbol(), parse, destructuring, Var, Dest,
-			rObj = /(\{[^\{\[\]\}]*\})/g, rArr = /(\[[^\{\[\]\}]*\])/g, 
-			arr = [[]], obj = [[]], a = 0, o = 0, ad = 0, od = 0, at = arr[0], ot = obj[0],
-			oR = function(v){return ot[o] = v, '@o_'+ od +'_' + (o++) + '@';},
-			aR = function(v){return ot[o] = v, '@a_'+ ad +'_' + (o++) + '@';},
-			rO = /(@o_[^@]+@)/g, rA = /(@a_[^@]+@)/g;
-		Dest = function(dest){
-			var loop, r = {};
-			arr.length = obj.length = 0, a = o = ad = od = 0, at = arr[0] = [], ot = obj[0] = [],
-			dest = dest.trim();
-			do{
-				loop = 0;
-				if(rObj.test(dest)) dest = dest.replace(rObj, oR), ot[++od] = [], loop = 1;
-				if(rArr.test(dest)) dest = dest.replace(rArr, oA), at[++ad] = [], loop = 1;
-			}while(loop);
-			
-			if(rO.test(dest) || rA.test(dest)) parse(dest, r, arr, obj);
-			else throw 1;
-			this[DEST] = r;
-		};
-		Dest.prototype.value = function(v){
-			var result = {};
-			destructuring(this[DEST], v, result);
-			return result;
-		};
-		Var = function(k){this.k = k;};
-		Var.prototype.toString = function(){return this.k;};
-		parse = function(dest, r, arr, obj){
-			dest = dest.trim();
-			if(rO.test(dest)){
-				dest = dest.substring(1, dest.length - 1).split('_');
-				dest = obj[dest[1]][dest[2]];
-				dest.substring(1, dest.length - 1).split(',')
-				.forEach(function(v){
-					if(v.indexOf(':') > -1 ) v = v.split(':');
-					else v = [v, v];
-					r[v[0].trim()] = parse(v[1], {}, arr, obj);
-				});
-				return r;
-			}else if(rA.test(dest)){
-				dest = dest.substring(1, dest.length - 1).split('_');
-				dest = arr[dest[1]][dest[2]];
-				dest.substring(1, dest.length - 1).split(',')
-				.forEach(function(v, i){
-					r[i] = parse(v, {}, arr, obj);
-				});
-				return r;
-			}else if(dest){
-				return new Var(dest);
-			}
-		};
-		destructuring = function(target, v, result){
-			var k, key;
-			for(k in target){
-				key = target[k];
-				if(key instanceof Var){
-					result[key] = v[k];
-				}else if(key && typeof key == 'object'){
-					destructuring(key, v[k], result);
-				}
-			}
-		};
-		return Dest;
-	})();
 	window.Dest = (function(){
-		var pool = {};
+		var pool = {}, Dest = (function(){
+			var DEST = Symbol(), parse, destructuring, Var, Dest,
+				rObj = /(\{[^\{\[\]\}]*\})/g, rArr = /(\[[^\{\[\]\}]*\])/g, 
+				arr = [[]], obj = [[]], a = 0, o = 0, ad = 0, od = 0, at = arr[0], ot = obj[0],
+				oR = function(v){return ot[o] = v, '@o_'+ od +'_' + (o++) + '@';},
+				aR = function(v){return ot[o] = v, '@a_'+ ad +'_' + (o++) + '@';},
+				rO = /(@o_[^@]+@)/g, rA = /(@a_[^@]+@)/g;
+			Dest = function(dest){
+				var loop, r = {};
+				arr.length = obj.length = 0, a = o = ad = od = 0, at = arr[0] = [], ot = obj[0] = [],
+				dest = dest.trim();
+				do{
+					loop = 0;
+					if(rObj.test(dest)) dest = dest.replace(rObj, oR), ot[++od] = [], loop = 1;
+					if(rArr.test(dest)) dest = dest.replace(rArr, oA), at[++ad] = [], loop = 1;
+				}while(loop);
+				
+				if(rO.test(dest) || rA.test(dest)) parse(dest, r, arr, obj);
+				else throw 1;
+				this[DEST] = r;
+			};
+			Dest.prototype.value = function(v){
+				var result = {};
+				destructuring(this[DEST], v, result);
+				return result;
+			};
+			Var = function(k){this.k = k;};
+			Var.prototype.toString = function(){return this.k;};
+			parse = function(dest, r, arr, obj){
+				dest = dest.trim();
+				if(rO.test(dest)){
+					dest = dest.substring(1, dest.length - 1).split('_');
+					dest = obj[dest[1]][dest[2]];
+					dest.substring(1, dest.length - 1).split(',')
+					.forEach(function(v){
+						if(v.indexOf(':') > -1 ) v = v.split(':');
+						else v = [v, v];
+						r[v[0].trim()] = parse(v[1], {}, arr, obj);
+					});
+					return r;
+				}else if(rA.test(dest)){
+					dest = dest.substring(1, dest.length - 1).split('_');
+					dest = arr[dest[1]][dest[2]];
+					dest.substring(1, dest.length - 1).split(',')
+					.forEach(function(v, i){
+						r[i] = parse(v, {}, arr, obj);
+					});
+					return r;
+				}else if(dest){
+					return new Var(dest);
+				}
+			};
+			destructuring = function(target, v, result){
+				var k, key;
+				for(k in target){
+					key = target[k];
+					if(key instanceof Var){
+						result[key] = v[k];
+					}else if(key && typeof key == 'object'){
+						destructuring(key, v[k], result);
+					}
+				}
+			};
+			return Dest;
+		})();
 		return function(dest, v){
 			return (pool[dest] || (pool[dest] = new Dest(dest))).value(v);
 		};
 	})();
-	window.Spread = Spread = (function(){
+	window.Spread = (function(){
 		var sp;
 		sp = function(r, a){
 			var i, j, k, l, v;
@@ -164,20 +176,7 @@
 		};
 	})();
 	if(typeof String.prototype['@@iterator'] != 'function') String.prototype['@@iterator'] = function(){return new Iter(this.split(''));}
-	Iter = (function(){
-		var DATA = Symbol(), LEN = Symbol(), CURR = Symbol(), RETURN = Symbol(),
-			Iter = function(v){
-				this[DATA] = v;
-				this[LEN] = v.len;
-				this[CURR] = 0;
-				this[RETURN] = {done:false};
-			};
-		Iter.prototype.next = function(){
-			if(this.curr < this.len) this.r.value = this.v[this.curr++], this.r.done = false;
-			else this.r.value = undefind, this.r.done = true;
-			return this.r;
-		};
-	})();
+	
 	if(!window.Map) (function(){
 		var MAP = Symbol(), Map = function(a){
 			var map = this[MAP] = {}, self = this;
@@ -258,5 +257,20 @@
 		fn.del = function(v){if(this.has(v)) this[SET].splice(this[SET].indexOf(v), 1);};
 		window.Set = Set;
 	})();
-
+	try{
+		function*(){};
+	}catch(e){
+		var YVAL = Symbol();
+		(function(){
+			var y = function(v){
+				y[YVAL].push(v);
+			};
+			return y;
+		})();
+		window.Generator = function(f){
+			return function(){
+				window.Yield = 
+			};
+		};
+	}
 })();
