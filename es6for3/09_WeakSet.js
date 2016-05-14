@@ -1,5 +1,5 @@
 if(!window.WeakSet) (function(){
-	var KEY = Symbol(), SET = Symbol(), WSet = function(a){
+	var SET = Symbol(), WSet = function(a){
 		var wset = this[SET] = [], self = this, v, cnt = 10000;
 		if(typeof a[Symbol.iterator] == 'function') a = a[Symbol.iterator]();
 		else if(typeof a.next != 'function') return;
