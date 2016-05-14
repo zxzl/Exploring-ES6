@@ -35,23 +35,45 @@
 		return function(dest){return new Of(dest);};
 	})();
 	Dest = (function(){
-		var DEST = Symbol(), stack = [], Dest;
+		var DEST = Symbol(), stack = [], parse, Var, Dest,
+			rO = /(@o_[^@]+@)/g, rA = /(@a_[^@]+@)/g;
+		Var = function(k){this.k = k;};
+		parse = function(dest, r){
+			dest = dest.trim();
+			if(rO.test(dest)){
+				dest.substring(1, dest.length - 1).split(',')
+				.forEach(function(v){
+					if(v.indexOf(':') > -1 ) v = v.split(':');
+					else v = [v, v];
+					r[v[0].trim()] = parse(v[1], {});
+				});
+				return r;
+			}else if(rA.test(dest)){
+				dest.substring(1, dest.length - 1).split(',')
+				.forEach(function(v, i){
+					r[i] = parse(v, {});
+				});
+				return r;
+			}else if(dest){
+				return new Var(dest);
+			}
+		}
 		Dest = function(dest){
 			var rObj = /(\{[^\{\[\]\}]*\})/g, rArr = /(\[[^\{\[\]\}]*\])/g, 
 				arr = [[]], obj = [[]], a = 0, o = 0, ad = 0, od = 0, at = arr[0], ot = obj[0],
 				oR = function(v){return ot[o] = v, '@o_'+ depth+'_' + (o++) + '@';},
 				aR = function(v){return ot[o] = v, '@a_'+ depth+'_' + (o++) + '@';},
-				loop,
-				rO = /(@a_[^@]+@)/g
+				loop, r = {};
+			dest = dest.trim();
 			do{
 				loop = 0;
 				if(rObj.test(dest)) dest = dest.replace(rObj, oR), ot[++od] = [], loop = 1;
 				if(rArr.test(dest)) dest = dest.replace(rArr, oA), at[++ad] = [], loop = 1;
 			}while(loop);
 			
-			
-			
-			this[DEST] = JSON.parse(dest);
+			if(rO.test(dest) || rA.test(dest)) parse(dest, r);
+			else throw 1;
+			this[DEST] = r;
 		};
 		Dest.prototype.value = function(v){
 			var target = this[DEST], result = {};
