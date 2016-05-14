@@ -38,20 +38,24 @@
 		var DEST = Symbol(), stack = [], parse, Var, Dest,
 			rO = /(@o_[^@]+@)/g, rA = /(@a_[^@]+@)/g;
 		Var = function(k){this.k = k;};
-		parse = function(dest, r){
+		parse = function(dest, r, arr, obj){
 			dest = dest.trim();
 			if(rO.test(dest)){
+				dest = dest.substring(1, dest.length - 1).split('_');
+				dest = obj[dest[1]][dest[2]];
 				dest.substring(1, dest.length - 1).split(',')
 				.forEach(function(v){
 					if(v.indexOf(':') > -1 ) v = v.split(':');
 					else v = [v, v];
-					r[v[0].trim()] = parse(v[1], {});
+					r[v[0].trim()] = parse(v[1], {}, arr, obj);
 				});
 				return r;
 			}else if(rA.test(dest)){
+				dest = dest.substring(1, dest.length - 1).split('_');
+				dest = arr[dest[1]][dest[2]];
 				dest.substring(1, dest.length - 1).split(',')
 				.forEach(function(v, i){
-					r[i] = parse(v, {});
+					r[i] = parse(v, {}, arr, obj);
 				});
 				return r;
 			}else if(dest){
@@ -71,17 +75,13 @@
 				if(rArr.test(dest)) dest = dest.replace(rArr, oA), at[++ad] = [], loop = 1;
 			}while(loop);
 			
-			if(rO.test(dest) || rA.test(dest)) parse(dest, r);
+			if(rO.test(dest) || rA.test(dest)) parse(dest, r, arr, obj);
 			else throw 1;
 			this[DEST] = r;
 		};
 		Dest.prototype.value = function(v){
 			var target = this[DEST], result = {};
-			stack.length = 0;
-			do{
-				if(target instanceof Array){
-				}
-			}while(target = stack.pop());
+			
 		};
 	})();
 	
