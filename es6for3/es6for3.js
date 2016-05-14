@@ -269,7 +269,10 @@
 		})();
 		window.Generator = function(f){
 			return function(){
-				window.Yield = 
+				var r = [];
+				window.Yield = function(v){r[r.length] = v;};
+				f();
+				return new Iter(r);
 			};
 		};
 	}
