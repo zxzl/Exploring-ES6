@@ -22,7 +22,7 @@ if(!window.Symbol)(function(){
 window.Iter = (function(){
 	var DATA = Symbol(), LEN = Symbol(), CURR = Symbol(), RETURN = Symbol(),
 		Iter = function(v){
-			this[DATA] = v;
+			this[DATA] = v; 
 			this[LEN] = v.len;
 			this[CURR] = 0;
 			this[RETURN] = {done:false};
