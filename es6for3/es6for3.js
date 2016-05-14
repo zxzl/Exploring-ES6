@@ -38,8 +38,8 @@
 		var DEST = Symbol(), parse, destructuring, Var, Dest,
 			rObj = /(\{[^\{\[\]\}]*\})/g, rArr = /(\[[^\{\[\]\}]*\])/g, 
 			arr = [[]], obj = [[]], a = 0, o = 0, ad = 0, od = 0, at = arr[0], ot = obj[0],
-			oR = function(v){return ot[o] = v, '@o_'+ depth+'_' + (o++) + '@';},
-			aR = function(v){return ot[o] = v, '@a_'+ depth+'_' + (o++) + '@';},
+			oR = function(v){return ot[o] = v, '@o_'+ od +'_' + (o++) + '@';},
+			aR = function(v){return ot[o] = v, '@a_'+ ad +'_' + (o++) + '@';},
 			rO = /(@o_[^@]+@)/g, rA = /(@a_[^@]+@)/g;
 		Dest = function(dest){
 			var loop, r = {};
@@ -97,8 +97,32 @@
 				}
 			}
 		};
+		return Dest;
 	})();
-	
+	window.Dest = (function(){
+		var pool = {};
+		return function(dest, v){
+			return (pool[dest] || (pool[dest] = new Dest(dest))).value(v);
+		};
+	})();
+	window.Spread = Spread = (function(){
+		var sp;
+		sp = function(r, a){
+			var i, j, k, l, v;
+			for(i = 0, j = a.length; i < j; i++){
+				if(a[i] == '...'){
+					sp(r, a[++i]);
+				}else{
+					r[r.length] = a[i];
+				}
+			}
+		};
+		return function(a){
+			var r = [];
+			sp(r, arguments.length > 1 ? arguments : a);
+			return r;
+		};
+	})();
 	if(!Array.prototype.forEach)(function(){
 		var fn = Array.prototype, Iter;
 		fn.forEach = function(f){
@@ -187,17 +211,41 @@
 		window.Map = Object.freeze(Map);
 	})();
 	if(!window.WeakMap) (function(){
-		var KEY = Symbol(), MAP = Symbol(), Map = function(a){
+		var KEY = Symbol(), MAP = Symbol(), ID = Symbol(), uuid = 0, WMap = function(a){
 			var map = this[MAP] = {};
 			if(a instanceof Array) a.forEach(function(v){self.set(v[0], v[1]);});
 			Object.freeze(this);
-		}, fn = Map.prototype;
-		fn.set = function(k, v){this[MAP][k] = v;};
-		fn.get = function(k){return this[MAP][k];};
-		fn.has = function(k){return this[MAP].hasOwnProperty(k);};
-		fn.del = function(k){delete this[MAP][k];};
-		
-		window.Map = Map;
+		}, fn = WMap.prototype;
+		fn.set = function(k, v){
+			if(k && typeof k == 'object' || typeof k == 'function'){
+				if(!k[ID]) k[ID] = '@WeakMap:' + (uuid++);
+				k = [k[ID]];
+			}
+			this[MAP][k] = v;
+		};
+		fn.get = function(k){
+			if(k && typeof k == 'object' || typeof k == 'function'){
+				if(k[ID]) k = k[ID];
+				else return;
+			}
+			return this[MAP][k];
+		};
+		fn.has = function(k){
+			if(k && typeof k == 'object' || typeof k == 'function'){
+				if(k[ID]) k = k[ID];
+				else return false;
+			}
+			return this[MAP].hasOwnProperty(k);
+		};
+		fn.del = function(k){
+			var v;
+			if(k && typeof k == 'object' || typeof k == 'function'){
+				if(k[ID]) v = k[ID], delete k[ID], k = v;
+				else return false;
+			}
+			delete this[MAP][k];
+		};
+		window.WeakMap = WMap;
 	})();
 	if(!window.Set) (function(){
 		var SET = Symbol(), Set = function(a){
