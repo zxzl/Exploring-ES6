@@ -1,5 +1,4 @@
-// if(!window.WeakSet)
-(function(){
+if(!window.WeakSet) (function(){
 	var KEY = Symbol(), SET = Symbol(), WSet = function(a){
 		var wset = this[SET] = [], self = this;
 		if(a instanceof Array) a.forEach(function(v){
