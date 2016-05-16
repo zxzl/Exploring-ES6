@@ -1,13 +1,9 @@
-try{
-	function*(){};
-}catch(e){
-	window.Generator = function(f){
-		return function(){
-			var r = [];
-			window.Yield = function(v){r[r.length] = v;};
-			f.apply(null, arguments);
-			delete window.Yield;
-			return new Iter(r);
-		};
+if(!window.Generator) window.Generator = function(f){
+	return function(){
+		var r = [];
+		window.Yield = function(v){r[r.length] = v;};
+		f.apply(null, arguments);
+		delete window.Yield;
+		return new Iter(r);
 	};
-}
+};
