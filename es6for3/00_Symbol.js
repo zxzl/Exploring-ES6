@@ -1,5 +1,9 @@
 "use strict"
 if(typeof Object.freeze != 'function') Object.freeze = function(v){return v;};
+if(!String.prototype.trim) (function(){
+	var trim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+	String.prototype.bsImmutable('trim', function(){return this.replace(trim, '');});
+})();
 if(!window.Symbol)(function(){
 	var uuid = 0,
 		getId = function(){
