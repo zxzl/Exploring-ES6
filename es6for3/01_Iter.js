@@ -1,16 +1,17 @@
-window.Iter = (function(){
+if(!window.Iter)(function(){
 	var DATA = Symbol(), LEN = Symbol(), CURR = Symbol(), RETURN = Symbol(),
 		Iter = function(v){
 			this[DATA] = v;
-			this[LEN] = v.len;
+			this[LEN] = v.length;
 			this[CURR] = 0;
 			this[RETURN] = {done:false};
 		};
 	Iter.prototype.next = function(){
-		if(this.curr < this.len) this.r.value = this.v[this.curr++], this.r.done = false;
-		else this.r.value = undefind, this.r.done = true;
-		return this.r;
+		if(this[CURR] < this[LEN]) this[RETURN].value = this[DATA][this[CURR]++], this[RETURN].done = false;
+		else this[RETURN].value = undefined, this[RETURN].done = true;
+		return this[RETURN];
 	};
+	window.Iter = Iter;
 })();
 if(!Array.prototype.forEach)(function(){
 	var fn = Array.prototype, Iter;
@@ -52,4 +53,4 @@ if(!Array.prototype.forEach)(function(){
 		return r;
 	};
 })();
-if(typeof String.prototype['@@iterator'] != 'function') String.prototype['@@iterator'] = function(){return new Iter(this.split(''));}
+if(typeof String.prototype[Symbol.iterator] != 'function') String.prototype[Symbol.iterator] = function(){return new Iter(this.split(''));}
