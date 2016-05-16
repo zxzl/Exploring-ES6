@@ -48,10 +48,8 @@ if(!window.Dest)(function(){
 			return result;
 		};
 		Var = function(k){
-			if(k.indexOf('=') > -1){
-				k = k.split('=');
-				this[DEFAULT] = getVal(k[1].trim()), k = k[0].trim();
-			}
+			var i = k.indexOf('=');
+			if(i > -1) this[DEFAULT] = getVal(k.substr(i + 1).trim()), k = k.substring(0, i).trim();
 			this.k = k;
 		};
 		Var.prototype.toString = function(){return this.k;};
