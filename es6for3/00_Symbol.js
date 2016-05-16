@@ -1,12 +1,12 @@
 "use strict"
 if(typeof Object.freeze != 'function') Object.freeze = function(v){return v;};
 if(!window.Symbol1)(function(){
-	var uuid = 0,
+	var uuid = 1,
 		Sym = function(id){this[ID] = id;},
 		Symbol1 = function(desc) {
 			return Object.freeze(new Sym('@@Symbol1@@::' + (desc || uuid++)));
 		},
-		ID = '__sym__',
+		ID = '@@Symbol1@@::0',
 		keys = {},
 		syms = {};
 	Sym.prototype.toString = function(){return this[ID];},
