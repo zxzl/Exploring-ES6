@@ -2,17 +2,17 @@ if(!window.Dest)(function(){
 	var pool = {}, Dest = (function(){
 		var DEST = Symbol(), DEFAULT = Symbol(),
 			getVal, getData, parse, destructuring, Var, Dest,
+			arr = [], obj = [], a, o, ad, od, at, ot,
 			rObj = /(\{[^\{\[\]\}]*\})/g, rArr = /(\[[^\{\[\]\}]*\])/g, 
 			oR = function(v){return ot[o] = v, '@o_'+ od +'_' + (o++) + '@';},
 			aR = function(v){return at[a] = v, '@a_'+ ad +'_' + (a++) + '@';},
 			rO = /(@o_[^@]+@)/g, rA = /(@a_[^@]+@)/g, rR = /^(@o_[^@]+@|@a_[^@]+@)$/,
-			rNum = /^[-.0-9]+$/, rStr = /^('[^']*'|"[^"]*")$/,
-			arr = [], obj = [], a = 0, o = 0, ad = 0, od = 0, at, ot;
+			rNum = /^[-.0-9]+$/, rStr = /^('[^']*'|"[^"]*")$/;
 		getData = function(d){
 			var target = d.search(rO) > -1 ? obj : d.search(rA) > -1 ? arr : 0;
 			if(target) return d = d.substring(1, d.length - 1).split('_'), target[d[1]][d[2]];
 			return false;
-		}
+		};
 		getVal = function(d){
 			if(d.search(rO) > -1){
 				d = d.substring(1, d.length - 1).split('_');
@@ -80,7 +80,5 @@ if(!window.Dest)(function(){
 		};
 		return Dest;
 	})();
-	window.Dest = function(dest, v){
-		return (pool[dest] || (pool[dest] = new Dest(dest))).value(v);
-	};
+	window.Dest = function(dest, v){return (pool[dest] || (pool[dest] = new Dest(dest))).value(v);};
 })();
