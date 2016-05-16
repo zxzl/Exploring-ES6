@@ -1,70 +1,88 @@
-window.Dest = (function(){
+if(!window.Dest)(function(){
 	var pool = {}, Dest = (function(){
-		var DEST = Symbol(), parse, destructuring, Var, Dest,
+		var DEST = Symbol(), DEFAULT = Symbol(),
+			getVal, getData, parse, destructuring, Var, Dest,
 			rObj = /(\{[^\{\[\]\}]*\})/g, rArr = /(\[[^\{\[\]\}]*\])/g, 
-			arr = [[]], obj = [[]], a = 0, o = 0, ad = 0, od = 0, at = arr[0], ot = obj[0],
 			oR = function(v){return ot[o] = v, '@o_'+ od +'_' + (o++) + '@';},
-			aR = function(v){return ot[o] = v, '@a_'+ ad +'_' + (o++) + '@';},
-			rO = /(@o_[^@]+@)/g, rA = /(@a_[^@]+@)/g;
+			aR = function(v){return at[a] = v, '@a_'+ ad +'_' + (a++) + '@';},
+			rO = /(@o_[^@]+@)/g, rA = /(@a_[^@]+@)/g, rR = /^(@o_[^@]+@|@a_[^@]+@)$/,
+			rNum = /^[-.0-9]+$/, rStr = /^('[^']*'|"[^"]*")$/,
+			arr = [], obj = [], a = 0, o = 0, ad = 0, od = 0, at, ot;
+		getData = function(d){
+			var target = d.search(rO) > -1 ? obj : d.search(rA) > -1 ? arr : 0;
+			if(target) return d = d.substring(1, d.length - 1).split('_'), target[d[1]][d[2]];
+			return false;
+		}
+		getVal = function(d){
+			if(d.search(rO) > -1){
+				d = d.substring(1, d.length - 1).split('_');
+				return JSON.parse(obj[d[1]][d[2]]);
+			}else if(d.search(rA) > -1){
+				d = d.substring(1, d.length - 1).split('_');
+				return JSON.parse(arr[d[1]][d[2]]);
+			}else if(d.search(rStr) > -1) return d;
+			else if(d.search(rNum) > -1) return parseFloat(d);
+			else if(d == 'true') return true;
+			else if(d == 'false') return false;
+			else if(d == 'null') return null;
+		};
 		Dest = function(dest){
-			var loop, r = {};
-			arr.length = obj.length = 0, a = o = ad = od = 0, at = arr[0] = [], ot = obj[0] = [],
+			var loop, r = this[DEST] = {}, d;
+			arr.length = obj.length = a = o = ad = od = 0,
 			dest = dest.trim();
 			do{
 				loop = 0;
-				if(rObj.test(dest)) dest = dest.replace(rObj, oR), ot[++od] = [], loop = 1;
-				if(rArr.test(dest)) dest = dest.replace(rArr, oA), at[++ad] = [], loop = 1;
+				if(dest.search(rObj) > -1) obj[od] = ot = [], dest = dest.replace(rObj, oR), od++, loop = 1;
+				if(dest.search(rArr) > -1) arr[ad] = at = [], dest = dest.replace(rArr, aR), ad++, loop = 1;
 			}while(loop);
-			
-			if(rO.test(dest) || rA.test(dest)) parse(dest, r, arr, obj);
-			else throw 1;
-			this[DEST] = r;
+			if(dest.indexOf('=') > -1){
+				dest = dest.split('=');
+				r[DEFAULT] = getVal(dest[1].trim()), dest = dest[0].trim();
+			}
+			if(dest.search(rR) == -1) throw 'invalid destructuring';
+			parse(dest, r, arr, obj);
 		};
 		Dest.prototype.value = function(v){
 			var result = {};
-			destructuring(this[DEST], v, result);
+			destructuring(this[DEST], v === undefined ? this[DEST][DEFAULT] : v, result);
 			return result;
 		};
-		Var = function(k){this.k = k;};
+		Var = function(k){
+			if(k.indexOf('=') > -1){
+				k = k.split('=');
+				this[DEFAULT] = getVal(k[1].trim()), k = k[0].trim();
+			}
+			this.k = k;
+		};
 		Var.prototype.toString = function(){return this.k;};
 		parse = function(dest, r, arr, obj){
+			var v, isObj;
 			dest = dest.trim();
-			if(rO.test(dest)){
-				dest = dest.substring(1, dest.length - 1).split('_');
-				dest = obj[dest[1]][dest[2]];
-				dest.substring(1, dest.length - 1).split(',')
-				.forEach(function(v){
-					if(v.indexOf(':') > -1 ) v = v.split(':');
-					else v = [v, v];
-					r[v[0].trim()] = parse(v[1], {}, arr, obj);
+			if(v = getData(dest)){
+				isObj = v.charAt(0) == '{' ? 1 : 0;
+				v.substring(1, v.length - 1).split(',').forEach(function(v, idx){
+					var p;
+					v = v.trim();
+					if(isObj){
+						p = v.indexOf(':');
+						v = p > -1 ? [v.substring(0, p), v.substr(p + 1)] : [v, v];
+						if(p = parse(v[1], {}, arr, obj)) r[v[0].trim()] = p;
+					}else if(p = parse(v, {}, arr, obj)) r[idx] = p;
 				});
 				return r;
-			}else if(rA.test(dest)){
-				dest = dest.substring(1, dest.length - 1).split('_');
-				dest = arr[dest[1]][dest[2]];
-				dest.substring(1, dest.length - 1).split(',')
-				.forEach(function(v, i){
-					r[i] = parse(v, {}, arr, obj);
-				});
-				return r;
-			}else if(dest){
-				return new Var(dest);
-			}
+			}else return dest ? new Var(dest) : undefined;
 		};
 		destructuring = function(target, v, result){
 			var k, key;
 			for(k in target){
 				key = target[k];
-				if(key instanceof Var){
-					result[key] = v[k];
-				}else if(key && typeof key == 'object'){
-					destructuring(key, v[k], result);
-				}
+				if(key instanceof Var) result[key] = v[k] === undefined ? key[DEFAULT] : v[k];
+				else if(key && typeof key == 'object') destructuring(key, v[k], result);
 			}
 		};
 		return Dest;
 	})();
-	return function(dest, v){
+	window.Dest = function(dest, v){
 		return (pool[dest] || (pool[dest] = new Dest(dest))).value(v);
 	};
 })();
