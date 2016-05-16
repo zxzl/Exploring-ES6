@@ -7,8 +7,12 @@
 		while(cnt--){
 			val = iter.next();
 			if(val.done) break;
-			else f(Dest(dest, val.value));
+			else f(dest ? Dest(dest, val.value) : val.value);
 		}
 	};
-	window.For = function(dest){return new Of(dest);};
+	window.For = function(dest){
+		this[DEST] = '';
+		return new Of(dest);
+	};
+	window.For.Of = Of.prototype.Of;
 })();
