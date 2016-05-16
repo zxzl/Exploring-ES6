@@ -18,7 +18,7 @@ if(!window.Iter)(function(){
 	if(!fn.forEach) fn.forEach = function(f){
 		for(var i = 0, j = this.length; i < j; i++) f(this[i], i, this);
 	};
-	if(!fn.map)  = function(f){
+	if(!fn.map) fn.map = function(f){
 		for(var r = [], i = 0, j = this.length; i < j; i++) r[i] = f(this[i], i, this);
 		return r;
 	};
@@ -33,10 +33,10 @@ if(!window.Iter)(function(){
 	if(!fn[Symbol.iterator]) fn[Symbol.iterator] = function(){return new Iter(this);};
 	if(typeof Array.from != 'function') Array.from = function(v){
 		var r = [], i;
-		if(Symbol.iterator in v){
+		if(typeof v[Symbol.iterator] == 'function'){
 			v = v[Symbol.iterator]();
 		}
-		if('next' in v){
+		if(typeof v.next == 'function'){
 			do{
 				i = v.next();
 				if(i.done) break;
