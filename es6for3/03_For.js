@@ -1,9 +1,10 @@
-(function(){
+if(!window.For)(function(){
 	var DEST = Symbol(), Of;
 	Of = function(d){this[DEST] = d;};
 	Of.prototype.Of = function(iter, f){
 		var cnt = 100000, val, dest = this[DEST];
-		if(typeof iter.next != 'function') iter = iter['@@iterator']();
+		if(typeof iter[Symbol.iterator] == 'function') iter = iter[Symbol.iterator]();
+		if(typeof iter.next != 'function') throw 'invalid iterator';
 		while(cnt--){
 			val = iter.next();
 			if(val.done) break;
