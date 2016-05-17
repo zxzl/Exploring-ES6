@@ -4,7 +4,7 @@ if(!String.prototype.trim) (function(){
 	var trim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 	String.prototype.trim = function(){return this.replace(trim, '');};
 })();
-if(!window.Symbol)(function(){
+if(!window.Symbol || bsTest)(function(){
 	var uuid = 0,
 		getId = function(){
 			return '@@Symbol:' + (+new Date) + ':' + (uuid++) + ':' + (Math.random() + '').substr(0, 5);
