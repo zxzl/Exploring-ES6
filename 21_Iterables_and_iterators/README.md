@@ -3,10 +3,12 @@
 ##21.1 Overview
 ES6에서는 iteration이라는 데이터를 탐색하는 새로운 매커니즘이 도입되었다.
 이터레이션에 대한 핵심 개념 두 가지는 다음과 같다 :
-- An iterable is a data structure that wants to make its elements accessible to the public. It does so by implementing a method whose key is Symbol.iterator. That method is a factory for iterators.
-- An iterator is a pointer for traversing the elements of a data structure (think cursors in databases).
+- 이터러블은 그것의 엘리먼트들을 공개적으로 접근 가능하게끔 하고자 하는 데이터 구조이다(?). [Symbol.iterator] 라는 키를 가진 메서드를 도입함으로써 이를 구현한다. 이 메서드는 이터레이터 공장이다.
+> - An iterable is a data structure that wants to make its elements accessible to the public. It does so by implementing a method whose key is Symbol.iterator. That method is a factory for iterators.
 
-Expressed as interfaces in TypeScript notation, these roles look like this:
+- 이터레이터는 데이터구조의 엘리먼트를 탐색하기 위한 포인터이다(데이터베이스의 커서와 유사하다).
+
+타입스크립트 인터페이스 표기법의 표현에 따르면, 이터레이터의 역할은 다음과 같다:
 ```js
 interface Iterable {
     [Symbol.iterator]() : Iterator;
@@ -22,18 +24,18 @@ interface IteratorResult {
 
 
 ###21.1.1 Iterable values
-The following values are iterable:
-
+다음 데이터값들은 이터러블하다.
 Arrays
 Strings
 Maps
 Sets
-DOM data structures (work in progress)
-Plain objects are not iterable (why is explained in a dedicated section).
+DOM data structures (작업 진행중)
+
+일반 객체는 이터러블이 아니다.
 
 
-###21.1.2 Constructs supporting iteration
-Language constructs that access data via iteration:
+###21.1.2 이터레이션 지원 구성하기
+이터레이션을 통해 데이터에 접근하기 위한 구성 방법은 다음과 같다 :
 
 Destructuring via an Array pattern:
 ```js
@@ -56,11 +58,13 @@ Spread operator (...):
 ```js
 const arr = [...new Set(['a', 'b', 'c'])];
 ```
+
 Constructors of Maps and Sets:
 ```js
 const map = new Map([[false, 'no'], [true, 'yes']]);
 const set = new Set(['a', 'b', 'c']);
 ```
+
 Promise.all(), Promise.race():
 ```js
 Promise.all(iterableOverPromises).then(···);
@@ -73,29 +77,28 @@ yield*:
 ```
 
 
-##21.2 Iterability
-The idea of iterability is as follows.
 
-- Data consumers: JavaScript has language constructs that consume data. For example, for-of loops over values and the spread operator (...) inserts values into Arrays or function calls.
-- Data sources: The data consumers could get their values from a variety of sources. For example, you may want to iterate over the elements of an Array, the key-value entries in a Map or the characters of a string.
+##21.2 Iterability (반복가능성)
+반복가능성의 개념은 다음과 같다.
 
-It’s not practical for every consumer to support all sources, especially because it should be possible to create new sources (e.g. via libraries). Therefore, ES6 introduces the interface Iterable. Data consumers use it, data sources implement it:
+- 데이터 소비자 : 자바스크립트는 데이터를 소비하는 언어구성을 가지고 있다.  예를 들어 for-of는 값과 펼침연산자를 순회하며 각 값을 배열에 삽입하거나 함수를 호출한다.
+- 데이터 소스 : 데이터 소비자는 다양한 소스들로부터 그들의 값을 얻어올 수 있다. 예를 들어 당신은 배열의 엘리먼트들이나, Map의 key-value 쌍, 문자열의 각 글자들을 이터레이트하길 원할 수 있다.
+
+모든 데이터 소비자에 대해 모든 소스를 지원하는 것은 타당하지 않다. 그렇게 할 경우 새로운 소스를 생성해야 할 가능성이 있어 더욱 그렇다(라이브러리를 활용할 경우처럼). 따라서 ES6는 이터러블 인터페이스를 도입하였다. 데이터 소비자들은 이를 사용하고, 데이터 소스가 그것을 수행하는 것이다.
 
 ![](iteration----consumers_sources.jpg)
 
-Given that JavaScript does not have interfaces, Iterable is more of a convention:
+자바스크립트에는 인터페이스가 없기 떄문에, 이터러블은 컨벤션 그 이상이다.
 
-Source: A value is considered iterable if it has a method whose key is the symbol Symbol.iterator that returns a so-called iterator. The iterator is an object that returns values via its method next(). We say: it iterates over the items (the content) of the iterable, one per method call.
-Consumption: Data consumers use the iterator to retrieve the values they are consuming.
-Let’s see what consumption looks like for an Array arr. First, you create an iterator via the method whose key is Symbol.iterator:
-
+소스 : (소위 iterator를 반환하는) [Symbol.iterator] 키를 가지고 있는 값은 이터러블한 것으로 간주된다. iterator는 next()메서드를 통해 값을 반환하는 객체이다. 즉, iterator는 해당 객체 내부의 이터러블한 요소들을 한 번 호출할 때마다 하나씩 순회한다.
+소비 : 데이터 소비자는 그들이 소비하고자 하는 값을 얻기 위해 이터레이터를 이용한다.
+배열에서 소비가 어떤 식으로 이뤄지는지를 살펴보자. 우선 [Symbol.iterator]키를 가진 메서드를 이용해 이터레이터를 생성하자.
 ```js
 const arr = ['a', 'b', 'c'];
 const iter = arr[Symbol.iterator]();
 ```
 
-Then you call the iterator’s method next() repeatedly to retrieve the items “inside” the Array:
-
+다음으로 배열 내부의 아이템들을 얻기 위해 이터레이터의 next()메서드를 반복적으로 호출하자.
 ```js
 iter.next()  // { value: 'a', done: false }
 iter.next()  // { value: 'b', done: false }
@@ -103,18 +106,17 @@ iter.next()  // { value: 'c', done: false }
 iter.next()  // { value: undefined, done: true }
 ```
 
-As you can see, next() returns each item wrapped in an object, as the value of the property value. The boolean property done indicates when the end of the sequence of items has been reached.
+위와 같이 next()는 객체 내부의 각각의 아이템들에 대해 'value' 프로퍼티에 해당 아이템의 값이 할당된 객체를 반환한다. 'done' 프로퍼티는 아이템들의 끝지점에 도달하면 true를, 그렇지 않은 경우 false를 나타내는 불린값이다.
 
-Iterable and iterators are part of a so-called protocol (interfaces plus rules for using them) for iteration. A key characteristic of this protocol is that it is sequential: the iterator returns values one at a time. That means that if an iterable data structure is non-linear (such as a tree), iteration will linearize it.
+이터러블과 이터레이터는 이터레이션을 위한 '프로토콜'(인터페이스 및 규칙)의 일부이다. 프로토콜의 핵심 성격 중 하나는, 바로 순차적이라는 것이다. 이터레이터는 값들을 한 번에 하나씩 반환한다. 즉, 선형구조로 이루어져있지 않은 데이터구조라 하더라도 일단 이터러블하기만 하면, 이터레이션을 거치면 선형구조로 전환됨을 의미한다.
 
 
 ##21.3 Iterable data sources
-I’ll use the for-of loop (see Chap. “The for-of loop”) to iterate over various kinds of iterable data.
+본 절에서는 다양한 종류의 이터러블한 데이터에 대해 이터레이트하기 위해 `for-of loop`를 이용하겠다.
 
 
 ##21.3.1 Arrays
-Arrays (and Typed Arrays) are iterables over their elements:
-
+배열 및 형지정 배열은 그 요소들에 대해 이터러블하다.
 ```js
 for (const x of ['a', 'b']) {
     console.log(x);
@@ -125,8 +127,7 @@ for (const x of ['a', 'b']) {
 ```
 
 ###21.3.2 Strings
-Strings are iterable, but they iterate over Unicode code points, each of which may comprise one or two JavaScript characters:
-
+문자열은 이터러블하다. 단, Unicode는 코드포인트에 대해서만 이터레이트한다.
 ```js
 for (const x of 'a\uD83D\uDC0A') {
     console.log(x);
@@ -137,6 +138,7 @@ for (const x of 'a\uD83D\uDC0A') {
 ```
 
 You have just seen that primitive values can be iterable. A value doesn’t have to be an object in order to be iterable. That’s because all values are coerced to objects before the iterator method (property key Symbol.iterator) is accessed.
+
 
 ###21.3.3 Maps
 Maps are iterables over their entries. Each entry is encoded as a [key, value] pair, an Array with two elements. The entries are always iterated over deterministically, in the same order in which they were added to the map.
