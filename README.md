@@ -1,12 +1,12 @@
 # Exploring ES6 번역 프로젝트입니다.
 ## http://exploringjs.com/es6/
 
-### 01. [ES6 소개]()
-### 02. [자주 묻는 질문]()
-### 03. [ES6의 버전문제 해결]()
-### 04. [ES6 첫걸음 떼기]()
-### 05. [Number와 Math의 새 기능]()
-### 06. [String의 새 기능]()
+### 01. [ES6 소개](/01%20ES6%20%EC%86%8C%EA%B0%9C/README.md)
+### 02. [자주 묻는 질문](/02%20%EC%9E%90%EC%A3%BC%20%EB%AC%BB%EB%8A%94%20%EC%A7%88%EB%AC%B8/README.md)
+### 03. [ES6의 버전문제 해결](/03%20ES6%EC%9D%98%20%EB%B2%84%EC%A0%84%20%EB%AC%B8%EC%A0%9C%20%ED%95%B4%EA%B2%B0/README.md)
+### 04. [ES6 첫걸음 떼기](/04%20ES6%20%EC%B2%AB%EA%B1%B8%EC%9D%8C%20%EB%96%BC%EA%B8%B0/README.md)
+### 05. [Number와 Math의 새 기능](/05%20Number와%20Math의%20새%20기능/README.md)
+### 06. [String의 새 기능](06%20String의%20새%20기능/README.md)
 ### 07. [Symbols]()
 ### 08. [Template리터럴]()
 ### 09. [변수와 스코프]()
