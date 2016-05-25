@@ -88,9 +88,10 @@ yield*:
 
 ![](iteration----consumers_sources.jpg)
 
-자바스크립트에는 인터페이스가 없기 떄문에, 이터러블은 컨벤션 그 이상이다.
+자바스크립트에는 인터페이스가 없기 때문에, 이터러블은 컨벤션 그 이상의 가치를 지닌다.
 
 소스 : (소위 iterator를 반환하는) [Symbol.iterator] 키를 가지고 있는 값은 이터러블한 것으로 간주된다. iterator는 next()메서드를 통해 값을 반환하는 객체이다. 즉, iterator는 해당 객체 내부의 이터러블한 요소들을 한 번 호출할 때마다 하나씩 순회한다.
+
 소비 : 데이터 소비자는 그들이 소비하고자 하는 값을 얻기 위해 이터레이터를 이용한다.
 배열에서 소비가 어떤 식으로 이뤄지는지를 살펴보자. 우선 [Symbol.iterator]키를 가진 메서드를 이용해 이터레이터를 생성하자.
 ```js
@@ -136,13 +137,11 @@ for (const x of 'a\uD83D\uDC0A') {
 // 'a'
 // '\uD83D\uDC0A' (crocodile emoji)
 ```
-
-You have just seen that primitive values can be iterable. A value doesn’t have to be an object in order to be iterable. That’s because all values are coerced to objects before the iterator method (property key Symbol.iterator) is accessed.
+기본 데이터타입의 값 역시 이터러블이 될 수 있음을 확인했다. 즉, 값이 이터러블하기 위해 반드시 객체여야 하는 것은 아니다. (문자열의 경우) 이터레이터 메서드([Symbol.iterator])가 호출되기 직전에 값들이 객체로 자동 전환되기 때문이다.
 
 
 ###21.3.3 Maps
-Maps are iterables over their entries. Each entry is encoded as a [key, value] pair, an Array with two elements. The entries are always iterated over deterministically, in the same order in which they were added to the map.
-
+맵은 내부의 엔트리들에 대해 이터러블하다. 각 엔트리는 [key, value]의 두 요소를 지닌 배열로 구성되어 있다. 엔트리들은 언제나 맵에 추가된 순서에 따라 이터레이트된다.
 ```js
 const map = new Map().set('a', 1).set('b', 2);
 for (const pair of map) {
@@ -152,11 +151,11 @@ for (const pair of map) {
 // ['a', 1]
 // ['b', 2]
 ```
-Note that WeakMaps are not iterable.
+
+> 주의 : 위크맵은 이터러블하지 않다.
 
 ###21.3.4 Sets
-Sets are iterables over their elements (which are iterated over in the same order in which they were added to the Set).
-
+셋은 내부 요소들에 대해 이터러블하다. 셋의 요소들은 셋에 추가된 순서에 따라 이터레이트된다.
 ```js
 const set = new Set().add('a').add('b');
 for (const x of set) {
@@ -166,10 +165,11 @@ for (const x of set) {
 // 'a'
 // 'b'
 ```
-Note that WeakSets are not iterable.
+
+> 주의 : 위크셋은 이터러블하지 않다.
 
 ###21.3.5 arguments
-Even though the special variable arguments is more or less obsolete in ECMAScript 6 (due to rest parameters), it is iterable:
+특별한 변수인 arguments는 (비록 ES6의 rest parameter 덕분에 더이상 쓸모없게 되었긴 하지만) 이터러블하다.
 ```js
 function printArgs() {
     for (const x of arguments) {
@@ -184,24 +184,22 @@ printArgs('a', 'b');
 ```
 
 
-###21.3.6 DOM data structures
-Most DOM data structures will eventually be iterable:
-
+###21.3.6 DOM 자료구조
+대부분의 DOM 자료구조는 언젠가는 결국 이터러블하게 될 것이다.
 ```js
 for (const node of document.querySelectorAll('div')) {
     ···
 }
 ```
-Note that implementing this functionality is work in progress. But it is relatively easy to do so, because the symbol Symbol.iterator can’t clash with existing property keys.
+이러한 기능에 대한 도입 작업이 진행중이다. 그러나 이 작업은 Symbol.iterator 심볼이 이미 존재하는 프로퍼티 키와 충돌할 수 없기 때문에, 직접 구현하는 것도 상대적으로 쉬운 편이다.
 
 ###21.3.7 Iterable computed data
-Not all iterable content does have to come from data structures, it could also be computed on the fly. For example, all major ES6 data structures (Arrays, Typed Arrays, Maps, Sets) have three methods that return iterable objects:
+모든 이터러블한 컨텐츠가 이미 갖춰져 있는 자료구조에서 비롯되어야 하는 것은 아니며, 연산에 의해 반환된 데이터 역시 이터러블하다. 예를 들어 ES6의 자료구조인 Array, Typed Array, Map, Set은 모두 이터러블 객체를 반환하는 세 개의 메서드를 보유하고 있다.
+- entries() : [key, value] 배열로 구성된 요소들의 이터러블 객체를 반환한다. 배열의 경우 반환되는 객체의 각 키와 값은 Set의 요소들과 동일하다.
+- keys() : entries의 키들로 이루어진 이터러블 객체를 반환한다.
+- values() : entries의 값들로 이루어진 이터러블 객체를 반환한다.
 
-entries() returns an iterable over entries encoded as [key, value] Arrays. For Arrays, the values are the Array elements and the keys are their indices. For Sets, each key and value are the same – the Set element.
-keys() returns an iterable over the keys of the entries.
-values() returns an iterable over the values of the entries.
-Let’s see what that looks like. entries() gives you a nice way to get both Array elements and their indices:
-
+예제를 통해 살펴보자. entries()는 배열 요소와 그들의 인덱스를 얻을 수 있는 훌륭한 방법을 제공한다.
 ```js
 const arr = ['a', 'b', 'c'];
 for (const pair of arr.entries()) {
@@ -213,19 +211,19 @@ for (const pair of arr.entries()) {
 // [2, 'c']
 ```
 
-###21.3.8 Plain objects are not iterable
-Plain objects (as created by object literals) are not iterable:
+###21.3.8 평범한 객체는 이터러블하지 않다.
+객체 리터럴에 의해 생성된 일반적인 객체는 이터러블하지 않다.
 ```js
 for (const x of {}) { // TypeError
     console.log(x);
 }
 ```
 
-Why aren’t objects iterable over properties, by default? The reasoning is as follows. There are two levels at which you can iterate in JavaScript:
-
-The program level: iterating over properties means examining the structure of the program.
-The data level: iterating over a data structure means examining the data managed by the program.
-Making iteration over properties the default would mean mixing those levels, which would have two disadvantages:
+어째서 객체는 프로퍼티들에 대해 기본적으로 이터러블하지 않을까? 그 이유는 다음과 같다. 자바스크립트에서 이터레이트할 수 있는 경우는 다음 두 가지 수준으로 나뉘어진다.
+프로그램 수준 : 프로퍼티에 대해 이터레이트한다는 말은 곧 프로그램 구조의 조사를 의미한다.
+자료 수준 : 자료구조에 대해 이터레이트한다는 말은 곧 프로그램의 관리하에 있는 자료의 조사를 의미한다.
+프로퍼티들에 대해 기본적으로 이터레이트할 수 있게 한다는 것은 즉 위 두 가지 수준을 섞는 것을 의미하고, 이는 다음과 같은 두 가지 불이익을 야기할 수 있다.
+(Making iteration over properties the default would mean mixing those levels, which would have two disadvantages:)
 
 You can’t iterate over the properties of data structures.
 Once you iterate over the properties of an object, turning that object into a data structure would break your code.
