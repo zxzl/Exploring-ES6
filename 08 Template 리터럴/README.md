@@ -257,8 +257,7 @@ Facebook Relay is a “JavaScript framework for building data-driven React appli
     </ul>;
   }
 }
-```
-```
+
 TeaStore = Relay.createContainer(TeaStore, {
   fragments: { // (A)
     store: () => Relay.QL`
@@ -275,32 +274,63 @@ The query is created in method fragments (line A) and attached to the React comp
 
 This is the data that the query operates on:
 
-이 쿼리는 fragments 메소드를 통해 생성(A줄) 되고 리액트 컴포넌트인 TeaStore에 붙착된다. 그 쿼리의 결과는 this.props.store에 들어간다.
+이 쿼리는 fragments 메소드를 통해 생성(A줄) 되고 리액트 컴포넌트인 TeaStore에 붙착된다. 그 쿼리의 결과는 this.props.store에 넣는다.
+
 여기 쿼리 수행 결과 데이터가 있다:
+```javascript
 const STORE = {
   teas: [
     {name: 'Earl Grey Blue Star', steepingTime: 5},
     ···
   ],
 };
-텍스트 지역화 (L10N)
-이 색션은 다른 언어와 다른 지역을 지원하는 텍스트 지역화에 대한 간단한 접근을 설명한다. (숫자, 시간등 포멧 방법) 주어진 메세지를 봐라
+```
+
+### 8.3.9 Text localization (L10N)
+### 8.3.9 텍스트 지역화 (L10N)
+
+This section describes a simple approach to text localization that supports different languages and different locales (how to format numbers, time, etc.). Given the following message.
+
+이 색션은 다른 언어와 지역을 지원하는 문자열 지역화에 대한 간단한 접근법을 설명한다. (숫자, 시간등 형식을 지정하는 방법) 주어진 메세지를 보면
+```javascript
 alert(msg`Welcome to ${siteName}, you are visitor
           number ${visitorNumber}:d!`);
+```
+The tag function msg would work as follows.
+
+First, The literal parts are concatenated to form a string that can be used to look up a translation in a table. An example for a lookup string is:
+
 태그 함수 msg는 아래와 같이 동작할 것이다.
-첫째 리터럴 부분은 테이블에서 번역을 찾기위해 사용될 수 있는 문자열을 형성하기 위에 연결된다. 문자열을 찾는 예를 보자
+첫째 리터럴 부분은 표에서 번역을 찾기 위해 사용될 수 있는 문자열을 형성하기 위에 연결된다. 문자열을 찾는 예를 보자
+```
 'Welcome to {0}, you are visitor number {1}!'
-독일어로 번역을 예를 들면
+```
+An example for a translation to German is:
+독일어로 번역을 예를 들면:
+```
 'Besucher Nr. {1}, willkommen bei {0}!'
-영어 “번역” 거희 문자열 조회와 동일 하다.
+```
+The English “translation” would be the same as the lookup string.
+영어 "번역" 검색 문자열과 동일 하다.
 
-둘째, 조회 결과는 치환을 표현하는데 사용된다. 왜냐하면 조회 결과는 치환의 순서를 재배열 할 수 있는색인을 포함하기 때문이다. 독일어로 하면 방문자 수가 싸이트 이름 보다 앞에 온다. 그 치환물들은 형성하는 방법은 :d와 같은 주석을 통해 영향을 미칠 수 있다. 그 주석은 visitorNumber를 위해 사용 되어진 지역 특화 수 구분자를 의미 하는 것 이다. 따라서 영어 결과는
+Second, the result from the lookup is used to display the substitutions. Because a lookup result includes indices, it can rearrange the order of the substitutions. That has been done in German, where the visitor number comes before the site name. How the substitutions are formatted can be influenced via annotations such as :d. This annotation means that a locale-specific decimal separator should be used for visitorNumber. Thus, a possible English result is:
+둘째, 검색 결과는 치환을 표현하는데 사용된다. 왜냐하면 검색 결과는 치환의 순서를 재배열 할 수 있는 색인을 포함하기 때문이다. 독일어로 하면 방문자 수가 싸이트 이름 보다 앞에 온다. 그 치환물들은 형성하는 방법은 :d와 같은 주석을 통해 영향을 미칠 수 있다. 그 주석은 visitorNumber를 위해 사용 되어진 지역 특화 수 구분자를 의미 하는 것 이다. 따라서 가능한 영어 결과는
+```
 Welcome to ACME Corp., you are visitor number 1,300!
-독일어 결과는 
+```
+In German, we have results such as:
+독일어 결과는:
+```
 Besucher Nr. 1.300, willkommen bei ACME Corp.!
+```
 
-Text templating via untagged template literals
-우리가 원하는 테이블안에 데이터를 표현된 HTML 생성을 말해 보자.
+### 8.3.10 Text templating via untagged template literals
+### 8.3.10 비태그드 템플릿 리터럴을 통한 문자열 템플링
+
+Let’s say we want to create HTML that display the following data in a table:
+이제 우리는 테이블에서 다음 데이터를 표시하는 HTML 만들려고 가정해 보자.
+
+```javascript
 const data = [
     { first: '<Jane>', last: 'Bond' },
     { first: 'Lars', last: '<Croft>' },
@@ -309,7 +339,11 @@ const data = [
     { first: '<Jane>', last: 'Bond' },
     { first: 'Lars', last: '<Croft>' },
 ];
-이전 설명에 따르면 템플릿 리터럴은 템플릿이 아니다. 그들은 즉시 실행 코드이고,  너가 데이터를 적용할 수 있는 빈칸이 있는 텍스트는 아니다. 이 뒷부분의 설명은 우리에서 어떻게 우리가 탬플릿 리터럴을 실제 템플릿으로 변할 수 있는 방법의 힌트를 준다. 이 것은 마치 함수의 모양처럼 보인다(data in text out). 자 템플릿 tmpl을 데이터를 문자열로 바꾸는 함수처럼 구현해 보자.
+```
+As explained previously, template literals are not templates. They are code that is executed immediately, not text with holes that you can apply to data. The latter description gives us a hint how we can turn a template literal into an actual template – it sounds like the description of a function (data in, text out). Let’s implement a template tmpl as a function from data to strings:
+
+이전 설명에 따르면 템플릿 리터럴은 템플릿이 아니다. 이것은 즉시 실행 코드이고,  당신이 데이터를 넣을 수 있는 빈칸이 있는 문자열는 아니다. 이 뒷부분의 설명은 우리에서 어떻게 우리가 템플릿 리터럴을 실제 템플릿으로 변할 수 있는 방법에 대한 힌트를 준다. 이것은 마치 함수의 모양처럼 보인다(data in text out). 자 함수 처럼 데이터를 문자열로 바꾸는 템플릿 tmpl을 구현해 보자.
+```javascript
 const tmpl = addrs => `
     <table>
     ${addrs.map(addr => `
@@ -329,16 +363,31 @@ console.log(tmpl(data));
 //     <tr><td><Croft></td></tr>
 //
 // </table>
- 바깥쪽 템플릿 리터럴은 <table> </table> 묶음을 제공한다. 안쪽, 우리는 문자열 배열의 결합을 통해 문자열로 처리된 자바스크립트 코드를 끼워 넣는다. 이 배열은 두 개의 테이블 열을 각 주소를 맴핑을 통해 생성된다. 일반 택스트 조각들 <Jane>과 <Croft>는 적절히 익스케이프 되지 않음을 주의하라. 다음 섹션에서 태그드 템플릿을 통한 방법을 설명한다.
+```
+The outer template literal provides the bracketing <table> and </table>. Inside, we are embedding JavaScript code that produces a string by joining an Array of strings. The Array is created by mapping each address to two table rows. Note that the plain text pieces <Jane> and <Croft are not properly escaped. How to do that via a tagged template is explained in the next section.
 
-내가 생성하는 코드에서 이 기술을 사용해야 합니까?
-이것은 작은 템플릿 작업을 하기 유용하고 빠른 답이다. 큰 작업을 위해서는 너는 아마도 더 강력한 답 마치 Handlbars.js나 리액트에서 사용된 JSX 신택스를 원할지 모른다.
+바깥쪽 템플릿 리터럴은 <table> </table> 묶음을 제공한다. 내부, 우리는 문자열 배열의 결합을 통해 문자열을 생성하는 자바스크립트 코드를 포함하고 있다. 이 배열은 두 개의 테이블 행을 각 주소를 맴핑을 통해 생성하게 된다. 일반 문자열 조각들 <Jane>과 <Croft>는 적절히 익스케이프 되지 않음을 주의하라. 다음 섹션에서 태그드 템플릿을 통한 방법을 설명한다.
 
-HTML 템플링을 위한 태그 함수
-우리가 이전 섹션에 있는 HTML 템플릿에서 태그 템플릿을 사용하지 않는 것과 비교해 본다면, 테그 템플릿은 두 가지 이점이 있다.
-만약 우리가 ${} 앞에 $문자를 붙인다면, 우리는 문자열을 이스케이프 할 수 있다. 이것은 이스케이프 처리가 필요한 문자를 포함하고 있는(<Jane>) 이름에 필요 하다.
-그것은 우리를 위해 자동으로 배열을 join() 할 수 있다. 그래서 우리는 우리 스스로 그 메소드를 호출할 필요가 없다.
-다음과 같은 템플릿 코드가 보인다. 태그 함수의 이름은 html:
+#### 8.3.10.1 Should I use this technique in production code?
+#### 8.3.10.1 내가 회사 코드에서 이 기술을 사용해야 합니까?
+This is a useful quick solution for smaller templating tasks. For larger task, you may want more powerful solutions such as the templating engine Handlebars.js or the JSX syntax used in React.
+
+이것은 작은 템플릿 작업을 하기 유용하고 빠른 해답 이다. 큰 작업을 위해서는 아마도 당신은 더 강력한 해답인 Handlbars.js나 리액트에서 사용된 JSX 문법를 원할지 모른다.
+
+Acknowledgement: This approach to text templating is based on an idea by Claus Reinke.
+감사: 문자열 템플릿에 대한 접근은 Claus Reinke의 아이디어에 기반한다.
+
+### 8.3.11 A tag function for HTML templating
+### 8.3.11 HTML 템플링을 위한 태그 함수
+Compared to using untagged templates for HTML templating, like we did in the previous section, tagged templates bring two advantages:
+우리가 이전 섹션에 있는 HTML 템플릿에서 비 태그 템플릿을 사용한 것과 비교해 본다면, 태그 템플릿은 두 가지 이점이 있다.:
+* They can escape characters for us if we prefix ${} with a dollar sign. That is needed for the names, which contain characters that need to be escaped (<Jane>).
+* 만약 우리가 ${} 앞에 달러문자를 붙인다면, 우리는 문자열을 이스케이프 할 수 있게 할 수 있다. 이것은 이스케이프 처리가 필요한 문자를 포함된 (<Jane>) 이름에 필요 하다.
+* They can automatically join() Arrays for us, so that we don’t have to call that method ourselves.
+* 그것은 우리를 위해 자동으로 배열을 join() 할 수 있게 할 수 있고, 따라서 우리는 우리 스스로 그 메소드를 호출할 필요가 없다.
+Then the code for the template looks as follows. The name of the tag function is html:
+다음과 같은 템플릿 코드가 보인다. 태그 함수의 이름은 html이다.:
+```javascript
 const tmpl = addrs => html`
     <table>
     ${addrs.map(addr => html`
@@ -362,17 +411,31 @@ console.log(tmpl(data));
 //     <tr><td>&lt;Croft&gt;</td></tr>
 //
 // </table>
+```
+Note that the angle brackets around Jane and Croft are escaped, whereas those around tr and td aren’t.
 꺽쇠안에 있는 Jane과 Croft는 익스케이프 되었고, 반면에 그것들을 둘러싸고 있는 tr과 td는 이스케이프 되지 않았음을 주목하라.
 
-이 신택스 $${}는 반드시 이스케이스가 필요한 HTML 문자열을 위해 사용된다. 이것은 특별한 방법이 아니다. 이것은 단지 평범한 텍스트 $뒤에 치환자${}가 따라오는 것 이다. 그러므로 태그 함수는 텍스트 치환 전에 선행되기 때문에 어디서 이스케이프 할지 말지를 결정하는 검사를 갖는다.
+The syntax $${} is used for text that should be HTML-escaped. It is not in any way special; it’s just the normal text $ followed by the substitution ${}. Therefore, the tag function has to check the text preceding a substitution in order to determine whether to escape or not.
+$${} 문법은 반드시 이스케이스가 필요한 HTML 문자열을 위해 사용된다. 이것은 특별한 방법이 아니다. 이것은 단지 평범한 문자열 $뒤에 치환자${}가 따라오는 것 이다. 따라서, 태그 함수는 이스케이브 여부를 결정하기 위해 치환 이전에 문자열을 확인한다.
+An implementation of html is shown later.
 html의 구현은 뒤에 보여진다.
-..  
-태그 함수 구현
+
+## 8.4 Implementing tag functions
+## 8.4 태그 함수 구현
+The following is a tagged template literal:
 아래 태그드 함수 리터럴:
+```javascript
 tagFunction`lit1\n${subst1} lit2 ${subst2}`
-이것은 이 리터럴에 의해 호출을 유발하는 간단한 버전이다.
+```
+This is a simplified version of the function call triggered by this literal:
+이것은 이 문자열을 통해 실행되는 함수 호출의 간략화 된 버전이다.
+
+```javascript
 tagFunction(['lit1\n',  ' lit2 ', ''], subst1, subst2)
-정확한 함수 호출은 아래 같이 보인다
+```
+The exact function call looks more like this:
+정확한 함수 호출은 아래와 비슷하다.
+```javascript
 // Globally: add template object to per-realm template map
 {
     // “Cooked” template strings: backslash is interpreted
@@ -389,6 +452,7 @@ tagFunction(['lit1\n',  ' lit2 ', ''], subst1, subst2)
 
 // In-place: invocation of tag function
 tagFunction(__templateMap__[716], subst1, subst2)
+```
 태그 함수가 받는 두가지 입력 종류가 있다.
  템플릿 문자열: 첫번째 파라미터의 템플릿 객체. 이 객체는 변경불가한 스태틱 부분이다. 너는 “cooked” 템플릿 문자열(\n해석등 이스케이프)과 “raw” 템플릿 문자열(이스케이프 해석 되지 않은)을 얻는다.
 치환물:  파라미터 뒤따라와서 전달되는 것. 치환물들은 ${}을 통해 템플릿 리터럴에 끼워진다. 치환물은 동적이고 그것들은 호출시 변경 될 수 있다.
