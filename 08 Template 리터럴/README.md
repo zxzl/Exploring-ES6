@@ -237,10 +237,17 @@ t7.module(function(t7) {
 <${MyWidget} welcome="Hello world" />
 ```
 
-대신, t7.js는 t7.assign()을 통해 채워진 레지스트리를 사용한다. 이것은 여분의 설정을 요구하지만 템플릿 리터럴은 보기 좋고, 특히 시작과 닫는 태그가 그렇다.
+Instead, t7.js uses a registry which is filled via t7.assign(). That requires extra configuration, but the template literals look nicer, especially if there is both an opening and a closing tag.
 
-페이스북 GraphQL
-페이스북 Relay는 “데이터 주도 React 어플리케이션 구축을 위한 자바스크립트 프레임웍” 이다. 그 부분 중 하나는 GraphQL 질의어 이다. 이것의 쿼리는 템플릿 태그(Relay.QL)를 통해 생성될 수 있다. 예를 들면
+대신, t7.js는 t7.assign()을 통해 등록된 레지스트리를 사용한다. 이것은 여분의 설정을 요구하지만, 템플릿 리터럴은 보기 좋고, 특히 시작과 닫는 태그가 그렇다.
+
+### 8.3.8 Facebook GraphQL
+### 8.3.8 페이스북 GraphQL
+Facebook Relay is a “JavaScript framework for building data-driven React applications”. One of its parts is the query language GraphQL whose queries can be created via templates tagged with Relay.QL. For example (borrowed from the Relay homepage):
+
+페이스북 Relay는 "데이터 주도 React 어플리케이션 구축을 위한 자바스크립트 프레임웍" 이다. 그 부분 중 하나는 템플릿 태그(Relay.QL)를 통해 생성될 수 있는 GraphQL 질의어 이다. 예를 들면:
+
+```javascript
  class TeaStore extends React.Component {
   render() {
     return <ul>
@@ -250,6 +257,8 @@ t7.module(function(t7) {
     </ul>;
   }
 }
+```
+```
 TeaStore = Relay.createContainer(TeaStore, {
   fragments: { // (A)
     store: () => Relay.QL`
@@ -259,7 +268,14 @@ TeaStore = Relay.createContainer(TeaStore, {
     `,
   },
 });
-이 쿼리는 fragments를 통해 생성되고 리액스 컴포넌트인 TeaStore에 붙착된다. 그 쿼리의 결과는 this.props.store에 들어간다.
+
+```
+
+The query is created in method fragments (line A) and attached to the React component TeaStore. Its results of the query are put into this.props.store.
+
+This is the data that the query operates on:
+
+이 쿼리는 fragments 메소드를 통해 생성(A줄) 되고 리액트 컴포넌트인 TeaStore에 붙착된다. 그 쿼리의 결과는 this.props.store에 들어간다.
 여기 쿼리 수행 결과 데이터가 있다:
 const STORE = {
   teas: [
