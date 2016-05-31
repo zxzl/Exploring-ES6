@@ -2,15 +2,18 @@
 
 심볼은 ECMAScript 6에 새롭게 추가된 원시 타입(primitive type)이다. 7장은 심볼이 어떻게 동작하는지 설명한다.
 > 심볼은 ES6에서 새로운 원시 타입이다. 이 챕터는 심볼이 어떻게 동작하는지 다룬다.
+
 > Symbols are a new primitive type in ECMAScript 6. This chapter explains how they work.
 
 ## 7.1 개요
 > 7.1 Overview
 
-### 사용 사례 1 : 고유한 속성키
+### 사용 사례 1 : 고유 속성 키(unique property keys)
 > 7.1.1 Use case 1: unique property keys
 
-심볼은 주로 unique property keys로 이용된다. 심볼은 절대 다른 property key(심볼과 문자열)와 충돌하지 않는다. 예를 들어 `Symbol.iterator` 안에 저장되어있는 symbol을 method의 key로 활용하여 object iterable을 만들 수 있다.(object iterable은 `for-of` 루프와 다른 언어 메카니즘을 활용할 수 있는 객체다). iterable에 대한 더 자세한 정보는 [iteration chapter](http://exploringjs.com/es6/ch_iteration.html#ch_iteration)에서 다룬다.
+심볼은 주로 고유 속성 키로 사용된다. 심볼은 절대 다른 키(심볼 또는 문자열)와 충돌하지 않는다. 예를 들어 메소드의 키인 Symbol.iterator 에 저장된 심볼을 이용해서 객체 이터러블(for-of 루프나 다른 프로그래밍 언어의 메카니즘을 통해 사용할 수 있는)을 만들 수 있다. (이터러블에 관한 더 많은 정보는 이터레이션 챕터에서 다룬다.)
+
+> 심볼은 주로 unique property keys로 이용된다. 심볼은 절대 다른 property key(심볼과 문자열)와 충돌하지 않는다. 예를 들어 `Symbol.iterator` 안에 저장되어있는 symbol을 method의 key로 활용하여 object iterable을 만들 수 있다.(object iterable은 `for-of` 루프와 다른 언어 메카니즘을 활용할 수 있는 객체다). iterable에 대한 더 자세한 정보는 [iteration chapter](http://exploringjs.com/es6/ch_iteration.html#ch_iteration)에서 다룬다.
 
 > Symbols are mainly used as unique property keys – a symbol never clashes with any other property key (symbol or string). For example, you can make an object iterable (usable via the for-of loop and other language mechanisms), by using the symbol stored in Symbol.iterator as the key of a method (more information on iterables is given in the chapter on iteration):
 
@@ -38,9 +41,11 @@ for (const x of iterableObject) {
 // world
 ```
 
-A 라인에서 심볼은 method의 key로 이용되었다. 이 유일한 marker는 object iterable을 만들고, 우리가 for-of 루프를 사용할 수 있도록 해준다.
+A라인의 심볼은 메소드의 키로 사용된다. 이 고유한 마커는 객체 이터러블을 생성하고 for-of 루프 사용을 가능케한다.
+> A 라인에서 심볼은 method의 key로 이용되었다. 이 유일한 marker는 object iterable을 만들고, 우리가 for-of 루프를 사용할 수 있도록 해준다.
 
 > In line A, a symbol is used as the key of the method. This unique marker makes the object iterable and enables us to use the for-of loop.
+
 
 ### 7.1.2 Use case 2: constants representing concepts
 
