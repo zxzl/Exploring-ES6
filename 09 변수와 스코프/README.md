@@ -1,15 +1,20 @@
-#  9. Variables and scoping
-
-이번 장은 변수와 스코핑이 ECMAScript 6 에서 어떻게 처리되는지 살펴본다.
+#  9. 변수와 스코프 `Variables and scoping`
 
 ##  9.1 개요
-ES6에서는 두가지의 새로운 변수 선언을 제공한다. let 과 const 이다. var 를 사용하는 ES5의 변수 선언법을 거의 대체한다.
+
+ES6에서는 변수를 선언하는 두가지 새로운 방법을 제공합니다. ES5에서 변수를 선언하는 방법인 `var`를 대체할 수 있는 `let`과 `const`입니다.
+
+`ES6 provides two new ways of declaring variables: let and const, which mostly replace the ES5 way of declaring variables, var.`
 
 ###  9.1.1 let
-let 은 var 와 비슷하게 동작하지만, 그것이 선언하는 변수는 블럭 스코프이다. 그것은 단지 현재 블럭에서만 존재한다. var 는 함수 스코프이다.
 
-다음 코드에 따르면 당신은 let 선언 변수인 tmp 가 단지 A 라인에서 시작한 블럭에만 존재하는걸 볼 수 있다
+`let`은 `var`와 비슷하게 동작하지만, `let`으로 선언한 변수는 선언된 블럭 내에서만 존재하는 블럭 스코프입니다. `var`는 함수 스코프입니다.
 
+`let works similarly to var, but the variable it declares is block-scoped, it only exists within the current block. var is function-scoped.`
+
+다음 코드에서 `let`으로 선언된 변수 `tmp`는 `A`라인으로 시작된 블록 내에서만 존재하는 것을 볼 수 있습니다.
+
+`In the following code, you can see that the let-declared variable tmp only exists with the block that starts in line A:`
 
 ```javascript
 function order(x, y) {
@@ -24,7 +29,10 @@ function order(x, y) {
 ```
 
 ### 9.1.2 const
-const 는 let 과 비슷하게 동작하지만 당신은 나중에 값을 변경할 수 없으며, 즉시 초기화로만 선언해야하는 변수이다.
+
+`const`는 `let`처럼 동작하지만, `const`로 선언한 변수는 즉시 초기화되어야 합니다. 선언된 이후에 값을 변경할 수 없습니다.
+
+`const works like let, but the variable you declare must be immediately initialized, with a value that can’t be changed afterwards.`
 
 ```javascript
 const foo; // SyntaxError: missing = in const declaration
@@ -33,7 +41,9 @@ const bar = 123;
 bar = 456; // TypeError: `bar` is read-only
 ```
 
-for-of 루프 순회당 한번의 바인딩 (변수를 위한 저장 공간을) 생성하기에 루프 변수로서의 const 선언은 OK 이다. 
+`for-of` 반복문이 루프 반복마다 하나의 바인딩 ( 변수의 저장 공간 )을 생성하기 때문에 루프 내의 변수를 const로 선언하는 것이 좋습니다.
+
+`Since for-of creates one binding (storage space for a variable) per loop iteration, it is OK to const-declare the loop variable:`
 
 ```javascript
 for (const x of ['a', 'b']) {
@@ -44,8 +54,11 @@ for (const x of ['a', 'b']) {
 // b
 ```
 
-###  9.1.3 변수 선언 방법들
-다음 테이블은 ES6에서 변수 선언이 가능한 여섯가지 방법을 보여주고 있다.
+###  9.1.3 변수 선언 방법들 `Ways of declaring variables`
+
+아래 표는 ES6에서 변수를 선언하는 6가지 방법의 개요를 보여줍니다.
+
+`The following table gives an overview of six ways in which variables can be declared in ES6:`
 
 | | Hoisting | Scope | Creates global properties |
 | -------- | ----- | ------- | ------ | ---------- |
