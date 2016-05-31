@@ -497,7 +497,7 @@ function raw(strs, ...substs) {
 Tagged template literals in the spec
 A section on tagged template literals explains how they are interpreted as function calls. A separate section explains how a template literal is turned into a list of arguments: the template object and the substitutions.
 
-상세에서의 태그드 템플릿 리터럴
+스펙에서의 태그드 템플릿 리터럴
 태그드 템플릿 리터럴 섹션은 어떻게 그들이 함수 호출로 해석되는 지를 설명한다. 별도 섹션은 어떻게 템플릿 리터럴이  템플릿 객체와 치환물 인 인자들의 리스트로 변환되는지 설명한다.
 
 ### 8.4.1 Escaping in tagged template literals: cooked versus raw
@@ -552,22 +552,32 @@ Raw:    \\\${3+3}
 
 As you can see, whenever the cooked interpretation has a substitution then so does the raw interpretation. However, all backslashes from the literal appear in the raw interpretation; if a backslash precedes the characters ${ then it prevented a substitution.
 
-눈으로 본 것 같이 언제나 cooked 해석 raw 해석은 치환물을 가지고 있지만, raw 해석에서는 리터럴에 있는 모든 백슬래쉬가 나타난다. 만약 백슬래쉬가 ${에 앞선다면 그것은 치환을 막는다.
+눈으로 본 것 같이 cooked 해석이 치환물을 가지면 raw 해석 또한 치환물을 갖지만, raw 해석에서는 리터럴에 있는 모든 백슬래쉬가 나타난다. 만약 백슬래쉬가 ${에 앞선다면 그것은 치환을 막는다.
 
 Other occurrences of the backslash are interpreted similarly:
 
-백슬래시의 다른 발생들은 아래처럼 해석된다.:
+백슬래시의 다른 것들은 아래처럼 해석된다.:
 
 * In cooked mode, the backslash is handled like in string literals.
 * cooked 모드일때 백슬래시는 문자열 리터럴 처럼 다뤄진다.
-raw 모드일때 백슬래시는 그대로 사용된다.
+* In raw mode, the backslash is used verbatim. 
+* raw 모드일때 백슬래시는 그대로 사용된다.
+
+For example:
+
 예를 들면
+```
 > `\n`
 '\n'
 > String.raw`\n`
 '\\n'
-백슬래시가 raw모드에서 효과를 같는 유일한 때는 이것이 치환물 앞에 나타났을때이다.
-스팩에서 태그드 릴터럴 이스케이핑
+```
+The only time the backslash ever has an effect in raw mode is when it appears in front of a substitution (which it escapes).
+
+raw모드에서 백슬래시가 효과가 있을 때 는 이것이 치환물 앞에 있을 때 이다.
+
+Escaping in tagged template literals in the spec
+스펙에서 태그드 릴터럴 이스케이핑
 템플릿 문법에 안에서, 템플릿 리터럴 안에서 $문자 뒤에 반드시 열린 중괄호가 없어야한다는 것을 볼 수 있다. 그러나 이스케이프된 $문자(\$)는 열린 괄호가 따라올 수 있다. 템플릿 리터럴의 문자들 해석 규칙은 분리된 센셕에서 설명하고 있다.
 
 예제: HTML 템플릿 태그 함수 구현
