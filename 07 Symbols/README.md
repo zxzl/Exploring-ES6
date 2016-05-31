@@ -36,7 +36,7 @@ const iterableObject = {
 for (const x of iterableObject) {
     console.log(x);
 }
-// Output:
+// 출력:
 // hello
 // world
 ```
@@ -49,7 +49,8 @@ A라인의 심볼은 메소드의 키로 사용된다. 이 고유한 마커는 �
 
 ### 7.1.2 Use case 2: constants representing concepts
 
-ES5에서는 색깔같은 콘셉트를 표현하기 위해 문자열을 주로 썼다. ES6에선 심볼을 쓸 수 있고, 심볼은 항상 unique한 것으로 생각하면 된다.
+ECMAScript 5에서는 색깔과 같은 컨셉의 표현을 위해 문자열을 사용하곤 했다. ES6에서는 심볼을 사용 할 수 있는데, 이 심볼은 항상 고유한 것으로 확정지어도 된다.
+> ES5에서는 색깔같은 콘셉트를 표현하기 위해 문자열을 주로 썼다. ES6에선 심볼을 쓸 수 있고, 심볼은 항상 unique한 것으로 생각하면 된다.
 
 > In ECMAScript 5, you may have used strings to represent concepts such as colors. In ES6, you can use symbols and be sure that they are always unique:
 
@@ -81,9 +82,12 @@ function getComplement(color) {
 }
 ```
 
-### 7.1.3 Pitfall: you can’t coerce symbols to strings
+### 7.1.3 함정 : 심볼을 문자열로 형변환 할 수 없다.
+심볼을 문자열로 형변환(암묵적 형변환)하는 것은 예외를 발생시킨다.
 
-심볼을 문자열로 형변환(암묵적인 변환)하면 예외가 발생한다.
+> 7.1.3 Pitfall: you can’t coerce symbols to strings
+
+> 심볼을 문자열로 형변환(암묵적인 변환)하면 예외가 발생한다.
 
 > Coercing (implicitly converting) symbols to strings throws exceptions:
 
@@ -94,7 +98,8 @@ const str1 = '' + sym; // TypeError
 const str2 = `${sym}`; // TypeError
 ```
 
-명시적으로 형변환하는 것이 유일한 방법이다.
+유일한 해결책은 명시적으로 변환하는 것이다.
+> 명시적으로 형변환하는 것이 유일한 방법이다.
 
 > The only solution is to convert explicitly:
 
@@ -103,13 +108,17 @@ const str2 = String(sym); // 'Symbol(desc)'
 const str3 = sym.toString(); // 'Symbol(desc)'
 ```
 
-형변환을 막는 것은 몇 몇 에러를 방지한다. 하지만 심볼을 사용하는 것을 더 복잡하게 만들기도 한다.
+형변환을 방어하는 것은 오류를 예방하지만, 심볼의 사용을 더욱 복잡하게 만들기도 한다.
+> 형변환을 막는 것은 몇 몇 에러를 방지한다. 하지만 심볼을 사용하는 것을 더 복잡하게 만들기도 한다.
 
 > Forbidding coercion prevents some errors, but also makes working with symbols more complicated.
 
-### 7.1.4 Which operations related to property keys are aware of symbols?
+### 7.1.4 속성키에 관련된 어떤 연산이 심볼을 인식하는가?
+> 7.1.4 Which operations related to property keys are aware of symbols?
 
-다음 operation은 심볼을 property key로 인식한다.
+다음 연산은 심볼을 속성키로 인식한다.
+
+> 다음 operation은 심볼을 property key로 인식한다.
 
 > The following operations are aware of symbols as property keys:
 
@@ -117,7 +126,9 @@ const str3 = sym.toString(); // 'Symbol(desc)'
 - Property access via []
 - Object.assign()
 
-다음 operation은 심볼은 property key로 받아들이지 않는다.
+아래 연산은 심볼을 속성키로 인식하지 않는다.
+
+> 다음 operation은 심볼은 property key로 받아들이지 않는다.
 
 > The following operations ignore symbols as property keys:
 
@@ -125,9 +136,11 @@ const str3 = sym.toString(); // 'Symbol(desc)'
 - Object.getOwnPropertyNames()
 - for-in loop
 
-## 7.2 A new primitive type
+## 7.2 새로운 원시 타입
+> 7.2 A new primitive type
 
-ES6는 symbol이라는 새로운 원시 타입을 소개한다. 심볼은 unique ID로 작동하는 token이다. factory 함수인 `Symbol()`로 심볼을 만들 수 있다. (함수로 호출될 때는 문자열을 리턴한다는 점에서 `String`과 조금 비슷하다)
+ECMAScript 6는 심볼 이라는 새로운 원시 타입을 도입했다. 심볼은 고유한 아이디로 동작하는 토큰이며, 팩토리 함수인 Symbol()을 호출하여 생성할 수 있다.(함수로 호출하면 문자열을 반환하는 'String' 과 유사하다)
+> ES6는 symbol이라는 새로운 원시 타입을 소개한다. 심볼은 unique ID로 작동하는 token이다. factory 함수인 `Symbol()`로 심볼을 만들 수 있다. (함수로 호출될 때는 문자열을 리턴한다는 점에서 `String`과 조금 비슷하다)
 
 > ECMAScript 6 introduces a new primitive type: symbols. They are tokens that serve as unique IDs. You create symbols via the factory function Symbol() (which is loosely similar to String returning strings if called as a function):
 
@@ -135,7 +148,8 @@ ES6는 symbol이라는 새로운 원시 타입을 소개한다. 심볼은 unique
 const symbol1 = Symbol();
 ```
 
-`Symbol()`에 optinal로 문자열 매개변수를 넣을 수 있는데 이것은 심볼에 대한 설명이다. 이 설명은 심볼이 `toString()`, `String()` 함수를 통해 문자열로 바뀔 때 리턴되는 값이다.
+Symbol()은 문자열로 평가되는 파라미터를 가질 수 있는데(생략 가능), 이 파라미터는 새롭게 생성된 심볼에게 설명을 매기는 것이다. 이 설명은 심볼이 문자열로 변환될 때 사용된다.(toString() 또는 String())
+> `Symbol()`에 optinal로 문자열 매개변수를 넣을 수 있는데 이것은 심볼에 대한 설명이다. 이 설명은 심볼이 `toString()`, `String()` 함수를 통해 문자열로 바뀔 때 리턴되는 값이다.
 
 > Symbol() has an optional string-valued parameter that lets you give the newly created Symbol a description. That description is used when the symbol is converted to a string (via toString() or String()):
 
@@ -144,7 +158,8 @@ const symbol2 = Symbol('symbol2');
 String(symbol2) //'Symbol(symbol2)'
 ```
 
-`Symbol()` 함수를 통해 리턴된 모든 심볼은 unique하다. 모든 심볼은 각각 고유의 identity를 가지고 있다.
+Symbol()로 반환된 모든 심볼은 고유하며, 각각의 정체성을 가진다.
+> `Symbol()` 함수를 통해 리턴된 모든 심볼은 unique하다. 모든 심볼은 각각 고유의 identity를 가지고 있다.
 
 > Every symbol returned by Symbol() is unique, every symbol has its own identity:
 
@@ -152,7 +167,8 @@ String(symbol2) //'Symbol(symbol2)'
 Symbol() === Symbol() // false
 ```
 
-`typeof` 연산자에 심볼을 넣어보면 primitive type임을 알 수 있다. 심볼 전용의 결과를 리턴한다.
+심볼에 typeof 연산을 하면 원시 타입인 것을 볼 수 있다. ??이것은 새로운 심볼을 반환 할 것이다.??
+> `typeof` 연산자에 심볼을 넣어보면 primitive type임을 알 수 있다. 심볼 전용의 결과를 리턴한다.
 
 > You can see that symbols are primitive if you apply the typeof operator to one of them – it will return a new symbol-specific result:
 
@@ -160,9 +176,11 @@ Symbol() === Symbol() // false
 typeof Symbol() // 'symbol'
 ```
 
-### 7.2.1 Symbols as property keys
+## 7.2.1 속성키로써 사용되는 심볼
+> 7.2.1 Symbols as property keys
 
-심볼은 property key로 사용될 수 있다.
+심볼은 속성키로 사용될 수 있다.
+> 심볼은 property key로 사용될 수 있다.
 
 > Symbols can be used as property keys:
 
@@ -174,7 +192,8 @@ obj[MY_KEY] = 123;
 console.log(obj[MY_KEY]); // 123
 ```
 
-Class와 object는 'computed property key'라고 불리는 기능을 갖고있다. property의 key를 `[mySymbol]` 대괄호 사이에 심볼을 넣어서 설정할 수 있다. 아래 코드는 obj 객체에 MY_KEY 심볼을 키로 사용한 예제다.
+클래스와 객체 리터럴은 계산된 속성키(computed property keys)라는 기능을 갖고 있다. 대괄호에 심볼을 넣음으로써 표현식으로 속성키를 명시 할 수 있다. 
+> Class와 object는 'computed property key'라고 불리는 기능을 갖고있다. property의 key를 `[mySymbol]` 대괄호 사이에 심볼을 넣어서 설정할 수 있다. 아래 코드는 obj 객체에 MY_KEY 심볼을 키로 사용한 예제다.
 
 > Classes and object literals have a feature called computed property keys: You can specify the key of a property via an expression, by putting it in square brackets. In the following object literal, we use a computed property key to make the value of MY_KEY the key of a property.
 
@@ -185,7 +204,8 @@ const obj = {
 };
 ```
 
-method 정의에서도 역시 method 이름을 computed key로 할 수 있다.
+메서드 선언도 계산된 키를 가질 수 있다.
+> method 정의에서도 역시 method 이름을 computed key로 할 수 있다.
 
 > A method definition can also have a computed key:
 
@@ -199,11 +219,17 @@ const obj = {
 console.log(obj[FOO]()); // bar
 ```
 
-### 7.2.2 Enumerating own property keys
+### 7.2.2 속성키 열거하기
+> 7.2.2 Enumerating own property keys
 
-property의 key가 될 수 있는 새로운 종류의 값이 있을 때, ES6에선 다음 규칙이 적용된다.
+속성의 키가 될 수 있는 새로운 종류의 값이 있음을 고려해볼 때, ECMASciprt 6에는 아래와 같은 용어가 사용된다.
+> property의 key가 될 수 있는 새로운 종류의 값이 있을 때, ES6에선 다음 규칙이 적용된다.
 
 > Given that there is now a new kind of value that can become the key of a property, the following terminology is used for ECMAScript 6:
+
++ 속성키는 문자열 또는 심볼이다.
++ 문자열로 평가되는 속성키는 속성 이름이라 칭한다.
++ 심볼로 평가되는 속성키는 속성 심볼이라 칭한다.
 
 - property key는 문자열, 심볼 둘 다 가능하다.
     + Property keys are either strings or symbols
@@ -212,7 +238,9 @@ property의 key가 될 수 있는 새로운 종류의 값이 있을 때, ES6에�
 - 심볼인 property key는 property symbol이라고 불린다.
     + Symbol-valued property keys are called property symbols.
 
-object를 새로 만들어서 property key를 열거하는 API를 살펴보자. obj의 nonEnum property에 enumerable 속성을 false로 바꾼다.(Let’s examine the API for enumerating own property keys by first creating an object.)
+객체를 생성 함으로써 각각의 속성키를 열거하는 API를 살펴보자.
+
+> object를 새로 만들어서 property key를 열거하는 API를 살펴보자. obj의 nonEnum property에 enumerable 속성을 false로 바꾼다.(Let’s examine the API for enumerating own property keys by first creating an object.)
 
 ```js
 const obj = {
@@ -223,7 +251,8 @@ const obj = {
 Object.defineProperty(obj, 'nonEnum', { enumerable: false });
 ```
 
-`Object.getOwnPropertyNames()` 함수에서 symbol 타입의 property 키는 제외된다. 문자열 property key만 불러온다.(Object.getOwnPropertyNames() ignores symbol-valued property keys)
+Object.getOwnPropertyNames()는 심볼로 평가되는 속성키를 무시한다.
+> `Object.getOwnPropertyNames()` 함수에서 symbol 타입의 property 키는 제외된다. 문자열 property key만 불러온다.(Object.getOwnPropertyNames() ignores symbol-valued property keys)
 
 ```js
 Object.getOwnPropertyNames(obj) // ['enum', 'nonEnum']
