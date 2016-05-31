@@ -1,12 +1,14 @@
 # 7. Symbols
 
-심볼은 ES6에서 새로운 원시 타입이다. 이 챕터는 심볼이 어떻게 동작하는지 다룬다.
-
+심볼은 ECMAScript 6에 새롭게 추가된 원시 타입(primitive type)이다. 7장은 심볼이 어떻게 동작하는지 설명한다.
+> 심볼은 ES6에서 새로운 원시 타입이다. 이 챕터는 심볼이 어떻게 동작하는지 다룬다.
 > Symbols are a new primitive type in ECMAScript 6. This chapter explains how they work.
 
-## 7.1 Overview
+## 7.1 개요
+> 7.1 Overview
 
-### 7.1.1 Use case 1: unique property keys
+### 사용 사례 1 : 고유한 속성키
+> 7.1.1 Use case 1: unique property keys
 
 심볼은 주로 unique property keys로 이용된다. 심볼은 절대 다른 property key(심볼과 문자열)와 충돌하지 않는다. 예를 들어 `Symbol.iterator` 안에 저장되어있는 symbol을 method의 key로 활용하여 object iterable을 만들 수 있다.(object iterable은 `for-of` 루프와 다른 언어 메카니즘을 활용할 수 있는 객체다). iterable에 대한 더 자세한 정보는 [iteration chapter](http://exploringjs.com/es6/ch_iteration.html#ch_iteration)에서 다룬다.
 
