@@ -227,9 +227,9 @@ console.log(obj[FOO]()); // bar
 
 > Given that there is now a new kind of value that can become the key of a property, the following terminology is used for ECMAScript 6:
 
-+ 속성키는 문자열 또는 심볼이다.
-+ 문자열로 평가되는 속성키는 속성 이름이라 칭한다.
-+ 심볼로 평가되는 속성키는 속성 심볼이라 칭한다.
++ *속성 키*는 문자열 또는 심볼이다.
++ 문자열로 평가되는 속성키는 *속성 이름*이라 칭한다.
++ 심볼로 평가되는 속성키는 *속성 심볼*이라 칭한다.
 
 - property key는 문자열, 심볼 둘 다 가능하다.
     + Property keys are either strings or symbols
@@ -258,31 +258,37 @@ Object.getOwnPropertyNames()는 심볼로 평가되는 속성키를 무시한다
 Object.getOwnPropertyNames(obj) // ['enum', 'nonEnum']
 ```
 
-`Object.getOwnPropertySymbols()` 함수는 심볼 타입의 property key만 불러온다.(Object.getOwnPropertySymbols() ignores string-valued property keys)
+Object.getOwnPropertySymbols()는 문자열로 평가되는 속성키를 무시한다.
+> `Object.getOwnPropertySymbols()` 함수는 심볼 타입의 property key만 불러온다.(Object.getOwnPropertySymbols() ignores string-valued property keys)
 
 ```js
 Object.getOwnPropertySymbols(obj) // [Symbol(my_key)]
 ```
 
-`Reflect.ownKeys()` 함수는 타입 구분 없이 모든 키 불러온다.(Reflect.ownKeys() considers all kinds of keys)
+Reflect.ownKeys()는 모든 종류의 키를 고려한다.
+> `Reflect.ownKeys()` 함수는 타입 구분 없이 모든 키 불러온다.(Reflect.ownKeys() considers all kinds of keys)
 
 ```js
 Reflect.ownKeys(obj) // [Symbol(my_key), 'enum', 'nonEnum']
 ```
 
-`Object.keys()` 함수는 문자열 key 중에서도 enumerable key만 불러온다. (Object.keys() only considers enumerable property keys that are strings)
+Object.keys()는 열거 가능한 문자열 키만 고려한다.
+> `Object.keys()` 함수는 문자열 key 중에서도 enumerable key만 불러온다. (Object.keys() only considers enumerable property keys that are strings)
 
 ```js
 Object.keys(obj) // ['enum']
 ```
 
-`Object.keys` 라는 키워드는 새로운 용어들과 충돌하기 때문에 쓰지말자. `Object.names`, `Object.getEnumerableOwnPropertyNames` 쓰는 것을 추천한다.
+Object.keys라는 이름은 새로운 용어(문자열 키만 열거된다)와 충돌한다. Object.names 또는 Object.getEnumerableOwnPropertyNames가 좀 더 나은 대안이 될 것으로 보인다.
+> `Object.keys` 라는 키워드는 새로운 용어들과 충돌하기 때문에 쓰지말자. `Object.names`, `Object.getEnumerableOwnPropertyNames` 쓰는 것을 추천한다.
 
 > The name Object.keys clashes with the new terminology (only string keys are listed). Object.names or Object.getEnumerableOwnPropertyNames would be a better choice now.
 
-## 7.3 Using symbols to represent concepts
+## 7.3 컨셉 표현을 위한 심볼 사용
+> 7.3 Using symbols to represent concepts
 
-ES5에서는 일반적으로 문자열을 통해 개념을 나타낸다. 예를 들어 다음 코드를 보면
+ECMAScript 5에서는 종종 문자열로 컨셉(열거 상수를 떠올려보라)을 표현한다. 예를 들어:
+> ES5에서는 일반적으로 문자열을 통해 개념을 나타낸다. 예를 들어 다음 코드를 보면
 
 > In ECMAScript 5, one often represents concepts (think enum constants) via strings. For example:
 
@@ -295,7 +301,9 @@ var COLOR_BLUE   = 'Blue';
 var COLOR_VIOLET = 'Violet';
 ```
 
-하지만 문자열은 우리가 원하는 바와 다르게 unique하지 못하다. 왜 그런지를 아래 코드의 함수를 보며 알아보자.
+하지만, 문자열은 우리가 생각한만큼 고유하지 않다. 왜 그런지 알아보기 위해 아래 함수를 보자.
+
+> 하지만 문자열은 우리가 원하는 바와 다르게 unique하지 못하다. 왜 그런지를 아래 코드의 함수를 보며 알아보자.
 
 > However, strings are not as unique as we’d like them to be. To see why, let’s look at the following function.
 
@@ -320,7 +328,8 @@ function getComplement(color) {
 }
 ```
 
-위 함수는 어떤 표현이든 제한없이 switch문의 case로 쓸 수 있다는 점을 잘 나타낸다.
+
+> 위 함수는 어떤 표현이든 제한없이 switch문의 case로 쓸 수 있다는 점을 잘 나타낸다.
 
 > It is noteworthy that you can use arbitrary expressions as switch cases, you are not limited in any way. For example:
 
