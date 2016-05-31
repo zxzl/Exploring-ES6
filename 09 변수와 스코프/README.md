@@ -69,14 +69,11 @@ for (const x of ['a', 'b']) {
 | class | No | Block | No |
 | import | Complete | Module-global | No |
 
-> [Temporal dead zone (TDZ)]
->
-> 임시 사각 지대. 해당 영역에 선언은 되지만 참조 불가의 undefined 상태로 선언되는 것을 의미한다.
-> let, const 가 이에 해당되고 함수의 기본 파라미터도 TDZ 에 해당하기에 조심해야 한다
+##  9.2 let 과 const 를 통한 블럭 스코핑 `Block scoping via let and const`
 
-##  9.2 let 과 const 를 통한 블럭 스코핑
+`let`과 `const`는 둘 다 둘러싼 가장 가까운 블록 내에서만 존재하는 블럭 스코프 변수를 생성합니다. 아래 코드는 `const`로 선언된 변수 `tmp`가 `if`문의 블럭 안에서만 존재하는 것을 보여줍니다.
 
-let 과 const 는 블럭 스코프 변수를 생성한다 - 그것들은 단지 자신을 둘러싸고 있는 블럭 내부에서만 존재한다. 다음 코드는 const 로 선언된 변수 tmp 가 단지 if 문의 다음 블럭 안에서만 존재하는걸 보여준다
+`Both let and const create variables that are block-scoped – they only exist within the innermost block that surrounds them. The following code demonstrates that the const-declared variable tmp only exists inside the then-block of the if statement:`
 
 ```javascript
 function func() {
@@ -87,7 +84,9 @@ function func() {
 }
 ```
 
-대조적으로, var 선언 변수는 함수 스코프이다
+반면, `var`로 선언된 변수는 함수 스코프를 가집니다.
+
+`In contrast, var-declared variables are function-scoped:`
 
 ```javascript
 function func() {
@@ -98,7 +97,9 @@ function func() {
 }
 ```
 
-블럭 스코핑은 당신이 변수를 함수 안에서 가릴 수 있다는 걸 뜻한다
+블럭 스코프는 함수 내에서 변수를 가릴 수 있다는 것을 뜻합니다.
+
+`Block scoping means that you can shadow variables within a function:`
 
 ```javascript
 function func() {
@@ -111,8 +112,11 @@ function func() {
 }
 ```
 
-## 9.3 const 는 불변 (immutable) 변수를 생성한다
-let 으로 생성한 변수는 변한다 (mutable)
+## 9.3 `const` 는 불변 (immutable) 변수를 생성한다 `const creates immutable variables`
+
+`let`으로 생성한 변수는 변경 가능합니다.
+
+`Variables created by let are mutable:`
 
 ```javascript
 let foo = 'abc';
@@ -120,7 +124,9 @@ foo = 'def';
 console.log(foo); // def
 ```
 
-const 로 생성된 상수들, 변수들은 불변이다. - 당신은 그 변수들에 다른 값을 할당할 수 없다.
+`const`로 생성된 상수는 변경 불가능하기 때문에 다른 값을 할당할 수 없습니다.
+
+`Constants, variables created by const, are immutable – you can’t assign them a different value:`
 
 ```javascript
 const foo = 'abc';
