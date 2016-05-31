@@ -1,17 +1,17 @@
 ----
 ## 2. FAQ: ECMAScript 6
 
-이 챕터에서는 ECMAScript 6에 관해 자주 묻는 질문에 대한 답변을 제공합니다. `This chapter answers a few frequently asked questions about ECMAScript 6`
+2장에서는 ECMAScript 6에 대해 자주 묻는 질문에 답한다. `This chapter answers a few frequently asked questions about ECMAScript 6`
 
-#### 2.1 ES6는 현재 사용 가능한가요? `How can I use ES6 today?`
+#### 2.1 ES6는 어떻게 사용 할 수 있는가? `How can I use ES6 today?`
 
-ES6 스펙의 대부분은 현대의 엔진들이 이미 지원하고 있고 Kangax’ ES6 compatibility table 에서 지원 여부를 확인할 수 있습니다. `Most of ES6 is already supported in current engines, consult Kangax’ ES6 compatibility table to find out what is supported where.`
+ES6 스펙의 대부분은 현대의 엔진들이 이미 지원하고 있고 Kangax’ ES6 compatibility table 에서 지원 여부를 확인할 수 있다. `Most of ES6 is already supported in current engines, consult Kangax’ ES6 compatibility table to find out what is supported where.`
 
-또다른 선택지에 대해서는, (예: ES6 커맨드 라인과 바벨을 이용한 ES6에서 ES5로 변환) “Deploying ECMAScript 6” in “Setting up ES6”. 을 찾아보세요. `For other options (e.g. interactive ES6 command lines and transpiling ES6 to ES5 via Babel), consult Chap. “Deploying ECMAScript 6” in “Setting up ES6”.`
+다른 선택지는, (예: ES6 커맨드 라인과 바벨을 이용한 ES6에서 ES5로 변환) “Deploying ECMAScript 6” in “Setting up ES6”. 을 찾아보길 바란다. `For other options (e.g. interactive ES6 command lines and transpiling ES6 to ES5 via Babel), consult Chap. “Deploying ECMAScript 6” in “Setting up ES6”.`
 
-#### 2.2 ECMAScript 6는 이제 ECMAScript 2015로 불려야 하는 것 아닌가요? `2.2 Isn’t ECMAScript 6 now called ECMAScript 2015?`
+#### 2.2 ECMAScript 6는 이제 ECMAScript 2015로 불려야 하는 것 아닌가? `2.2 Isn’t ECMAScript 6 now called ECMAScript 2015?`
 
-그렇다고 할 수도 있고, 아니라고 할 수도 있습니다. ECMAScript 2015가 공식적인 이름이지만, 모두가 알고 있고 사용하는 이름은 ES6 입니다. 이 책에서 ES6를 사용하는 것은 바로 그러한 이유입니다.`Yes and no. The official name is ECMAScript 2015, but ES6 is the name that everyone knows and uses. That’s why I decided to use the latter for this book.`
+그렇다고 할 수도 있고, 아니라고 할 수도 있다. ECMAScript 2015가 공식적인 이름이지만, 모두가 알고 있고 사용하는 이름은 ES6 입니다. 이 책에서 ES6를 사용하는 것은 바로 그러한 이유입니다.`Yes and no. The official name is ECMAScript 2015, but ES6 is the name that everyone knows and uses. That’s why I decided to use the latter for this book.`
 
 ES6 이후에는, 새로운 절차와 매해 출시 되는 주기를 통해 ECMAScript 에디션이 제작 됩니다. 이것은 새로운 네이밍을 수립하기에 좋은 기회로 볼 수 있습니다. 그러므로 저는 ES6 그 다음 에디션을 위해 "ECMAScript 2016" 이라는 이름을 사용 할 것 입니다. `After ES6, ECMAScript editions are created via a new process and a yearly release cycle. That seems like a good opportunity to switch to the new naming scheme. Therefore, I’ll use the name “ECMAScript 2016” for the edition after ES6.`
 
