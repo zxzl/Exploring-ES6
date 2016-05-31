@@ -133,11 +133,10 @@ const foo = 'abc';
 foo = 'def'; // TypeError
 ```
 
-*:notebook: 스펙에 따르면 const 변수의 변경은 항상 TypeError 를 던진다*
-
-일반적으로 strict mode에서 불변 바인딩의 변경은 SetMutableBinding 에 따라서, 항상 예외의 원인이지만, const 변수 선언은 항상 엄격한 바인딩을 생성한다.
-
-step 35.b.i.1 장의 [FunctionDeclarationInstantiation(func, argumentsList)](http://www.ecma-international.org/ecma-262/6.0/#sec-functiondeclarationinstantiation) 을 참고하라.
+> :notebook: 스펙에 따르면 const 변수를 변경하는 것은 항상 TypeError 를 던집니다  
+> `Spec detail: changing a const variable always throws a TypeError`  
+> 일반적으로, 불변 바인딩을 변경하는 것은 `strict mode`에서만 `SetMutableBinding()`에서 예외가 발생합니다. 하지만 `const`로 변수를 선언하면 언제나 엄격한( strict )바인딩을 생성합니다. - 35.b.i.1 장의 [FunctionDeclarationInstantiation(func, argumentsList)](http://www.ecma-international.org/ecma-262/6.0/#sec-functiondeclarationinstantiation)를 확인하세요.  
+> `Normally, changing an immutable binding only causes an exception in strict mode, as per SetMutableBinding(). But const-declared variables always produce strict bindings – see FunctionDeclarationInstantiation(func, argumentsList), step 35.b.i.1.`
 
 ### 9.3.1 함정!(Pitfall) : const 는 값의 불변을 만들지 않는다.
 
