@@ -138,11 +138,11 @@ foo = 'def'; // TypeError
 > 일반적으로, 불변 바인딩을 변경하는 것은 `strict mode`에서만 `SetMutableBinding()`에서 예외가 발생합니다. 하지만 `const`로 변수를 선언하면 언제나 엄격한( strict )바인딩을 생성합니다. - 35.b.i.1 장의 [FunctionDeclarationInstantiation(func, argumentsList)](http://www.ecma-international.org/ecma-262/6.0/#sec-functiondeclarationinstantiation)를 확인하세요.  
 > `Normally, changing an immutable binding only causes an exception in strict mode, as per SetMutableBinding(). But const-declared variables always produce strict bindings – see FunctionDeclarationInstantiation(func, argumentsList), step 35.b.i.1.`
 
-### 9.3.1 함정!(Pitfall) : const 는 값의 불변을 만들지 않는다.
+### 9.3.1 함정 : `const`는 값을 불변으로 만들지 않는다. `Pitfall: const does not make the value immutable`
 
-const 는 단지 변수가 항상 같은 값을 가지는 것을 뜻하지만, 그것이 값 자체이거나 불변이 되는 것은 아니다.
+`const`는 변수가 항상 동일한 값을 가지고 있음을 의미하지만, 변수가 값 자체이거나 불변하게한다는 것을 의미하지 않습니다. 예를 들어 obj는 상수이지만 상수가 가리키는 값은 변경 가능합니다. - 속성을 추가할 수 있습니다.
 
-예를 들면, obj 는 상수이다. 하지만 그 값은 변경 가능한 포인트 - 우리는 그것에 속성을 추가할 수 있다.
+`const only means that a variable always has the same value, but it does not mean that the value itself is or becomes immutable. For example, obj is a constant, but the value it points to is mutable – we can add a property to it:`
 
 ```javascript
 const obj = {};
@@ -150,23 +150,32 @@ obj.prop = 123;
 console.log(obj.prop); // 123
 ```
 
-하지만 우린 obj 에 다른 값을 할당할 수 없다. 
+하지만 obj에 다른 값을 할당할 수는 없습니다.
+
+`We cannot, however assign a different value to obj:`
 
 ```javascript
 obj = {}; // TypeError
 ```
 
-만일 당신이 obj 값의 불면을 원한다면, 당신 자신이 알아서 해야 한다. 예를 들면 그걸 프리징한다든가.
+obj가 불변하게 하려면, freeze라던지 다른 처리가 필요합니다.
+
+`If you want the value of obj to be immutable, you have to take care of it, yourself, e.g. by freezing it:`
 
 ```javascript
 const obj = Object.freeze({});
 obj.prop = 123; // TypeError
 ```
 
-#### 9.3.1.1 함정!: Object.freeze() 는 얕다.
+#### 9.3.1.1 함정 : `Object.freeze()` 는 얕다. `Pitfall: Object.freeze() is shallow`
+
 Object.freeze() 는 얕다는걸 알아둬라. 그건 단지 그 인수의 프로퍼티들을 프리징할 뿐, 속성에 저장된 객체에는 아니다.
 
 예를 들면, 오브젝트 obj 는 얼었다 (frozen)
+
+`Object.freeze()`는 얕다는 것을 알아야 합니다. `Object.freeze()`는 인자의 속성만을 동결하고, 속성이 가리키는 객체는 동결하지 않습니다. 예를 들어 `obj` 객체는 동결됩니다.
+
+`Keep in mind that Object.freeze() is shallow, it only freezes the properties of its argument, not the objects stored in its properties. For example, the object obj is frozen:`
 
 ```javascript
 const obj = Object.freeze({ foo: {} });
@@ -176,7 +185,9 @@ obj.foo = {}
 // TypeError: Cannot assign to read only property 'foo' of #<Object>
 ```
 
-하지만, object obj.foo 는 아니다.
+하지만, `obj.foo` 객체는 동결되지 않습니다.
+
+`But the object obj.foo is not.`
 
 ```javascript
 obj.foo.qux = 'abc';
@@ -184,11 +195,11 @@ obj.foo.qux
 // 'abc'
 ```
 
-### 9.3.2 루프 바디 안에서의 const
+### 9.3.2 루프 바디 안에서의 `const` `const in loop bodies`
 
-일단 const 변수가 생성된 후엔 변경할 수 없다. 하지만 그게 당신이 새로운 스코프에 새 변수로 새로운 시작(start fresh)을 할 수 없다는 걸 의미하진 않는다.
+한번 `const` 변수가 생성되면 변경될 수 없습니다. 하지만 루프의 스코프에 재진입 했을때 새로운 값으로 갱신되지 않는 것은 아닙니다. 예를 들어 루프에서.
 
-예를들면 루프를 통해서.
+`Once a const variable has been created, it can’t be changed. But that doesn’t mean that you can’t re-enter its scope and start fresh, with a new value. For example, via a loop:`
 
 ```javascript
 function logArgs(...args) {
@@ -204,9 +215,13 @@ logArgs('Hello', 'everyone');
 // 1. everyone
 ```
 
-## 9.4 임시 사각 지대 (The temporal dead zone)
+## 9.4 임시 사각 지대 (The temporal dead zone) `The temporal dead zone`
 
 let 혹은 const 변수선언은 소위 임시 사각 지대 (temporal dead zone - TDZ) 를 갖는다.
+
+`let` 또는 `const`로 선언된 변수는 임시 사각지대 (TDZ)로 불리는 공간을 갖습니다.
+
+`A variable declared by let or const has a so-called temporal dead zone (TDZ): When entering its scope, it can’t be accessed (got or set) until execution reaches the declaration. Let’s compare the life cycles of var-declared variables (which don’t have TDZs) and let-declared variables (which have TDZs).`
 
 스코프에 들어가면, 실행 선언문에 도달할 때까지 그것에 엑세스 될(얻거나, 혹은 할당하거나) 수 없다.
 
