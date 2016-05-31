@@ -413,9 +413,11 @@ console.log(tmpl(data));
 // </table>
 ```
 Note that the angle brackets around Jane and Croft are escaped, whereas those around tr and td aren’t.
+
 꺽쇠안에 있는 Jane과 Croft는 익스케이프 되었고, 반면에 그것들을 둘러싸고 있는 tr과 td는 이스케이프 되지 않았음을 주목하라.
 
 The syntax $${} is used for text that should be HTML-escaped. It is not in any way special; it’s just the normal text $ followed by the substitution ${}. Therefore, the tag function has to check the text preceding a substitution in order to determine whether to escape or not.
+
 $${} 문법은 반드시 이스케이스가 필요한 HTML 문자열을 위해 사용된다. 이것은 특별한 방법이 아니다. 이것은 단지 평범한 문자열 $뒤에 치환자${}가 따라오는 것 이다. 따라서, 태그 함수는 이스케이브 여부를 결정하기 위해 치환 이전에 문자열을 확인한다.
 An implementation of html is shown later.
 html의 구현은 뒤에 보여진다.
@@ -423,18 +425,24 @@ html의 구현은 뒤에 보여진다.
 ## 8.4 Implementing tag functions
 ## 8.4 태그 함수 구현
 The following is a tagged template literal:
+
 아래 태그드 함수 리터럴:
+
 ```javascript
 tagFunction`lit1\n${subst1} lit2 ${subst2}`
 ```
+
 This is a simplified version of the function call triggered by this literal:
-이것은 이 문자열을 통해 실행되는 함수 호출의 간략화 된 버전이다.
+
+이것은 이 문자열을 통해 실행되는 함수 호출의 간략화 된 버전이다.:
 
 ```javascript
 tagFunction(['lit1\n',  ' lit2 ', ''], subst1, subst2)
 ```
 The exact function call looks more like this:
+
 정확한 함수 호출은 아래와 비슷하다.
+
 ```javascript
 // Globally: add template object to per-realm template map
 {
@@ -453,13 +461,29 @@ The exact function call looks more like this:
 // In-place: invocation of tag function
 tagFunction(__templateMap__[716], subst1, subst2)
 ```
-태그 함수가 받는 두가지 입력 종류가 있다.
- 템플릿 문자열: 첫번째 파라미터의 템플릿 객체. 이 객체는 변경불가한 스태틱 부분이다. 너는 “cooked” 템플릿 문자열(\n해석등 이스케이프)과 “raw” 템플릿 문자열(이스케이프 해석 되지 않은)을 얻는다.
-치환물:  파라미터 뒤따라와서 전달되는 것. 치환물들은 ${}을 통해 템플릿 리터럴에 끼워진다. 치환물은 동적이고 그것들은 호출시 변경 될 수 있다.
+
+There are two kinds of input that the tag function receives:
+
+태그 함수가 받는 입력은 두가지다.
+
+* Template strings: are delivered via the template object in the first parameter. They are the static parts that don’t change (e.g. ' lit2 '). You get both “cooked” template strings (with escapes such as \n interpreted) and “raw” template strings (with uninterpreted escapes).
+* 템플릿 문자열: 템플릿 객체를 통해 전달 되는 첫번째 인자 이다. 이 객체는 변경불가한 스태틱 부분이다(예 'lit2'). "cooked" 템플릿 문자열(\n 해석을 통한 이스케이프)과 "raw" 템플릿 문자열(해석 하지 않은 이스케이프)을 얻는다.
+* Substitutions: are delivered via trailing parameters. They are embedded inside template literals via ${} (e.g. subst1). Substitutions are dynamic, they can change with each invocation.
+* 치환물: 다음 인자값으로 전달된다. 치환물들은 ${}(예 subst1)을 통해 템플릿 리터럴에 끼워진다. 치환물은 동적이고 그것들은 호출 시 변경 될 수 있다.
+
+The number of template strings is always one plus the number of substitutions. If a substitution is first in a literal, it is prefixed by an empty template string. If a substitution is last, it is suffixed by an empty template string (as in the previous example).
 
 템플릿 문자열의 수는 항상 치환물 더하기 일 이다. 만약 치환물이 리터럴의 제일 처음에 있으면, 빈 템플릿 문자열을 앞에 추가 한다. 만약 치환물이 마지막에 있다면 빈 템플릿 문자열을 뒤에 추가 한다.(위의 예제 처럼)
-템플릿 객체의 기본 개념은 동일한 태그드 템플릿은 어려번 수행될 수 있다(예를 들면 루프나 함수안에서). 그 템플릿 객체는 태그 함수가 이전 호출으로 부터 데이터를 캐쉬하는것을 가능하게 한다. 이것은 불필요한 재 계산을 피하기 위해서 인풋소스 #1로 전달 받은 데이터를 객체로 변환한다. 캐싱은 영역(내 생각에는 브라우저 프래임) 별로 발생한다. 즉, site 호출과 영역 당 하나의 템플릿 객체가 있다.
-다음은 String.raw를 재구현한 첫번째 예이다.
+
+The idea behind the template object is that the same tagged template might be executed multiple times (e.g. in a loop or a function). The template object enables the tag function to cache data from previous invocations: It can put data it derived from input source #1 into the object, to avoid recomputing it needlessly. Caching happens per realm (think frame in a browser). That is, there is one template object per call site and realm.
+
+템플릿 객체의 기본 개념은 동일한 태그드 템플릿은 어려번 수행될 수 있다(예를 들면 루프나 함수안에서). 그 템플릿 객체는 태그 함수가 이전 호출으로 부터 데이터를 캐쉬하는것을 가능하게 한다. 이것은 불필요한 재계산을 피하기 위해서 인풋소스 #1로 전달 받은 데이터를 객체로 변환한다. 캐싱은 영역(내 생각에는 브라우저 프래임) 별로 발생한다. 즉, 사이트와 영역 호출 당 하나의 템플릿 객체가 있다.
+
+The following is a first example of a tag function, a reimplementation of String.raw:
+
+다음은 String.raw를 재구현한 첫번째 예이다.:
+
+```javascript
 function raw(strs, ...substs) {
     let result = strs.raw[0];
     for (let [i,subst] of substs.entries()) {
@@ -468,14 +492,29 @@ function raw(strs, ...substs) {
     }
     return result;
 }
-스펙에서의 태그드 템플릿 리터럴
-태그드 템플릿 리터럴 섹션은 어떻게 그들이 함수 호출로 번역되는 지를 설명한다. 분리된 섹션은 어떻게 템플릿 리터럴이 인자들의 리스트로 변환되는지 설명한다. 템플릿 객체와 치환물
+```
 
-태그트 템플릿 리터럴안의 이스케이핑: cooked 대 raw
-태그드 템플릿 리터럴 안에서 이스케이핑에 대한 더 많은 규칙이 있다. 왜냐하면 템플릿 문자열(역따옴표 안의 치환물을 제외한 텍스트 조각)는 두개의 cooked와 raw해석이 가능하다. 규칙들은:
-cooked와 raw 해석 안에서 $ 기호 앞의 백 슬래시 ${ 치환물의 시작으로서 해석 되어 지는 것을 막는다. 
-그러나 raw해석에서 모든 하나의 백슬래시는 언급 되어 진다. 심지어 이스케이프 치환물 일때도
-태그 함수 describe는 우리에서 이것이 무슨의미인지 알려준다
+Tagged template literals in the spec
+A section on tagged template literals explains how they are interpreted as function calls. A separate section explains how a template literal is turned into a list of arguments: the template object and the substitutions.
+
+상세에서의 태그드 템플릿 리터럴
+태그드 템플릿 리터럴 섹션은 어떻게 그들이 함수 호출로 해석되는 지를 설명한다. 별도 섹션은 어떻게 템플릿 리터럴이  템플릿 객체와 치환물 인 인자들의 리스트로 변환되는지 설명한다.
+
+### 8.4.1 Escaping in tagged template literals: cooked versus raw
+### 8.4.1 태그트 템플릿 리터럴 안의 이스케이핑: cooked 대 raw
+In tagged template literals, there are more rules for escaping, because template strings (the text fragments inside the backticks, excluding substitutions) are available in two interpretations: cooked and raw. The rules are:
+
+태그드 템플릿 리터럴 안에서 이스케이핑에 대한 더 많은 규칙이 있다. 왜냐하면 템플릿 문자열(역따옴표 안의 치환물을 제외한 문서 조각)은 두개의 cooked와 raw해석이 가능하기 때문이다.:
+* In both cooked and raw interpretation, a backslash (\) in front of a dollar sign ($) prevents ${ from being interpreted as starting a substitution.
+* cooked와 raw 해석 시 둘 다 달럴 기호($) 앞의 백 슬래시는 ${로 부터 시작되는 치환물로 해석 되지 않게 한다. 
+* However, every single backslash is mentioned in the raw interpretation, even the ones that escape substitutions.
+* 하지만 raw 해석에는 하나의 백슬래시는 심지어 이스케이프 치환물 일때도 나타난다.
+
+The tag function describe allows us to explore what that means.
+
+태그 함수인 describe는 우리에게 이게 무슨 의미인지 알려준다.
+
+```javascript
 function describe(tmplObj, ...substs) {
     console.log('Cooked:', intersperse(tmplObj, substs));
     console.log('Raw:   ', intersperse(tmplObj.raw, substs));
@@ -489,7 +528,11 @@ function intersperse(tmplStrs, substs) {
     });
     return result;
 }
-자 이 태크 함수를 사용해보자(나는 이 함수 호출의 결과 중 undefined는 보여주지 않았다.)
+```
+Let’s use this tag function (I am not showing the result undefined of these function calls):
+이제 이 태크 함수를 사용해보자(나는 이 함수 호출의 결과 중 undefined는 보여주지 않았다.)
+
+```
  > describe`${3+3}`
 Cooked: 6
 Raw:    6
@@ -505,10 +548,18 @@ Raw:    \\6
 > describe`\\\${3+3}`
 Cooked: \${3+3}
 Raw:    \\\${3+3}
+```
 
-언제나 cooked 해석는 치환물을 가지고 있고 raw 해석 또한 그렇습니다. 그러나 raw 해석에서는 리터럴에 있는 모든 백슬래쉬가 나타난다. 만약 백슬래쉬가 ${에 앞선다면 그것은 치환을 막는다.
-백슬래시의 다른 발생들은 아래와 유사하게 해석된다.
-cooked 모드일때 백슬래시는 문자열 리터럴 처럼 다뤄진다.
+As you can see, whenever the cooked interpretation has a substitution then so does the raw interpretation. However, all backslashes from the literal appear in the raw interpretation; if a backslash precedes the characters ${ then it prevented a substitution.
+
+눈으로 본 것 같이 언제나 cooked 해석 raw 해석은 치환물을 가지고 있지만, raw 해석에서는 리터럴에 있는 모든 백슬래쉬가 나타난다. 만약 백슬래쉬가 ${에 앞선다면 그것은 치환을 막는다.
+
+Other occurrences of the backslash are interpreted similarly:
+
+백슬래시의 다른 발생들은 아래처럼 해석된다.:
+
+* In cooked mode, the backslash is handled like in string literals.
+* cooked 모드일때 백슬래시는 문자열 리터럴 처럼 다뤄진다.
 raw 모드일때 백슬래시는 그대로 사용된다.
 예를 들면
 > `\n`
