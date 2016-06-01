@@ -215,44 +215,57 @@ logArgs('Hello', 'everyone');
 // 1. everyone
 ```
 
-## 9.4 임시 사각 지대 (The temporal dead zone) `The temporal dead zone`
+## 9.4 `TDZ` (The temporal dead zone) `The temporal dead zone`
 
-let 혹은 const 변수선언은 소위 임시 사각 지대 (temporal dead zone - TDZ) 를 갖는다.
-
-`let` 또는 `const`로 선언된 변수는 임시 사각지대 (TDZ)로 불리는 공간을 갖습니다.
+`let` 또는 `const`로 선언된 변수는 `TDZ` (temporal dead zone)로 불리는 스코프를 갖습니다. 스코프에 진입하면 선언되기 전에 접근( `got` or `set` )할 수 없게 됩니다. `TDZ`를 갖지않는 `var` 선언과 `TDZ`를 갖는 `let`선언의 라이프사이클을 비교해보겠습니다.
 
 `A variable declared by let or const has a so-called temporal dead zone (TDZ): When entering its scope, it can’t be accessed (got or set) until execution reaches the declaration. Let’s compare the life cycles of var-declared variables (which don’t have TDZs) and let-declared variables (which have TDZs).`
 
-스코프에 들어가면, 실행 선언문에 도달할 때까지 그것에 엑세스 될(얻거나, 혹은 할당하거나) 수 없다.
+### 9.4.1 `var`로 선언된 변수의 라이프사이클 `The life cycle of var-declared variables`
 
-var 선언 변수 (TDZ 를 가지고 있지 않은)와 let 선언 변수(TDZ를 가진) 의 라이프 사이클을 비교해보자
+`var` 변수는 `TDZ`를 갖지 않습니다. 라이프 사이클은 다음과 같은 단계로 이루어집니다.
 
-### 9.4.1 var로 선언된 변수의 라이프사이클
-var 변수는 임시 사각 지대를 갖지 않는다. 그들의 라이프사이클은 다음 스텝을 포함한다.
+`var variables don’t have temporal dead zones. Their life cycle comprises the following steps:`
 
-1. var 변수가 스코프(function 으로 감싸진) 에 들어가면, 변수를 위한 저장 공간이 만들어진다 (바인딩). 그 변수는 즉시 *underfined* 로 초기화된다. 
-2. 실행이 선언문에 도달하면, 그 변수는 특정 이니셜라이저 (할당) 결과로 값이 있을 경우 설정된다. 만일 없다면 변수의 값은 여전히 undefined 상태로 남아있다.
+1. `var` 변수의 `function`으로 감싸진 스코프 영역에 진입하면 저장 공간( 스코프 )이 생성되고 변수는 즉시 `undefined`로 초기화됩니다.
+  `When the scope (its surrounding function) of a var variable is entered, storage space (a binding) is created for it. The variable is immediately initialized, by setting it to undefined.`
+2. 스코프 내에서 변수의 선언부에 도달하면 지정된 값으로 설정됩니다. 지정된 값이 없으면 값은 여전히 `undefined`입니다.
+   `When the execution within the scope reaches the declaration, the variable is set to the value specified by the initializer (an assignment) – if there is one. If there isn’t, the value of the variable remains undefined.`
 
-### 9.4.2 let 으로 선언된 변수의 라이프사이클
+### 9.4.2 `let`으로 선언된 변수의 라이프사이클 `The life cycle of let-declared variables`
+
 let 을 통한 변수 선언은 임시 사각 지대 (temporal dead zone) 를 가지고, 그 라이프사이클은 이것과 같다.
 
-1. let 변수가 스코프(블럭으로 감싸진) 에 들어가면, 변수를 위한 저장 공간이 만들어진다 (바인딩). 그 변수는 *초기화되지 않았다*. 
-2. 초기화되지 않은 변수에 값을 얻기 혹은 설정하기는 ReferenceError 를 발생시킨다.
-3. 실행이 선언문에 도달하면, 그 변수는 특정 이니셜라이저 (할당) 결과로 값이 있을 경우 설정된다. 만일 값이 없다면, 변수 값은 *undefined* 설정된다. 
+`let`으로 선언된 변수는 `TDZ`를 가지며 라이프 사이클은 다음과 같습니다.
+
+`Variables declared via let have temporal dead zones and their life cycles look like this:`
+
+1. `let` 변수의 블록으로 감싸진 스코프 영역에 진입하면 저장 공간( 스코프 )가 생성되고 값은 초기화되지 않습니다.
+   `When the scope (its surrounding block) of a let variable is entered, storage space (a binding) is created for it. The variable remains uninitialized.`
+2.  초기화되지 않은 변수에 접근하면 `ReferenceError`가 발생합니다.
+   `Getting or setting an uninitialized variable causes a ReferenceError.`
+3. 스코프 내에서 변수의 선언부에 도달하면 지정된 값으로 설정됩니다. 지정된 값이 없으면 값은 `undefined`로 설정됩니다.
+   `When the execution within the scope reaches the declaration, the variable is set to the value specified by the initializer (an assignment) – if there is one. If there isn’t then the value of the variable is set to undefined.`
 
 const 변수도 let 변수와 비슷한 동작을 한다. 그러나 반드시 이니셜라이저를 가져야 하고 (예를 들면 즉시 값 설정이 되어야 한다는 뜻이다) 변경할 수 없다.
 
-### 9.4.3 예제
+`const`변수도 `let`과 유사하게 동작하지만, 반드시 즉시 초기화가 되어야 하고 값을 변경할 수 없습니다.
 
-TDZ 내에서 변수를 얻거나 설정하면 예외가 던져진다.
+`const variables work similarly to let variables, but they must have an initializer (i.e., be set to a value immediately) and can’t be changed.`
+
+### 9.4.3 예제 `Examples`
+
+`TDZ` 내에서 초기화 되지 않은 변수에 접근하면 예외가 발생합니다.
+
+`Within a TDZ, an exception is thrown if a variable is got or set:`
 
 ```javascript
 let tmp = true;
-if (true) { // enter new scope, TDZ starts
-    // Uninitialized binding for `tmp` is created
+if (true) { // 스코프 진입. TDZ 시작
+    // 초가화되지 않은 tmp 변수의 바인딩은 생성되지 않았음.
     console.log(tmp); // ReferenceError
 
-    let tmp; // TDZ ends, `tmp` is initialized with `undefined`
+    let tmp; // TDZ 종료. tmp 변수는 undefined로 초기화 됨.
     console.log(tmp); // undefined
 
     tmp = 123;
@@ -260,13 +273,18 @@ if (true) { // enter new scope, TDZ starts
 }
 console.log(tmp); // true
 ```
-초기화가있는 경우 할당(이니셜라이즈)이 이루어진 다음에 TDZ는 종료된다.
+
+초기화가 있는 경우 변수에 값이 할당되고나서 TDZ는 종료됩니다.
+
+`If there is an initializer then the TDZ ends after the assignment was made:`
 
 ```javascript
 let foo = console.log(foo); // ReferenceError
 ```
 
 다음 코드는 사각 지대가 정말 일시적(시간 기준)이고 공간(지역 기준)이 아닌걸 보여준다.
+
+`The following code demonstrates that the dead zone is really temporal (based on time) and not spatial (based on location):`
 
 ```javascript
 if (true) { // enter new scope, TDZ starts
