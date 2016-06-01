@@ -282,27 +282,30 @@ console.log(tmp); // true
 let foo = console.log(foo); // ReferenceError
 ```
 
-다음 코드는 사각 지대가 정말 일시적(시간 기준)이고 공간(지역 기준)이 아닌걸 보여준다.
+다음 코드는 `TMZ`가 일시적( 시간 기준 )이며, 공간( 위치 ) 기준이 아님을 보여줍니다.
 
 `The following code demonstrates that the dead zone is really temporal (based on time) and not spatial (based on location):`
 
 ```javascript
-if (true) { // enter new scope, TDZ starts
+if (true) { // 새로운 스코프 진입. TDZ 시작
     const func = function () {
         console.log(myVar); // OK!
     };
 
-    // Here we are within the TDZ and
-    // accessing `myVar` would cause a `ReferenceError`
+    // TDZ 공간이며 myVar에 접근은 ReferenceError
 
-    let myVar = 3; // TDZ ends
-    func(); // called outside TDZ
+    let myVar = 3; // TDZ 종료
+    func(); // TDZ 밖에서 호출
 }
 ```
 
-### 9.4.4 typeof 는 TDZ 안에서 변수에 사용할 때 ReferenceError 를 던진다
+### 9.4.4 `TDZ` 안에서 typeof를 사용시 ReferenceError가 발생하는 경우
 
-당신이 typeof 를 통해 임시 사각 지대안의 변수에 접근하면 에러를 얻는다.
+`typeof throws a ReferenceError for a variable in the TDZ`
+
+`TDZ` 안에서 `typeof`를 사용하여 변수에 접근하는 경우, 예외가 발생합니다.
+
+`If you access a variable in the temporal dead zone via typeof, you get an exception:`
 
 ```javascript
 if (true) {
@@ -312,11 +315,17 @@ if (true) {
 }
 ```
 
-왜? 그 답은 다음과 같다: foo 는 선언되지 않았고, 초기화되지 않았다. 당신은 그 존재를 인식하지만 그러지 않는다. 따라서 경고됨이 바람직해 보인다.
+왜냐하면, 개발자가 `foo`의 존재를 인지할 수는 있지만 이론적으로 `foo` 변수는 선언되지 않았고 초기화되지 않았기 때문입니다. 따라서 경고가 나타나는 것이 맞습니다.
 
-또한 이런 종류의 체크는 단지 조건부 전역 변수를 만들기에 유용할 뿐이다. 그건 숙련된 자바스크립트 프로그래머가 해야할 일(Something) 이고, var 를 통해서도 할 수 있다.
+`Why? The rationale is as follows: foo is not undeclared, it is uninitialized. You should be aware of its existence, but aren’t. Therefore, being warned seems desirable.`
 
-typeof 를 사용하지 않고, 전역 변수의 존재를 체크하는 방법이 있다.
+또한 이런 류의 체크는 전역 변수의 생성 여부를 체크하는 경우에만 유용합니다. 자바스크립트 숙련자만들은 이렇게 사용하고 있고 `var`를 사용할 때만 사용할 수 있습니다.
+
+`Furthermore, this kind of check is only useful for conditionally creating global variables. That’s something that only advanced JavaScript programmers should do and it can only be achieved via var.`
+
+전역 변수의 존재 여부를 `typeof`를 사용하지 않고 체크하는 방법도 있습니다.
+
+`There is a way to check whether a global variable exists that does not involve typeof:`
 
 ```javascript
 // With `typeof`
@@ -330,9 +339,11 @@ if (!('someGlobal' in window)) {
 }
 ```
 
-전역 변수를 생성하는 전자의 방법은 단지 글로벌 스코프에서만 동작한다 (따라서, ES6의 모듈이 아닌 경우이다.)
+전역 변수를 생성하는 전자의 방법은 글로벌 스코프에서만 작동합니다. 따라서, `ES6`에서는 가능하지 않습니다.
 
-### 9.4.5 왜 임시 사각 지대가 있지?
+`The former way of creating a global variable only works in global scope (and therefore not inside ES6 modules).`
+
+### 9.4.5 `TDZ`가 필요한 이유 `Why is there a temporal dead zone?`
 
 1. 프로그래밍 오류를 잡으려면 : 선언 전에 변수에 접근이 가능하다는 건 이상하다. 만일 그렇게 되면 보통 이런 건에 대해 경고해야 한다.
 2. const : const 는 적당히 만들기는 어려운 일이다. Allen Wirfs-Brock 을 인용하면, *"TDZs … 는 const 를 만들기 위한 합리적인 문법을 제공한다. 이 주제에 대해서 여러 중요한 기술적 의견들이 있었고 TDZ는 최적의 기술로 부상했다"* let 또한 예상치못한 동작으로 let 과 const 을 변경하지 않도록 TDZ가 있다.(?)
