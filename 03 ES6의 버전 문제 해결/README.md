@@ -1,9 +1,51 @@
 ## 3. One JavaScript: avoiding versioning in ECMAScript 6
 
-언어에 새로운 features를 추가하기위한 가장 좋은 방법은 무엇인가? 이 챕터에서는 ECMAScript6 에 대한 접근을 설명한다. versioning 을 피해야하기 때문에 이것은 One JavaScript로 불린다. 
 What is the best way to add new features to a language? This chapter describes the approach taken by ECMAScript 6. It is called One JavaScript, because it avoids versioning.
 
+언어에 새로운 features를 추가하는 가장 좋은 방법은 무엇일까? 3장에서는 ECMAScript6에 접근하는 법을 설명한다. versioning을 피해야 하기 때문에 이를 One JavaScript라고 한다. 
+
 ### 3.1 Versioning
+In principle, a new version of a language is a chance to clean it up, by removing outdated features or by changing how features work. That means that new code doesn’t work in older implementations of the language and that old code doesn’t work in a new implementation. Each piece of code is linked to a specific version of the language. Two approaches are common for dealing with versions being different.
+
+First, you can take an “all or nothing” approach and demand that, if a code base wants to use the new version, it must be upgraded completely. Python took that approach when upgrading from Python 2 to Python 3. A problem with it is that it may not be feasible to migrate all of an existing code base at once, especially if it is large. Furthermore, the approach is not an option for the web, where you’ll always have old code and where JavaScript engines are updated automatically.
+
+Second, you can permit a code base to contain code in multiple versions, by tagging code with versions. On the web, you could tag ECMAScript 6 code via a dedicated Internet media type. Such a media type can be associated with a file via an HTTP header:
+
+Content-Type: application/ecmascript;version=6
+It can also be associated via the type attribute of the <script> element (whose default value is text/javascript):
+
+<script type="application/ecmascript;version=6">
+    ···
+</script>
+This specifies the version out of band, externally to the actual content. Another option is to specify the version inside the content (in-band). For example, by starting a file with the following line:
+
+use version 6;
+Both ways of tagging are problematic: out-of-band versions are brittle and can get lost, in-band versions add clutter to code.
+
+A more fundamental issue is that allowing multiple versions per code base effectively forks a language into sub-languages that have to be maintained in parallel. This causes problems:
+
+Engines become bloated, because they need to implement the semantics of all versions. The same applies to tools analyzing the language (e.g. style checkers such as JSLint).
+Programmers need to remember how the versions differ.
+Code becomes harder to refactor, because you need to take versions into consideration when you move pieces of code.
+Therefore, versioning is something to avoid, especially for JavaScript and the web.
+
+3.1.1 Evolution without versioning
+But how can we get rid of versioning? By always being backwards-compatible. That means we must give up some of our ambitions w.r.t. cleaning up JavaScript: We can’t introduce breaking changes. Being backwards-compatible means not removing features and not changing features. The slogan for this principle is: “don’t break the web”.
+
+We can, however, add new features and make existing features more powerful.
+
+As a consequence, no versions are needed for new engines, because they can still run all old code. David Herman calls this approach to avoiding versioning One JavaScript (1JS) [1], because it avoids splitting up JavaScript into different versions or modes. As we shall see later, 1JS even undoes some of a split that already exists, due to strict mode.
+
+One JavaScript does not mean that you have to completely give up on cleaning up the language. Instead of cleaning up existing features, you introduce new, clean, features. One example for that is let, which declares block-scoped variables and is an improved version of var. It does not, however, replace var, it exists alongside it, as the superior option.
+
+One day, it may even be possible to eliminate features that nobody uses, anymore. Some of the ES6 features were designed by surveying JavaScript code on the web. Two examples are:
+
+let-declarations are difficult to add to non-strict mode, because let is not a reserved word in that mode. The only variant of let that looks like valid ES5 code is:
+  let[x] = arr;
+Research yielded that no code on the web uses a variable let in non-strict mode in this manner. That enabled TC39 to add let to non-strict mode. Details of how this was done are described later in this chapter.
+
+Function declarations do occasionally appear in non-strict blocks, which is why the ES6 specification describes measures that web browsers can take to ensure that such code doesn’t break. Details are explained later.
+
 
 원론적으로, 언어의 새로운 버전은 오래된 특징을 제거하거나 동작하는 방법을 바꾸기 위한 찬스다. 
 In principle, a new version of a language is a chance to clean it up, by removing outdated features or by changing how features work. 
