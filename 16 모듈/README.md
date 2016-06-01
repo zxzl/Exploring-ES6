@@ -126,7 +126,6 @@ You can also import the complete module:
 import * as lib from 'lib';
 console.log(lib.square(11)); // 121
 console.log(lib.diag(4, 3)); // 5
-
 ```
 
 ### 16.1.2 Single default export
@@ -201,19 +200,24 @@ CommonJS 와 유사하게 ECMAScript 6모듈은 간결한 문법을 제공하고
 Similarly to AMD, they have direct support for asynchronous loading and configurable module loading.
 Being built into the language allows ES6 modules to go beyond CommonJS and AMD (details are explained later):
 
-Their syntax is even more compact than CommonJS’s.
+> Their syntax is even more compact than CommonJS’s.
 Their structure can be statically analyzed (for static checking, optimization, etc.).
 Their support for cyclic dependencies is better than CommonJS’s.
 The ES6 module standard has two parts:
 
 Declarative syntax (for importing and exporting)
 Programmatic loader API: to configure how modules are loaded and to conditionally load modules
-16.3 The basics of ES6 modules
-There are two kinds of exports: named exports (several per module) and default exports (one per module). As explained later, it is possible use both at the same time, but usually best to keep them separate.
 
-16.3.1 Named exports (several per module)
+### 16.3 ES6 모듈의 기본
+> 16.3 The basics of ES6 modules
+
+> There are two kinds of exports: named exports (several per module) and default exports (one per module). As explained later, it is possible use both at the same time, but usually best to keep them separate.
+
+
+### 16.3.1 Named exports (several per module)
 A module can export multiple things by prefixing its declarations with the keyword export. These exports are distinguished by their names and are called named exports.
 
+```js
 //------ lib.js ------
 export const sqrt = Math.sqrt;
 export function square(x) {
@@ -227,16 +231,22 @@ export function diag(x, y) {
 import { square, diag } from 'lib';
 console.log(square(11)); // 121
 console.log(diag(4, 3)); // 5
-There are other ways to specify named exports (which are explained later), but I find this one quite convenient: simply write your code as if there were no outside world, then label everything that you want to export with a keyword.
+```
+
+> There are other ways to specify named exports (which are explained later), but I find this one quite convenient: simply write your code as if there were no outside world, then label everything that you want to export with a keyword.
 
 If you want to, you can also import the whole module and refer to its named exports via property notation:
 
+```js
 //------ main.js ------
 import * as lib from 'lib';
 console.log(lib.square(11)); // 121
 console.log(lib.diag(4, 3)); // 5
+```
+
 The same code in CommonJS syntax: For a while, I tried several clever strategies to be less redundant with my module exports in Node.js. Now I prefer the following simple but slightly verbose style that is reminiscent of the revealing module pattern:
 
+```js
 //------ lib.js ------
 var sqrt = Math.sqrt;
 function square(x) {
@@ -256,8 +266,10 @@ var square = require('lib').square;
 var diag = require('lib').diag;
 console.log(square(11)); // 121
 console.log(diag(4, 3)); // 5
-16.3.2 Default exports (one per module)
-Modules that only export single values are very popular in the Node.js community. But they are also common in frontend development where you often have classes for models and components, with one class per module. An ES6 module can pick a default export, the main exported value. Default exports are especially easy to import.
+```
+
+### 16.3.2 Default exports (one per module)
+> Modules that only export single values are very popular in the Node.js community. But they are also common in frontend development where you often have classes for models and components, with one class per module. An ES6 module can pick a default export, the main exported value. Default exports are especially easy to import.
 
 The following ECMAScript 6 module “is” a single function:
 
@@ -279,7 +291,8 @@ There are two styles of default exports:
 
 Labeling declarations
 Default-exporting values directly
-16.3.2.1 Default export style 1: labeling declarations
+
+### 16.3.2.1 Default export style 1: labeling declarations
 You can prefix any function declaration (or generator function declaration) or class declaration with the keywords export default to make it the default export:
 
 export default function foo() {} // no semicolon!
@@ -288,14 +301,16 @@ You can also omit the name in this case. That makes default exports the only pla
 
 export default function () {} // no semicolon!
 export default class {} // no semicolon!
-16.3.2.1.1 Why anonymous function declarations and not anonymous function expressions?
+
+### 16.3.2.1.1 Why anonymous function declarations and not anonymous function expressions?
 When you look at the previous two lines of code, you’d expect the operands of export default to be expressions. They are only declarations for reasons of consistency: operands can be named declarations, interpreting their anonymous versions as expressions would be confusing (even more so than introducing new kinds of declarations).
 
 If you want the operands to be interpreted as expressions, you need to use parentheses:
 
 export default (function () {});
 export default (class {});
-16.3.2.2 Default export style 2: default-exporting values directly
+
+### 16.3.2.2 Default export style 2: default-exporting values directly
 The values are produced via expressions:
 
 export default 'abc';
@@ -312,13 +327,13 @@ const __default__ = «expression»;
 export { __default__ as default }; // (A)
 The statement in line A is an export clause (which is explained in a later section).
 
-16.3.2.2.1 Why two default export styles?
+### 16.3.2.2.1 Why two default export styles?
 The second default export style was introduced because variable declarations can’t be meaningfully turned into default exports if they declare multiple variables:
 
 export default const foo = 1, bar = 2, baz = 3; // not legal JavaScript!
 Which one of the three variables foo, bar and baz would be the default export?
 
-16.3.3 Imports and exports must be at the top level
+### 16.3.3 Imports and exports must be at the top level
 As explained in more detail later, the structure of ES6 modules is static, you can’t conditionally import or export things. That brings a variety of benefits.
 
 This restriction is enforced syntactically by only allowing imports and exports at the top level of a module:
@@ -332,13 +347,14 @@ if (Math.random()) {
 {
     import 'foo'; // SyntaxError
 }
-16.3.4 Imports are hoisted
+### 16.3.4 Imports are hoisted
 Module imports are hoisted (internally moved to the beginning of the current scope). Therefore, it doesn’t matter where you mention them in a module and the following code works without any problems:
 
 foo();
 
 import { foo } from 'my_module';
-16.3.5 Imports are read-only views on exports
+
+### 16.3.5 Imports are read-only views on exports
 The imports of an ES6 module are read-only views on the exported entities. That means that the connections to variables declared inside module bodies remain live, as demonstrated in the following code.
 
 //------ lib.js ------
@@ -361,14 +377,15 @@ Imports as views have the following advantages:
 They enable cyclic dependencies, even for unqualified imports (as explained in the next section).
 Qualified and unqualified imports work the same way (they are both indirections).
 You can split code into multiple modules and it will continue to work (as long as you don’t try to change the values of imports).
-16.3.6 Support for cyclic dependencies
+
+### 16.3.6 Support for cyclic dependencies
 Two modules A and B are cyclically dependent on each other if both A (possibly indirectly/transitively) imports B and B imports A. If possible, cyclic dependencies should be avoided, they lead to A and B being tightly coupled – they can only be used and evolved together.
 
 Why support cyclic dependencies, then? Occasionally, you can’t get around them, which is why support for them is an important feature. A later section has more information.
 
 Let’s see how CommonJS and ECMAScript 6 handle cyclic dependencies.
 
-16.3.6.1 Cyclic dependencies in CommonJS
+### 16.3.6.1 Cyclic dependencies in CommonJS
 The following CommonJS code correctly handles two modules a and b cyclically depending on each other.
 
 //------ a.js ------
@@ -402,7 +419,7 @@ foo would simply be undefined. In other words, you have no choice but to refer t
 
 These limitations mean that both exporter and importers must be aware of cyclic dependencies and support them explicitly.
 
-16.3.6.2 Cyclic dependencies in ECMAScript 6
+### 16.3.6.2 Cyclic dependencies in ECMAScript 6
 ES6 modules support cyclic dependencies automatically. That is, they do not have the two limitations of CommonJS modules that were mentioned in the previous section: default exports work, as do unqualified named imports (lines i and iii in the following example). Therefore, you can implement modules that cyclically depend on each other as follows.
 
 //------ a.js ------
@@ -420,8 +437,8 @@ export function bar() {
 }
 This code works, because, as explained in the previous section, imports are views on exports. That means that even unqualified imports (such as bar in line ii and foo in line iv) are indirections that refer to the original data. Thus, in the face of cyclic dependencies, it doesn’t matter whether you access a named export via an unqualified import or via its module: There is an indirection involved in either case and it always works.
 
-16.4 Importing and exporting in detail
-16.4.1 Importing styles
+### 16.4 Importing and exporting in detail
+### 16.4.1 Importing styles
 ECMAScript 6 provides several styles of importing1:
 
 Default import:
@@ -486,14 +503,16 @@ export { foo, bar } from 'src/other_module';
 
 // Renaming: export other_module’s foo as myFoo
 export { foo as myFoo, bar } from 'src/other_module';
-16.4.3.1 Making a re-export the default export
+
+### 16.4.3.1 Making a re-export the default export
 The following statement makes the default export of another module foo the default export of the current module:
 
 export { default } from 'foo';
 The following statement makes the named export myFunc of module foo the default export of the current module:
 
 export { myFunc as default } from 'foo';
-16.4.4 All exporting styles
+
+### 16.4.4 All exporting styles
 ECMAScript 6 provides several styles of exporting3:
 
 Re-exporting:
@@ -533,7 +552,8 @@ Expressions: export values. Note the semicolons at the end.
   export default 'Hello world!';
   export default 3 * 7;
   export default (function () {});
-16.4.5 Having both named exports and a default export in a module
+  
+### 16.4.5 Having both named exports and a default export in a module
 The following pattern is surprisingly common in JavaScript: A library is a single function, but additional services are provided via properties of that function. Examples include jQuery and Underscore.js. The following is a sketch of Underscore as a CommonJS module:
 
 //------ underscore.js ------
@@ -566,12 +586,12 @@ import _, { each } from 'underscore';
 ···
 Note that the CommonJS version and the ECMAScript 6 version are only roughly similar. The latter has a flat structure, whereas the former is nested.
 
-16.4.5.1 Recommendation: avoid mixing default exports and named exports
+### 16.4.5.1 Recommendation: avoid mixing default exports and named exports
 I generally recommend to keep the two kinds of exporting separate: per module, either only have a default export or only have named exports.
 
 However, that is not a very strong recommendation; it occasionally may make sense to mix the two kinds. One example is a module that default-exports an entity. For unit tests, one could additionally make some of the internals available via named exports.
 
-16.4.5.2 The default export is just another named export
+### 16.4.5.2 The default export is just another named export
 The default export is actually just a named export with the special name default. That is, the following two statements are equivalent:
 
 import { default as foo } from 'lib';
@@ -584,7 +604,8 @@ export default function foo() {} // function declaration!
 //------ module2.js ------
 function foo() {}
 export { foo as default };
-16.4.5.3 default: OK as export name, but not as variable name
+
+### 16.4.5.3 default: OK as export name, but not as variable name
 You can’t use reserved words (such as default and new) as variable names, but you can use them as names for exports (you can also use them as property names in ECMAScript 5). If you want to directly import such named exports, you have to rename them to proper variables names.
 
 That means that default can only appear on the left-hand side of a renaming import:
@@ -614,7 +635,7 @@ It will be specified in a separate document, the “JavaScript Loader Standard�
 The module loader API is work in progress
 As you can see in the repository of the JavaScript Loader Standard, the module loader API is still work in progress. Everything you read about it in this book is tentative. To get an impression of what the API may look like, you can take a look at the ES6 Module Loader Polyfill on GitHub.
 
-16.5.1 Loaders
+### 16.5.1 Loaders
 Loaders handle resolving module specifiers (the string IDs at the end of import-from), loading modules, etc. Their constructor is Reflect.Loader. Each platform keeps a default instance in the global variable System (the system loader), which implements its specific style of module loading.
 
 16.5.2 Loader method: importing modules
@@ -639,7 +660,8 @@ Promise.all(
 .then(([module1, module2, module3]) => {
     // Use module1, module2, module3
 });
-16.5.3 More loader methods
+
+### 16.5.3 More loader methods
 Loaders have more methods. Three important ones are:
 
 System.module(source, options?)
@@ -648,7 +670,8 @@ System.set(name, module)
 is for registering a module (e.g. one you have created via System.module()).
 System.define(name, source, options?)
 both evaluates the module code in source and registers the result.
-16.5.4 Configuring module loading
+
+### 16.5.4 Configuring module loading
 The module loader API will have various hooks for configuring the loading process. Use cases include:
 
 Lint modules on import (e.g. via JSLint or JSHint).
@@ -656,13 +679,16 @@ Automatically translate modules on import (they could contain CoffeeScript or Ty
 Use legacy modules (AMD, Node.js).
 Configurable module loading is an area where Node.js and CommonJS are limited.
 
-16.6 Using ES6 modules in browsers
+### 16.6 브라우저에서 ES6 모듈 사용하기
+
+> 16.6 Using ES6 modules in browsers
+
 Let’s look at how ES6 modules are supported in browsers.
 
 Support for ES6 modules in browsers is work in progress
 Similarly to module loading, other aspects of support for modules in browsers are still being worked on. Everything you read here may change.
 
-16.6.1 Browsers: asynchronous modules versus synchronous scripts
+### 16.6.1 Browsers: asynchronous modules versus synchronous scripts
 In browsers, there are two different kinds of entities: scripts and modules. They have slightly different syntax and work differently.
 
 This is an overview of the differences, details are explained later:
@@ -676,7 +702,8 @@ Executed	synchronously	asynchronously
 Declarative imports (import statement)	no	yes
 Programmatic imports (Promise-based API)	yes	yes
 File extension	.js	.js
-16.6.1.1 Scripts
+
+### 16.6.1.1 Scripts
 Scripts are the traditional browser way to embed JavaScript and to refer to external JavaScript files. Scripts have an internet media type that is used as:
 
 The content type of JavaScript files delivered via a web server.
@@ -687,7 +714,7 @@ text/javascript: is a legacy value and used as the default if you omit the type 
 application/javascript: is recommended for current browsers.
 Scripts are normally loaded or executed synchronously. The JavaScript thread stops until the code has been loaded or executed.
 
-16.6.1.2 Modules
+### 16.6.1.2 Modules
 To be in line with JavaScript’s usual run-to-completion semantics, the body of a module must be executed without interruption. That leaves two options for importing modules:
 
 Load modules synchronously, while the body is executed. That is what Node.js does.
@@ -698,6 +725,7 @@ The synchronous nature of scripts prevents them from becoming modules. Scripts c
 
 Modules can be used from browsers via a new variant of the <script> element that is completely asynchronous:
 
+```js
 <script type="module">
     import $ from 'lib/jquery';
     var x = 123;
@@ -708,7 +736,10 @@ Modules can be used from browsers via a new variant of the <script> element that
 
     // `this` still refers to the global object
     console.log(this === window); // true
+
 </script>
+```
+
 As you can see, the element has its own scope and variables “inside” it are local to that scope. Note that module code is implicitly in strict mode. This is great news – no more 'use strict'.
 
 Similar to normal <script> elements, <script type="module"> can also be used to load external modules. For example, the following tag starts a web application via a main module (the attribute name import is my invention, it isn’t yet clear what name will be used).
