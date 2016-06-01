@@ -369,23 +369,33 @@ if (!('someGlobal' in window)) {
 + for-in
 + for-of
 
-선언할때, 당신은 var, let 혹은 const를 사용할 수 있다. 그들 각자는 다른 효과를 가지며 다음에 설명한다.
+변수를 선언할 때, `var`, `let` 또는 `const`를 사용할 수 있습니다. 각각은 다른 효과를 가지는데 뒷 부분에서 다루겠습니다.
 
-### 9.5.1 for loop
+`To make a declaration, you can use either var, let or const. Each of them has a different effect, as I’ll explain next.`
 
-헤드 안에서의 var 선언 변수는 변수를 위해 하나의 바인딩(저장 공간)을 만든다.
+### 9.5.1 for loop `for loop`
+
+`for` 루프의 헤드에서 선언한 변수는 변수를 위한 하나의 바인딩( 저장 공간 )을 생성합니다.
+
+`var-declaring a variable in the head of a for loop creates a single binding (storage space) for that variable:`
 
 ```javascript
 const arr = [];
-for (var i=0; i < 3; i++) {
+for (var i = 0; i < 3; i++) {
     arr.push(() => i);
 }
 arr.map(x => x()); // [3,3,3]
 ```
 
-모든 세개의 *arrow function* 바디 안의 *i* 는 같은 바인딩이며, 모두 같은 값을 반환하는 이유가 된다.
+바디안에서 세개의 화살표 함수가 참조하고있는 모든 `i` 변수는 하나의 바인딩을 참조하고 있습니다. 그렇기 때문에 모든 반환값이 같게 됩니다.
+
+`Every i in the bodies of the three arrow functions refers to the same binding, which is why they all return the same value.`
 
 만일 let으로 변수를 선언하면, 새로운 바인딩이 루프 이터레이션마다 생성된다.
+
+`let`으로 변수를 선언하면 `for` 루프의 반목마다 새로운 바인딩이 생성됩니다.
+
+`If you let-declare a variable, a new binding is created for each loop iteration:`
 
 ```javascript
 const arr = [];
@@ -395,7 +405,9 @@ for (let i=0; i < 3; i++) {
 arr.map(x => x()); // [0,1,2]
 ```
 
-이번엔 각각의 *i*는 하나의 특정 반복의 바인딩을 참조하여 해당 시점에서의 현재의 값을 유지한다. 따라서 각 화살표 함수가 다른 값을 반환한다.
+이제, 
+
+`This time, each i refers to the binding of one specific iteration and preserves the value that was current at that time. Therefore, each arrow function returns a different value.`
 
 const 는 var 처럼 동작하지만, 상수 선언 변수(const-declared) 의 초기값을 바꿀 수 없다.
 
