@@ -161,10 +161,12 @@ Declarative imports (import statement)	no	yes
 Programmatic imports (Promise-based API)	yes	yes
 File extension	.js	.js
 
-### 16.2 Modules in JavaScript
-Even though JavaScript never had built-in modules, the community has converged on a simple style of modules, which is supported by libraries in ES5 and earlier. This style has also been adopted by ES6:
 
-Each module is a piece of code that is executed once it is loaded.
+### 16.2 Modules in JavaScript
+
+> Even though JavaScript never had built-in modules, the community has converged on a simple style of modules, which is supported by libraries in ES5 and earlier. This style has also been adopted by ES6:
+
+> Each module is a piece of code that is executed once it is loaded.
 In that code, there may be declarations (variable declarations, function declarations, etc.).
 By default, these declarations stay local to the module.
 You can mark some of them as exports, then other modules can import them.
