@@ -347,18 +347,23 @@ if (!('someGlobal' in window)) {
 
 1. 프로그래밍 오류를 잡기위해 : 선언 전에 변수에 접근이 가능하다는 것은 이상합니다. 문제를 일으킬기 쉬운 부분이기 때문에 경고를 해주어야 합니다.
   `To catch programming errors: Being able to access a variable before its declaration is strange. If you do so, it is normally by accident and you should be warned about it.`
-2. const : const 는 적당히 만들기는 어려운 일이다. Allen Wirfs-Brock 을 인용하면, *"TDZs … 는 const 를 만들기 위한 합리적인 문법을 제공한다. 이 주제에 대해서 여러 중요한 기술적 의견들이 있었고 TDZ는 최적의 기술로 부상했다"* let 또한 예상치못한 동작으로 let 과 const 을 변경하지 않도록 TDZ가 있다.(?)  
+2. `const` : `const`를 제대로 사용하는 것은 어렵습니다. Allen Wirfs-Brock의 말에 따르자면, "TDZ는 `const`를 위해 합리적인 의미를 제공한다. 중요한 기술적인 토론이 있었고 TDZ가 최고의 솔루션으로 채택되었다." `let` 또한 `TDZ`를 가지고 있기 때문에 `let`과 `const`를 서로 교체하는 것은 예상치 못한 문제가 발생하는 것을 예방한다.
   `For const: Making const work properly is difficult. Quoting Allen Wirfs-Brock: “TDZs … provide a rational semantics for const. There was significant technical discussion of that topic and TDZs emerged as the best solution.” let also has a temporal dead zone so that switching between let and const doesn’t change behavior in unexpected ways.`
-3. 감시를 통한 미래보강 : JavaScript 은 결국 변수가 올바른 값을 갖는지 런타임 시 수행하는 메카니즘의 (런타임 체크로 생각하라) 감시가 필요하다. 만일 그 변수의 값 선언 하기 전의 undefined 라면 그 값은 감시에 의해 보증되어 충돌할 것이다.
+3. 방어를 위한 교정 : 자바스크립트는 결국 런타임에 변수가 올바른 값( 타입 체크를 통해서 )을 가지고있는지 방어할 수도 있습니다. 변수의 값이 선언되기 전에 `undefined`라면 값은 방어를 통해 얻은 인증과 충돌할 수 있습니다.
+  `Future-proofing for guards: JavaScript may eventually have guards, a mechanism for enforcing at runtime that a variable has the correct value (think runtime type check). If the value of a variable is undefined before its declaration then that value may be in conflict with the guarantee given by its guard.`
 
+### 9.4.6 더 읽을거리 `Further reading`
 
-### 9.4.6 추가 읽을거리
-이 섹션에서 참고한 자료
+이 섹션에서 참고한 자료 `Sources of this section:`
+
 - [“Performance concern with let/const”](https://esdiscuss.org/topic/performance-concern-with-let-const)
 - [“Bug 3009 – typeof on TDZ variable”](https://bugs.ecmascript.org/show_bug.cgi?id=3009)
 
-## 9.5 루프 헤드 안에서의 let 과 const
-다음 루프는 당신이 그들의 머리에 변수를 선언하는걸 허용한다.
+## 9.5 루프 헤드 안에서의 `let` 과 `const` `let and const in loop heads`
+
+다음 루프들에서는 변수를 루프의 헤드에 선언할 수 있습니다.
+
+`The following loops allow you to declare variables in their heads:`
 
 + for
 + for-in
