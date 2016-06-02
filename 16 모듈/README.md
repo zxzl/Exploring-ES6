@@ -77,49 +77,56 @@ Note that there is no semicolon at the end if you default-export a function or a
 > Even though JavaScript never had built-in modules, the community has converged on a simple style of modules, which is supported by libraries in ES5 and earlier. This style has also been adopted by ES6:
 
 각각의 모듈은 일단 한 번 로드 되면 실행되는 코드의 조각이다.
-> Each module is a piece of code that is executed once it is loaded.
-In that code, there may be declarations (variable declarations, function declarations, etc.).
-By default, these declarations stay local to the module.
-You can mark some of them as exports, then other modules can import them.
-A module can import things from other modules. It refers to those modules via module specifiers, strings that are either:
-Relative paths ('../model/user'): these paths are interpreted relatively to the location of the importing module. The file extension .js can usually be omitted.
-Absolute paths ('/lib/js/helpers'): point directly to the file of the module to be imported.
-Names ('util'): What modules names refer to has to be configured.
-Modules are singletons. Even if a module is imported multiple times, only a single “instance” of it exists.
++ Each module is a piece of code that is executed once it is loaded.
++ In that code, there may be declarations (variable declarations, function declarations, etc.).
+- By default, these declarations stay local to the module.
+- You can mark some of them as exports, then other modules can import them.
++ A module can import things from other modules. It refers to those modules via module specifiers, strings that are either:
+- Relative paths ('../model/user'): these paths are interpreted relatively to the location of the importing module. The file extension .js can usually be omitted.
+- Absolute paths ('/lib/js/helpers'): point directly to the file of the module to be imported.
+- Names ('util'): What modules names refer to has to be configured.
++ Modules are singletons. Even if a module is imported multiple times, only a single “instance” of it exists.
 This approach to modules avoids global variables, the only things that are global are module specifiers.
 
 ### 16.2.1 ECMAScript 5 모듈 시스템
 > 16.2.1 ECMAScript 5 module systems
 It is impressive how well ES5 module systems work without explicit support from the language. The two most important (and unfortunately incompatible) standards are:
 
-CommonJS Modules: The dominant implementation of this standard is in Node.js (Node.js modules have a few features that go beyond CommonJS). Characteristics:
-Compact syntax
-Designed for synchronous loading and servers
-Asynchronous Module Definition (AMD): The most popular implementation of this standard is RequireJS. Characteristics:
-Slightly more complicated syntax, enabling AMD to work without eval() (or a compilation step)
-Designed for asynchronous loading and browsers
++ #### CommonJS Modules: The dominant implementation of this standard is in Node.js (Node.js modules have a few features that go beyond CommonJS). Characteristics:
+- Compact syntax
+- Designed for synchronous loading and servers
++ #### Asynchronous Module Definition (AMD): The most popular implementation of this standard is RequireJS. Characteristics:
+- Slightly more complicated syntax, enabling AMD to work without eval() (or a compilation step)
+- Designed for asynchronous loading and browsers
 The above is but a simplified explanation of ES5 modules. If you want more in-depth material, take a look at “Writing Modular JavaScript With AMD, CommonJS & ES Harmony” by Addy Osmani.
 
-16.2.2 ECMAScript 6 modules
-The goal for ECMAScript 6 modules was to create a format that both users of CommonJS and of AMD are happy with:
+## 16.2.2 ECMAScript 6 모듈
+> 16.2.2 ECMAScript 6 modules
 
-Similarly to CommonJS, they have a compact syntax, a preference for single exports and support for cyclic dependencies.
-Similarly to AMD, they have direct support for asynchronous loading and configurable module loading.
+> The goal for ECMAScript 6 modules was to create a format that both users of CommonJS and of AMD are happy with:
+
++ Similarly to CommonJS, they have a compact syntax, a preference for single exports and support for cyclic dependencies.
++ Similarly to AMD, they have direct support for asynchronous loading and configurable module loading.
 Being built into the language allows ES6 modules to go beyond CommonJS and AMD (details are explained later):
 
-Their syntax is even more compact than CommonJS’s.
-Their structure can be statically analyzed (for static checking, optimization, etc.).
-Their support for cyclic dependencies is better than CommonJS’s.
++ Their syntax is even more compact than CommonJS’s.
++ Their structure can be statically analyzed (for static checking, optimization, etc.).
++ Their support for cyclic dependencies is better than CommonJS’s.
 The ES6 module standard has two parts:
 
-Declarative syntax (for importing and exporting)
-Programmatic loader API: to configure how modules are loaded and to conditionally load modules
-16.3 The basics of ES6 modules
-There are two kinds of exports: named exports (several per module) and default exports (one per module). As explained later, it is possible use both at the same time, but usually best to keep them separate.
++ Declarative syntax (for importing and exporting)
++ Programmatic loader API: to configure how modules are loaded and to conditionally load modules
 
-16.3.1 Named exports (several per module)
-A module can export multiple things by prefixing its declarations with the keyword export. These exports are distinguished by their names and are called named exports.
+## 16.3 ES6 모듈의 기본
+> 16.3 The basics of ES6 modules
 
+> There are two kinds of exports: named exports (several per module) and default exports (one per module). As explained later, it is possible use both at the same time, but usually best to keep them separate.
+
+## 16.3.1 Named exports (several per module)
+> 16.3.1 Named exports (several per module)
+> A module can export multiple things by prefixing its declarations with the keyword export. These exports are distinguished by their names and are called named exports.
+
+```js
 //------ lib.js ------
 export const sqrt = Math.sqrt;
 export function square(x) {
@@ -133,16 +140,22 @@ export function diag(x, y) {
 import { square, diag } from 'lib';
 console.log(square(11)); // 121
 console.log(diag(4, 3)); // 5
+```
+
 There are other ways to specify named exports (which are explained later), but I find this one quite convenient: simply write your code as if there were no outside world, then label everything that you want to export with a keyword.
 
 If you want to, you can also import the whole module and refer to its named exports via property notation:
 
+```js
 //------ main.js ------
 import * as lib from 'lib';
 console.log(lib.square(11)); // 121
 console.log(lib.diag(4, 3)); // 5
+```
+
 The same code in CommonJS syntax: For a while, I tried several clever strategies to be less redundant with my module exports in Node.js. Now I prefer the following simple but slightly verbose style that is reminiscent of the revealing module pattern:
 
+```js
 //------ lib.js ------
 var sqrt = Math.sqrt;
 function square(x) {
@@ -162,11 +175,16 @@ var square = require('lib').square;
 var diag = require('lib').diag;
 console.log(square(11)); // 121
 console.log(diag(4, 3)); // 5
-16.3.2 Default exports (one per module)
-Modules that only export single values are very popular in the Node.js community. But they are also common in frontend development where you often have classes for models and components, with one class per module. An ES6 module can pick a default export, the main exported value. Default exports are especially easy to import.
+```
+
+## 16.3.2 Default exports (one per module)
+> 16.3.2 Default exports (one per module)
+
+> Modules that only export single values are very popular in the Node.js community. But they are also common in frontend development where you often have classes for models and components, with one class per module. An ES6 module can pick a default export, the main exported value. Default exports are especially easy to import.
 
 The following ECMAScript 6 module “is” a single function:
 
+```js
 //------ myFunc.js ------
 export default function () {} // no semicolon!
 
@@ -181,34 +199,49 @@ export default class {} // no semicolon!
 //------ main2.js ------
 import MyClass from 'MyClass';
 const inst = new MyClass();
-There are two styles of default exports:
+```
 
-Labeling declarations
-Default-exporting values directly
-16.3.2.1 Default export style 1: labeling declarations
-You can prefix any function declaration (or generator function declaration) or class declaration with the keywords export default to make it the default export:
+> There are two styles of default exports:
 
++ Labeling declarations
++ Default-exporting values directly
+
+## 16.3.2.1 Default export style 1: labeling declarations
+> 16.3.2.1 Default export style 1: labeling declarations
+> You can prefix any function declaration (or generator function declaration) or class declaration with the keywords export default to make it the default export:
+
+```js
 export default function foo() {} // no semicolon!
 export default class Bar {} // no semicolon!
-You can also omit the name in this case. That makes default exports the only place where JavaScript has anonymous function declarations and anonymous class declarations:
+```
 
+You can also omit the name in this case. That makes default exports the only place where JavaScript has anonymous function declarations and anonymous class declarations:
+```js
 export default function () {} // no semicolon!
 export default class {} // no semicolon!
-16.3.2.1.1 Why anonymous function declarations and not anonymous function expressions?
-When you look at the previous two lines of code, you’d expect the operands of export default to be expressions. They are only declarations for reasons of consistency: operands can be named declarations, interpreting their anonymous versions as expressions would be confusing (even more so than introducing new kinds of declarations).
+```
+## 16.3.2.1.1 Why anonymous function declarations and not anonymous function expressions?
+> 16.3.2.1.1 Why anonymous function declarations and not anonymous function expressions?
+> When you look at the previous two lines of code, you’d expect the operands of export default to be expressions. They are only declarations for reasons of consistency: operands can be named declarations, interpreting their anonymous versions as expressions would be confusing (even more so than introducing new kinds of declarations).
 
-If you want the operands to be interpreted as expressions, you need to use parentheses:
+> If you want the operands to be interpreted as expressions, you need to use parentheses:
 
+```js
 export default (function () {});
 export default (class {});
-16.3.2.2 Default export style 2: default-exporting values directly
+```
+## 16.3.2.2 Default export style 2: default-exporting values directly
+> 16.3.2.2 Default export style 2: default-exporting values directly
 The values are produced via expressions:
 
+```js
 export default 'abc';
 export default foo();
 export default /^xyz$/;
 export default 5 * 7;
 export default { no: false, yes: true };
+```
+
 Each of these default exports has the following structure.
 
 export default «expression»;
