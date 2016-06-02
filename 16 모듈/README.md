@@ -46,17 +46,9 @@ import MyClass from 'MyClass';
 const inst = new MyClass();
 Note that there is no semicolon at the end if you default-export a function or a class (which are anonymous declarations).
 
-16.1.3 Browsers: scripts versus modules
- 	Scripts	Modules
-HTML element	<script>	<script type="module">
-Default mode	non-strict	strict
-Top-level variables are	global	local to module
-Value of this at top level	window	undefined
-Executed	synchronously	asynchronously
-Declarative imports (import statement)	no	yes
-Programmatic imports (Promise-based API)	yes	yes
-File extension	.js	.js
-16.2 Modules in JavaScript
+### 16.1.3 Browsers: scripts versus modules
+ 
+##2 16.2 Modules in JavaScript
 Even though JavaScript never had built-in modules, the community has converged on a simple style of modules, which is supported by libraries in ES5 and earlier. This style has also been adopted by ES6:
 
 Each module is a piece of code that is executed once it is loaded.
@@ -70,7 +62,7 @@ Names ('util'): What modules names refer to has to be configured.
 Modules are singletons. Even if a module is imported multiple times, only a single “instance” of it exists.
 This approach to modules avoids global variables, the only things that are global are module specifiers.
 
-16.2.1 ECMAScript 5 module systems
+### 16.2.1 ECMAScript 5 module systems
 It is impressive how well ES5 module systems work without explicit support from the language. The two most important (and unfortunately incompatible) standards are:
 
 CommonJS Modules: The dominant implementation of this standard is in Node.js (Node.js modules have a few features that go beyond CommonJS). Characteristics:
