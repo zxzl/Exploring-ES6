@@ -584,7 +584,7 @@ ECMAScript 6 gives you the best of both worlds: The synchronous syntax of Node.j
 The synchronous nature of scripts prevents them from becoming modules. Scripts cannot even import modules declaratively (you have to use the programmatic module loader API if you want to do so).
 
 Modules can be used from browsers via a new variant of the <script> element that is completely asynchronous:
-
+```html
 <script type="module">
     import $ from 'lib/jquery';
     var x = 123;
@@ -596,6 +596,7 @@ Modules can be used from browsers via a new variant of the <script> element that
     // `this` still refers to the global object
     console.log(this === window); // true
 </script>
+```
 As you can see, the element has its own scope and variables “inside” it are local to that scope. Note that module code is implicitly in strict mode. This is great news – no more 'use strict'.
 
 Similar to normal <script> elements, <script type="module"> can also be used to load external modules. For example, the following tag starts a web application via a main module (the attribute name import is my invention, it isn’t yet clear what name will be used).
