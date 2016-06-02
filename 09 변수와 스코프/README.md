@@ -234,8 +234,6 @@ logArgs('Hello', 'everyone');
 
 ### 9.4.2 `let`으로 선언된 변수의 라이프사이클 `The life cycle of let-declared variables`
 
-let 을 통한 변수 선언은 임시 사각 지대 (temporal dead zone) 를 가지고, 그 라이프사이클은 이것과 같다.
-
 `let`으로 선언된 변수는 `TDZ`를 가지며 라이프 사이클은 다음과 같습니다.
 
 `Variables declared via let have temporal dead zones and their life cycles look like this:`
