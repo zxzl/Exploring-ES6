@@ -399,22 +399,27 @@ arr.map(x => x()); // [3,3,3]
 
 ```javascript
 const arr = [];
-for (let i=0; i < 3; i++) {
+for (let i = 0; i < 3; i++) {
     arr.push(() => i);
 }
 arr.map(x => x()); // [0,1,2]
 ```
 
-이제, 
+이제, `i`는 반복마다 한번씩 바인딩되고, 바인딩 된 시점을 기준으로 값을 가집니다. 따라서 각 화살표 함수는 다른 값을 반환합니다.
 
 `This time, each i refers to the binding of one specific iteration and preserves the value that was current at that time. Therefore, each arrow function returns a different value.`
 
-const 는 var 처럼 동작하지만, 상수 선언 변수(const-declared) 의 초기값을 바꿀 수 없다.
+`const`는 `var`처럼 동작하지만, 선언 시점에 초기화된 값을 변경할 수 없습니다.
 
-반복마다 새 바인딩을 얻는다면 처음엔 이상하게 보이지만, 당신이 루프 변수를 참조하는 함수를 (이벤트 처리 등의 콜백) 만들때 매우 유용하다.
+`const works like var, but you can’t change the initial value of a const-declared variable:`
 
-*:notebook: for loop: 스펙별 각 이터레이션 바인딩
-[루프의 평가](http://www.ecma-international.org/ecma-262/6.0/#sec-for-statement-runtime-semantics-labelledevaluation)는 두번째의 var 와 세번째 경우의 let/const 처럼 처리된다. let 선언 변수만 리스트의 각 순환(perIterationLets - step 9) 에 추가되는데,  [ForBodyEvaluation](http://www.ecma-international.org/ecma-262/6.0/#sec-forbodyevaluation) 의 두번째부터 마지막 인자를 전달하는 perIterationBindings 이다*
+반복마다 새로운 바인딩을 얻는 것이 처음엔 이상해 보일 수 있지만, 다음 예처럼 루프 내에서 루프 변수를 참조하는 함수를 생성하는 경우에 매우 유용합니다.
+
+`Getting a fresh binding for each iteration may seem strange at first, but it is very useful whenever you use loops to create functions that refer to loop variables, as explained in a later section.`
+
+> *:notebook: for loop: 반복마다 바인딩에 관한 스펙 `for loop: per-iteration bindings in the spec`  
+> `for` 루프의 평가는 `var`를 두번째로 처리하고 `let`, `const`를 세번째로 처리합니다. `let`으로 선언된 변수만이 `ForBodyEvaluation()`에 두번째 이후의 파라미터 `perIterationBindings`로 전달되는 `perIterationLets`( 9장 참고 ) 리스트에 추가됩니다.  
+> `The evaluation of the for loop handles var as the second case and let/const as the third case. Only let-declared variables are added to the list perIterationLets (step 9), which is passed to ForBodyEvaluation() as the second-to-last parameter, perIterationBindings.`
 
 ### 9.5.2 for-of loop 와 for-in loop
 for-of 루프에서는 var 는 싱글 바인딩을 생성한다.
