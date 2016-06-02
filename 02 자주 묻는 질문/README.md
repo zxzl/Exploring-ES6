@@ -100,7 +100,7 @@ ECMAScript 스펙은 정말 엄청나게 성장하고 있다. ECMAScript 5.1 PDF
 + 정적 타입은 IDE의 자동 완성을 돕는다. 
 > It helps IDEs with auto-completion.
 
-타입스크립트와 플로우는 똑같은 표기법을 이용합니다. 타입 어노테이션은 필수가 아닌 선택적이며 이러한 접근을 상대적으로 가볍게 만듭니다. 어노테이션이 없을지라도, 타입은 종종 추론 될 수 있습니다. 그러므로 타입을 확인하는 이런 방법들은 어노테이션이 전혀 붙지 않은 코드조차 일관성 검사 측면에서 유용하게 쓰인다.
+타입스크립트와 플로우는 똑같은 표기법을 이용한다. 타입 어노테이션은 필수가 아닌 선택적이며 이러한 접근을 상대적으로 가볍게 만든다. 어노테이션이 없을지라도, 타입은 종종 추론 될 수 있다. 그러므로 타입을 확인하는 이런 방법은 어노테이션이 전혀 붙지 않은 코드조차 일관성 검사 측면에서 유용하게 쓰인다.
 > Both TypeScript and Flow are using the same notation. Type annotations are optional, which makes this approach relatively lightweight. Even without annotations, types can often be inferred. Therefore, this kind of type checking is even useful for completely unannotated code, as a consistency check.
 
 ### 2.9 더 많은 ES6 자료는 어디에서 찾을수 있나? 
