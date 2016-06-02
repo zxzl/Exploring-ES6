@@ -1,13 +1,23 @@
-16. Modules
+## 16. 모듈
+> 16. Modules
 
-16.1 Overview
-JavaScript has had modules for a long time. However, they were implemented via libraries, not built into the language. ES6 is the first time that JavaScript has built-in modules.
+### 16.1 개요
+> 16.1 Overview
 
-ES6 modules are stored in files. There is exactly one module per file and one file per module. You have two ways of exporting things from a module. These two ways can be mixed, but it is usually better to use them separately.
+자바스크립트는 오랫동안 모듈을 가지고 있었다. 그러나 모듈은 라이브러리를 통해서만 구현되었었고 언어에 내장된 것은 아니었다. 자바스크립트가 내장된 모듈을 가지는 것은 ES6가 처음이다.
 
-16.1.1 Multiple named exports
-There can be multiple named exports:
+> JavaScript has had modules for a long time. However, they were implemented via libraries, not built into the language. ES6 is the first time that JavaScript has built-in modules.
 
+ES6 모듈은 파일에 저장된다. 각 파일에 하나의 모듈, 각 모듈에 하나의 파일로 정확히 대응된다. 모듈에서 무언가를 익스포트 하는 방법은 두 가지가 있다. 이 두 가지 방법을 혼합해도 괜찮지만, 분리해서 따로 사용하는 것이 일반적으로 더 낫다.
+> ES6 modules are stored in files. There is exactly one module per file and one file per module. You have two ways of exporting things from a module. These two ways can be mixed, but it is usually better to use them separately.
+
+### 16.1.1 Multiple named exports
+
+> 16.1.1 Multiple named exports
+
+> There can be multiple named exports:
+
+```js
 //------ lib.js ------
 export const sqrt = Math.sqrt;
 export function square(x) {
@@ -21,15 +31,24 @@ export function diag(x, y) {
 import { square, diag } from 'lib';
 console.log(square(11)); // 121
 console.log(diag(4, 3)); // 5
-You can also import the complete module:
+```
 
+완전한 모듈을 임포트 할 수도 있다.
+> You can also import the complete module:
+
+```js
 //------ main.js ------
 import * as lib from 'lib';
 console.log(lib.square(11)); // 121
 console.log(lib.diag(4, 3)); // 5
-16.1.2 Single default export
+```
+
+### 16.1.2 Single default export
+> 16.1.2 Single default export
+
 There can be a single default export. For example, a function:
 
+```js
 //------ myFunc.js ------
 export default function () { ··· } // no semicolon!
 
@@ -44,14 +63,21 @@ export default class { ··· } // no semicolon!
 //------ main2.js ------
 import MyClass from 'MyClass';
 const inst = new MyClass();
+```
+
 Note that there is no semicolon at the end if you default-export a function or a class (which are anonymous declarations).
 
-### 16.1.3 Browsers: scripts versus modules
- 
-##2 16.2 Modules in JavaScript
-Even though JavaScript never had built-in modules, the community has converged on a simple style of modules, which is supported by libraries in ES5 and earlier. This style has also been adopted by ES6:
+### 16.1.3 브라우저: 스크립트 vs 모듈
+> 16.1.3 Browsers: scripts versus modules
 
-Each module is a piece of code that is executed once it is loaded.
+### 16.2 자바스크립트의 모듈
+> 16.2 Modules in JavaScript
+
+자바스크립는 내장된 모듈을 지원한 적이 없음에도 불구하고, 커뮤니티는 ES5와 그 이전 버전의 라이브러리에 의해 지원되는 간단한 모듈 스타일을 수렴해왔다. 이런 스타일이 ES6에도 채택되었다.
+> Even though JavaScript never had built-in modules, the community has converged on a simple style of modules, which is supported by libraries in ES5 and earlier. This style has also been adopted by ES6:
+
+각각의 모듈은 일단 한 번 로드 되면 실행되는 코드의 조각이다.
+> Each module is a piece of code that is executed once it is loaded.
 In that code, there may be declarations (variable declarations, function declarations, etc.).
 By default, these declarations stay local to the module.
 You can mark some of them as exports, then other modules can import them.
@@ -62,7 +88,8 @@ Names ('util'): What modules names refer to has to be configured.
 Modules are singletons. Even if a module is imported multiple times, only a single “instance” of it exists.
 This approach to modules avoids global variables, the only things that are global are module specifiers.
 
-### 16.2.1 ECMAScript 5 module systems
+### 16.2.1 ECMAScript 5 모듈 시스템
+> 16.2.1 ECMAScript 5 module systems
 It is impressive how well ES5 module systems work without explicit support from the language. The two most important (and unfortunately incompatible) standards are:
 
 CommonJS Modules: The dominant implementation of this standard is in Node.js (Node.js modules have a few features that go beyond CommonJS). Characteristics:
