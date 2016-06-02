@@ -63,12 +63,13 @@ ES6가 너무 비대해지고 있다는 불만을 제기한다면, 한동안 ES6
 ### 2.6 ES6의 스펙은 매우 거대하지 않은가? 
 > 2.6 Isn’t the ES6 specification very big?
 
+ECMAScript 스펙은 정말 엄청나게 성장하고 있다. ECMAScript 5.1 PDF 문서는 245페이지이고, ES6 PDF문서는 593페이지로 이루어졌다. 그러나 비교 기준으로, 자바 8 버전의 스팩은 724페이지로 이루어져 있다.(목차 제외) 더욱이 ES6 스펙은 많은 다른 언어 스펙에서 누락시킨 스펙들을 정의된 구현체로써 상세 내용을 포함한다. 또한 이는 표준라이브러리가 어떻게 동작하는지 명시한다.
 > The ECMAScript specification has indeed grown tremendously: The ECMAScript 5.1 PDF had 245 pages, the ES6 PDF has 593 pages. But, for comparison, the Java 8 language specification has 724 pages (excluding an index). Furthermore, the ES6 specification contains details that many other language specifications omit as implementation-defined. It also specifies how its standard library works1.
 
-### 2.7 ES6는 배열내포(array comprehensions)를 지원하나요? 
+### 2.7 ES6는 배열내포(array comprehensions)를 지원하는가? 
 > 2.7 Does ES6 have array comprehensions?
 
-원래 ES6는 배열과 제너레이터 내포를 지원하려고 했었습니다.(하스켈과 파이썬과 유사하게) 그러나 TC39 위원회가 두 가지 길을 탐험하길 원해서 추가되지는 않았습니다. 
+원래 ES6는 배열과 제너레이터 내포를 지원하려고 했었다.(하스켈과 파이썬과 유사하게) 그러나 TC39 위원회가 두 가지 길을 탐험하길 원해서 추가되지는 않았다. 
 
 > Originally, ES6 was to have Array and generator comprehensions (similarly to Haskell and Python). But they were not added, because TC39 wanted to explore two avenues:
 
@@ -78,34 +79,34 @@ ES6가 너무 비대해지고 있다는 불만을 제기한다면, 한동안 ES6
 > `It may be possible to create comprehensions that work for arbitrary datatypes (think Microsoft’s LINQ).`
 > `It may also be possible that methods for iterators are a better way to achieve what comprehensions do.`
 
-### 2.8 ES6는 정적 타입인가요? 
+### 2.8 ES6는 정적 타입인가? 
 > 2.8 Is ES6 statically typed?
 
-정적 타입은 ES6에 포함된 부분이 아닙니다. 그러나 다음의 두 가지 기술은 자바스크립트에 정적인 타입을 추가합니다. 이런 유사한 특징들이 종내에는 표준화 될 수도 있습니다.
+정적 타입은 ES6에 포함된 부분이 아니다. 그러나 다음의 두 가지 기술은 자바스크립트에 정적인 타입을 추가한다. 이런 유사한 특징들이 종내에는 표준화 될 수도 있다.
 > Static typing is not part of ES6. However, the following two technologies add static typing to JavaScript. Similar features may eventually be standardized.
 
-+ 마이크로소프트 타입스크립트 : 타입스크립트는 ES6에 선택적인 타입 어노테이션이 추가된 것입니다. 
++ 마이크로소프트 타입스크립트 : 타입스크립트는 ES6에 선택적인 타입 어노테이션이 추가된 것이다. 
 > Microsoft TypeScript: is basically ES6 plus optional type annotations. At the moment, it is compiled to ES5 and throws away the type information while doing so. Optionally, it can also make that information available at runtime, for type introspection and for runtime type checks.
 
-+ 페이스북 플로우: 플로우는 플로우 분석에 기반을 둔 ECMAScript 6를 위한 타입 체커입니다. 예를 들어 선택적인 타입 어노테이션만을 언어에 추가하고 타입을 추론하고 확인합니다. 플로우는 ES6를 ES5로 변환하는데 도움을 주지는 않습니다.
++ 페이스북 플로우: 플로우는 플로우 분석에 기반을 둔 ECMAScript 6를 위한 타입 체커이다. 예를 들어 선택적인 타입 어노테이션만을 언어에 추가하고 타입을 추론하고 확인한다. 플로우는 ES6를 ES5로 변환하는데 도움을 주지는 않는다.
 > Facebook Flow: is a type checker for ECMAScript 6 that is based on flow analysis. As such, it only adds optional type annotations to the language and infers and checks types. It does not help with compiling ES6 to ES5.
 
 정적 타입의 두 가지 장점 : 
 > Two benefits of static typing are:
 
-+ 정적 타입은, 코드가 정적으로 분석되기 때문에,  에러의 확실한 카테고리를 더욱 빨리 찾을 수 있게합니다. (개발중에, 코드의 실행이 없이도) 그래서 정적 타입은 테스팅과 다른 오류를 잡는것에 있어서 상호 보완적입니다. 
++ 정적 타입은 코드가 정적으로 분석되기 때문에, 에러의 확실한 카테고리를 더욱 빨리 찾을 수 있게한다. (개발중에, 코드의 실행이 없이도) 그래서 정적 타입은 테스팅과 다른 오류를 잡는것에 있어서 상호 보완적이다. 
 > It allows you to detect a certain category of errors earlier, because the code is analyzed statically (during development, without running code). As such, static typing is complementary to testing and catches different errors.
 
-+ 정적 타입은 IDE의 자동 완성을 돕습니다. 
++ 정적 타입은 IDE의 자동 완성을 돕는다. 
 > It helps IDEs with auto-completion.
 
-타입스크립트와 플로우는 똑같은 표기법을 이용합니다. 타입 어노테이션은 필수가 아닌 선택적이며 이러한 접근을 상대적으로 가볍게 만듭니다. 어노테이션이 없을지라도, 타입은 종종 추론 될 수 있습니다. 그러므로 타입을 확인하는 이런 방법들은 어노테이션이 전혀 붙지 않은 코드조차 일관성 검사 측면에서 유용하게 쓰입니다.
+타입스크립트와 플로우는 똑같은 표기법을 이용합니다. 타입 어노테이션은 필수가 아닌 선택적이며 이러한 접근을 상대적으로 가볍게 만듭니다. 어노테이션이 없을지라도, 타입은 종종 추론 될 수 있습니다. 그러므로 타입을 확인하는 이런 방법들은 어노테이션이 전혀 붙지 않은 코드조차 일관성 검사 측면에서 유용하게 쓰인다.
 > Both TypeScript and Flow are using the same notation. Type annotations are optional, which makes this approach relatively lightweight. Even without annotations, types can often be inferred. Therefore, this kind of type checking is even useful for completely unannotated code, as a consistency check.
 
-### 2.9 더 많은 ES6 자료는 어디에서 찾을수 있을까요? 
+### 2.9 더 많은 ES6 자료는 어디에서 찾을수 있나? 
 > 2.9 Where can I find more ES6 resources?
 
-ES6의 두 가지 자료 입니다. 
+아래는 ES6 학습에 도움되는 두 가지 자료이다. 
 > These are two lists with ES6 resources:`
 
 + “ECMAScript 6 Tools” by Addy Osmani.
