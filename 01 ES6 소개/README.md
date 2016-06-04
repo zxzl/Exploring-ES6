@@ -84,13 +84,17 @@ On one hand, upgrading engines is challenging, because they are confronted with 
 
 On the other hand, upgrading code is challenging, because your code must run on all JavaScript engines that are used by your target audience. Therefore, if you want to use ES6 in your code, you only have two choices: You can either wait until no one in your target audience uses a non-ES6 engine, anymore. That will take years; mainstream audiences were at that point w.r.t. ES5 when ES6 became a standard in June 2015. And ES5 was standardized in December 2009! Or you can compile ES6 to ES5 and use it now. More information on how to do that is given in the book “Setting up ES6”, which is free to read online.
 
-다른 한편 코드를 업그레이드 하는 것은 어렵다. 왜냐하면 당신의 코드는 반드시 원하는 사용자가 사용하는 모든 자바스크립트 엔진에서 돌아야 하기 때문이다. 그러므로 만약 당신이 ES6을 당신의 코드에서 사용하길 원한다면 당신은 단지 두 가지 선택 밖에 없다. 당신은 당신의 타겟 사용자가 ES6를 지원하지 않는 엔진을 더이상 사용하지 않을 때까지 기다릴 수 있다. 이것은 수년 걸릴 것이다. 주요 사용자는  ES5 2009년 11월 표준화 되었다.! 또는 당신은 ES6을 ES5로 컴파일 할 수 있다. 이 작업을 수행하는 자세한 방법은 "Setting up ES6"에 나와 있고 이것은 온라인에서 공짜다.
+다른 한편 코드를 업그레이드 하는 것은 어렵다. 왜냐하면 당신의 코드는 반드시 원하는 사용자가 사용하는 모든 자바스크립트 엔진에서 돌아야 하기 때문이다. 그러므로 만약 당신이 ES6을 당신의 코드에서 사용하길 원한다면 당신은 단지 두 가지 선택 밖에 없다. 당신은 당신의 타겟 사용자가 ES6를 지원하지 않는 엔진을 더이상 사용하지 않을 때까지 기다릴 수 있다. 이것은 수년 걸릴 것이다. ES6이 2015년 6월에 표준이 되었을 때 주요 사용자는 ES5를 사용하였다. ES5는 2009년 11월 표준화 되었다.! 또는 당신은 ES6을 ES5로 컴파일 할 수 있다. 이 작업에 대한 자세한 방법은 "Setting up ES6"에 나와 있고 이것은 온라인에서 공짜로 볼 수 있다.
 
-ES6 설계에서 목표 와 요구사항의 충돌
+Goals and requirements clash in the design of ES6:
+* Goals are fixing JavaScript’s pitfalls and adding new features.
+* Requirements are that both need to be done without breaking existing code and without changing the lightweight nature of the language.
 
+ES6 설계에서 목표와 요구사항의 충돌
 * 목표는 자바스크립트의 함정을 수정하고 새로운 기능을 추가
-* 요구 사항은 존재하는 코드의 깨짐이나 언어의 경량특성을 변경 없이 되는 것. 
+* 요구 사항은 존재하는 코드의 깨짐이나 언어의 경량특성을 변경 없이 되는 것 두 가지다. 
 
+## 1.5 Goals for ES6
 ## 1.5 ES6의 목표
 하모니/ES6의 원래 프로젝트 페이지는 몇몇개의 목표를 가진다. 다음 소단원에서 나는 목표의 몇개를 설명하겠다.
 
