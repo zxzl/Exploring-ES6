@@ -765,36 +765,6 @@ Scripts are normally loaded or executed synchronously. The JavaScript thread sto
 ## 16.6.1.2 모듈
 > 16.6.1.2 Modules
 
-> To be in line with JavaScript’s usual run-to-completion semantics, the body of a module must be executed without interruption. That leaves two options for importing modules:
-
-> Load modules synchronously, while the body is executed. That is what Node.js does.
-Load all modules asynchronously, before the body is executed. That is how AMD modules are handled. It is the best option for browsers, because modules are loaded over the internet and execution doesn’t have to pause while they are. As an added benefit, this approach allows one to load multiple modules in parallel.
-ECMAScript 6 gives you the best of both worlds: The synchronous syntax of Node.js plus the asynchronous loading of AMD. To make both possible, ES6 modules are syntactically less flexible than Node.js modules: Imports and exports must happen at the top level. That means that they can’t be conditional, either. This restriction allows an ES6 module loader to analyze statically what modules are imported by a module and load them before executing its body.
-
-> The synchronous nature of scripts prevents them from becoming modules. Scripts cannot even import modules declaratively (you have to use the programmatic module loader API if you want to do so).
-
-> Modules can be used from browsers via a new variant of the <script> element that is completely asynchronous:
-
-```html
-<script type="module">
-    import $ from 'lib/jquery';
-    var x = 123;
-
-    // The current scope is not global
-    console.log('$' in window); // false
-    console.log('x' in window); // false
-
-    // `this` still refers to the global object
-    console.log(this === window); // true
-</script>
-```
-
-> As you can see, the element has its own scope and variables “inside” it are local to that scope. Note that module code is implicitly in strict mode. This is great news – no more 'use strict'.
-
-> Similar to normal <script> elements, <script type="module"> can also be used to load external modules. For example, the following tag starts a web application via a main module (the attribute name import is my invention, it isn’t yet clear what name will be used).
-
-> <script type="module" import="impl/main"></script>
-The advantage of supporting modules in HTML via a custom <script> type is that it is easy to bring that support to older engines via a polyfill (a library). There may or may not eventually be a dedicated element for modules (e.g. <module>).
 
 ## 16.6.1.4 모듈 또는 스크립트
 > 16.6.1.3 Module or script – a matter of context
