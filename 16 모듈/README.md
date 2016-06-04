@@ -252,7 +252,8 @@ export default 5 * 7;
 export default { no: false, yes: true };
 ```
 
-Each of these default exports has the following structure.
+위 각각의 기본 익스포트는 다음과 같은 구조를 갖는다.
+> Each of these default exports has the following structure.
 
 export default «expression»;
 That is equivalent to:
