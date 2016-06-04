@@ -96,19 +96,32 @@ ES6 설계에서 목표와 요구사항의 충돌
 
 ## 1.5 Goals for ES6
 ## 1.5 ES6의 목표
-하모니/ES6의 원래 프로젝트 페이지는 몇몇개의 목표를 가진다. 다음 소단원에서 나는 목표의 몇개를 설명하겠다.
+The original project page for Harmony/ES6 includes several goals. In the following subsections, I’m taking a look at some of them.
 
-### 1.5.1 목표: 더나은 언어
+하모니/ES6의 원래 프로젝트 페이지는 몇 가지 목표를 가진다. 다음 소단원에서 목표를 설명하겠다.
 
-목표는 쓰기에 더 나은 언어:
+### 1.5.1 Goal: Be a better language
+### 1.5.1 목표: 더 나은 언어가 되기
+
+The goal is: Be a better language for writing:
+
+1. complex applications;
+2. libraries (possibly including the DOM) shared by those applications;
+3. code generators targeting the new edition.
+
+목표는 사용하기 더 나은 언어가 되는 것 이다.:
 
 1. 복잡한 어플리케이션;
 2. 애플리케이션에 의해 공유된 라이브러리(아마도 DOM을 포함);
 3. 새 판을 겨냥한 코드 생성기.
 
-소 목적 (1) 자바스크립트로 쓰여진 애플리케이션 사례는 크게 증가되었다. 목표를 실현하는 ES6 기능의 키는 내장 모듈이다.
+Sub-goal (i) acknowledges that applications written in JavaScript have grown huge. A key ES6 feature fulfilling this goal is built-in modules.
 
-모듈들은 또한 목표(2)의 해답이다. 반면에 DOM은 자바스크립트에서 구현하기 어렵기로 악명이 높다. ES6 프록시는 이것을 도와준다(이 쳅터에서 설명).
+소 목적 (1) 자바스크립트를 사용한 애플리케이션 사례는 크게 증가되었다. 목표를 실현하는 ES6 기능의 키는 내장 모듈이다.
+
+Modules are also an answer to goal (ii). As an aside, the DOM is notoriously difficult to implement in JavaScript. ES6 Proxies should help here (as described in a separate chapter).
+
+모듈들은 또한 목표(2)의 답이 된다. 여담으로 DOM은 자바스크립트에서 구현 어렵기로 악명이 높다. ES6 프록시는 어려움을 도와준다(28장에서 설명).
 
 몇몇의 기능들은 자바스크립트 개선이 아닌 특별하게 추가 되었다. 그러나 이 기능은 자바스크립트로 컴파일을 쉽게 해준다. 두가지 예를 보면:
 
