@@ -76,17 +76,20 @@ Note that there is no semicolon at the end if you default-export a function or a
 자바스크립는 내장된 모듈을 지원한 적이 없음에도 불구하고, 커뮤니티는 ES5와 그 이전 버전의 라이브러리에 의해 지원되는 간단한 모듈 스타일을 수렴해왔다. 이런 스타일이 ES6에도 채택되었다.
 > Even though JavaScript never had built-in modules, the community has converged on a simple style of modules, which is supported by libraries in ES5 and earlier. This style has also been adopted by ES6:
 
-각각의 모듈은 일단 한 번 로드 되면 실행되는 코드의 조각이다.
++ 각각의 모듈은 일단 한 번 로드 되면 실행되는 코드의 조각이다.
++ 그 코드에서 선언이 있을 수 있다(변수 선언, 함수 선언 등)
+ - 
 + Each module is a piece of code that is executed once it is loaded.
 + In that code, there may be declarations (variable declarations, function declarations, etc.).
-- By default, these declarations stay local to the module.
-- You can mark some of them as exports, then other modules can import them.
+ - By default, these declarations stay local to the module.
+ - You can mark some of them as exports, then other modules can import them.
 + A module can import things from other modules. It refers to those modules via module specifiers, strings that are either:
-- Relative paths ('../model/user'): these paths are interpreted relatively to the location of the importing module. The file extension .js can usually be omitted.
-- Absolute paths ('/lib/js/helpers'): point directly to the file of the module to be imported.
-- Names ('util'): What modules names refer to has to be configured.
+ - Relative paths ('../model/user'): these paths are interpreted relatively to the location of the importing module. The file extension .js can usually be omitted.
+ - Absolute paths ('/lib/js/helpers'): point directly to the file of the module to be imported.
+ - Names ('util'): What modules names refer to has to be configured.
 + Modules are singletons. Even if a module is imported multiple times, only a single “instance” of it exists.
-This approach to modules avoids global variables, the only things that are global are module specifiers.
+
+> This approach to modules avoids global variables, the only things that are global are module specifiers.
 
 ### 16.2.1 ECMAScript 5 모듈 시스템
 > 16.2.1 ECMAScript 5 module systems
