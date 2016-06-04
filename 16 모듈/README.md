@@ -1102,9 +1102,12 @@ This helps tremendously with checking whether a given identifier has been spelle
 
 Additionally, any access of named imports (such as lib.foo) can also be checked statically.
 
-16.8.2.5 Benefit: ready for macros
-Macros are still on the roadmap for JavaScript’s future. If a JavaScript engine supports macros, you can add new syntax to it via a library. Sweet.js is an experimental macro system for JavaScript. The following is an example from the Sweet.js website: a macro for classes.
+## 16.8.2.5
+> 16.8.2.5 Benefit: ready for macros
 
+> Macros are still on the roadmap for JavaScript’s future. If a JavaScript engine supports macros, you can add new syntax to it via a library. Sweet.js is an experimental macro system for JavaScript. The following is an example from the Sweet.js website: a macro for classes.
+
+```js
 // Define the macro
 macro class {
     rule {
@@ -1130,80 +1133,127 @@ class Person {
 }
 var bob = new Person("Bob");
 bob.say("Macros are sweet!");
-For macros, a JavaScript engine performs a preprocessing step before compilation: If a sequence of tokens in the token stream produced by the parser matches the pattern part of the macro, it is replaced by tokens generated via the body of macro. The preprocessing step only works if you are able to statically find macro definitions. Therefore, if you want to import macros via modules then they must have a static structure.
+```
 
-16.8.2.6 Benefit: ready for types
-Static type checking imposes constraints similar to macros: it can only be done if type definitions can be found statically. Again, types can only be imported from modules if they have a static structure.
+> For macros, a JavaScript engine performs a preprocessing step before compilation: If a sequence of tokens in the token stream produced by the parser matches the pattern part of the macro, it is replaced by tokens generated via the body of macro. The preprocessing step only works if you are able to statically find macro definitions. Therefore, if you want to import macros via modules then they must have a static structure.
 
-Types are appealing because they enable statically typed fast dialects of JavaScript in which performance-critical code can be written. One such dialect is Low-Level JavaScript (LLJS).
 
-16.8.2.7 Benefit: supporting other languages
-If you want to support compiling languages with macros and static types to JavaScript then JavaScript’s modules should have a static structure, for the reasons mentioned in the previous two sections.
+##16.8.2.6 Benefit: ready for types
 
-16.8.2.8 Source of this section
+> 16.8.2.6 Benefit: ready for types
+
+> Static type checking imposes constraints similar to macros: it can only be done if type definitions can be found statically. Again, types can only be imported from modules if they have a static structure.
+
+> Types are appealing because they enable statically typed fast dialects of JavaScript in which performance-critical code can be written. One such dialect is Low-Level JavaScript (LLJS).
+
+## 16.8.2.7
+> 16.8.2.7 Benefit: supporting other languages
+> If you want to support compiling languages with macros and static types to JavaScript then JavaScript’s modules should have a static structure, for the reasons mentioned in the previous two sections.
+
+##16.8.2.8
+> 16.8.2.8 Source of this section
+
 “Static module resolution” by David Herman
-16.8.3 Support for both synchronous and asynchronous loading
-ECMAScript 6 modules must work independently of whether the engine loads modules synchronously (e.g. on servers) or asynchronously (e.g. in browsers). Its syntax is well suited for synchronous loading, asynchronous loading is enabled by its static structure: Because you can statically determine all imports, you can load them before evaluating the body of the module (in a manner reminiscent of AMD modules).
 
-16.8.4 Support for cyclic dependencies between modules
-Support for cyclic dependencies was a key goal for ES6 modules. Here is why:
+## 16.8.3
+> 16.8.3 Support for both synchronous and asynchronous loading
 
-Cyclic dependencies are not inherently evil. Especially for objects, you sometimes even want this kind of dependency. For example, in some trees (such as DOM documents), parents refer to children and children refer back to parents. In libraries, you can usually avoid cyclic dependencies via careful design. In a large system, though, they can happen, especially during refactoring. Then it is very useful if a module system supports them, because the system doesn’t break while you are refactoring.
+> ECMAScript 6 modules must work independently of whether the engine loads modules synchronously (e.g. on servers) or asynchronously (e.g. in browsers). Its syntax is well suited for synchronous loading, asynchronous loading is enabled by its static structure: Because you can statically determine all imports, you can load them before evaluating the body of the module (in a manner reminiscent of AMD modules).
 
-The Node.js documentation acknowledges the importance of cyclic dependencies and Rob Sayre provides additional evidence:
+## 16.8.4
 
-Data point: I once implemented a system like [ECMAScript 6 modules] for Firefox. I got asked for cyclic dependency support 3 weeks after shipping.
+> 16.8.4 Support for cyclic dependencies between modules
 
-That system that Alex Fritze invented and I worked on is not perfect, and the syntax isn’t very pretty. But it’s still getting used 7 years later, so it must have gotten something right.
+> Support for cyclic dependencies was a key goal for ES6 modules. Here is why:
 
-16.9 FAQ: modules
-16.9.1 Can I use a variable to specify from which module I want to import?
-The import statement is completely static: its module specifier is always fixed. If you want to dynamically determine what module to load, you need to use the programmatic loader API:
+> Cyclic dependencies are not inherently evil. Especially for objects, you sometimes even want this kind of dependency. For example, in some trees (such as DOM documents), parents refer to children and children refer back to parents. In libraries, you can usually avoid cyclic dependencies via careful design. In a large system, though, they can happen, especially during refactoring. Then it is very useful if a module system supports them, because the system doesn’t break while you are refactoring.
 
+> The Node.js documentation acknowledges the importance of cyclic dependencies and Rob Sayre provides additional evidence:
+
+> Data point: I once implemented a system like [ECMAScript 6 modules] for Firefox. I got asked for cyclic dependency support 3 weeks after shipping.
+
+> That system that Alex Fritze invented and I worked on is not perfect, and the syntax isn’t very pretty. But it’s still getting used 7 years later, so it must have gotten something right.
+
+## 16.9 FAQ: 모듈
+> 16.9 FAQ: modules
+
+## 16.9.1
+> 16.9.1 Can I use a variable to specify from which module I want to import?
+> The import statement is completely static: its module specifier is always fixed. If you want to dynamically determine what module to load, you need to use the programmatic loader API:
+
+```js
 const moduleSpecifier = 'module_' + Math.random();
 System.import(moduleSpecifier)
 .then(the_module => {
     // Use the_module
 })
-16.9.2 Can I import a module conditionally or on demand?
-Import statements must always be at the top level of modules. That means that you can’t nest them inside if statements, functions, etc. Therefore, you have to use the programmatic loader API if you want to load a module conditionally or on demand:
+```
 
+## 16.9.2
+> 16.9.2 Can I import a module conditionally or on demand?
+
+> Import statements must always be at the top level of modules. That means that you can’t nest them inside if statements, functions, etc. Therefore, you have to use the programmatic loader API if you want to load a module conditionally or on demand:
+
+```js
 if (Math.random()) {
     System.import('some_module')
     .then(some_module => {
         // Use some_module
     })
 }
-16.9.3 Can I use variables in an import statement?
-No, you can’t. Remember – what is imported must not depend on anything that is computed at runtime. Therefore:
+```
 
+## 16.9.3 
+
+> 16.9.3 Can I use variables in an import statement?
+
+> No, you can’t. Remember – what is imported must not depend on anything that is computed at runtime. Therefore:
+
+```js
 // Illegal syntax:
 import foo from 'some_module'+SUFFIX;
-16.9.4 Can I use destructuring in an import statement?
+```
+
+## 16.9.4
+> 16.9.4 Can I use destructuring in an import statement?
 No you can’t. The import statement only looks like destructuring, but is completely different (static, imports are views, etc.).
 
-Therefore, you can’t do something like this in ES6:
+> Therefore, you can’t do something like this in ES6:
 
+```js
 // Illegal syntax:
 import { foo: { bar } } from 'some_module';
-16.9.5 Are named exports necessary? Why not default-export objects?
-You may be wondering – why do we need named exports if we could simply default-export objects (like in CommonJS)? The answer is that you can’t enforce a static structure via objects and lose all of the associated advantages (which are explained in this chapter).
+```
 
-16.9.6 Can I eval() the code of module?
-No, you can’t. Modules are too high-level a construct for eval(). The module loader API provides the means for creating modules from strings. Syntactically, eval() accepts scripts (which don’t allow import and export), not modules.
+## 16.9.5
 
-16.10 Advantages of ECMAScript 6 modules
-At first glance, having modules built into ECMAScript 6 may seem like a boring feature – after all, we already have several good module systems. But ECMAScript 6 modules have several new features:
+> 16.9.5 Are named exports necessary? Why not default-export objects?
 
-More compact syntax
+> You may be wondering – why do we need named exports if we could simply default-export objects (like in CommonJS)? The answer is that you can’t enforce a static structure via objects and lose all of the associated advantages (which are explained in this chapter).
+
+## 16.9.6
+
+> 16.9.6 Can I eval() the code of module?
+
+> No, you can’t. Modules are too high-level a construct for eval(). The module loader API provides the means for creating modules from strings. Syntactically, eval() accepts scripts (which don’t allow import and export), not modules.
+
+## 16.10
+ECMAScript 6 모듈의 이점
+> 16.10 Advantages of ECMAScript 6 modules
+
+> At first glance, having modules built into ECMAScript 6 may seem like a boring feature – after all, we already have several good module systems. But ECMAScript 6 modules have several new features:
+
+> More compact syntax
 Static module structure (helping with dead code elimination, optimizations, static checking and more)
 Automatic support for cyclic dependencies
 ES6 modules will also – hopefully – end the fragmentation between the currently dominant standards CommonJS and AMD. Having a single, native standard for modules means:
 
-No more UMD (Universal Module Definition): UMD is a name for patterns that enable the same file to be used by several module systems (e.g. both CommonJS and AMD). Once ES6 is the only module standard, UMD becomes obsolete.
+> No more UMD (Universal Module Definition): UMD is a name for patterns that enable the same file to be used by several module systems (e.g. both CommonJS and AMD). Once ES6 is the only module standard, UMD becomes obsolete.
 New browser APIs become modules instead of global variables or properties of navigator.
 No more objects-as-namespaces: Objects such as Math and JSON serve as namespaces for functions in ECMAScript 5. In the future, such functionality can be provided via modules.
-16.11 Further reading
+
+
+> 16.11 Further reading
 CommonJS versus ES6: “JavaScript Modules” (by Yehuda Katz) is a quick intro to ECMAScript 6 modules. Especially interesting is a second page where CommonJS modules are shown side by side with their ECMAScript 6 versions.
 [Spec] Sect. “Imports” starts with grammar rules and continues with semantics.↩
 [Spec] The specification method GetExportedNames() collects the exports of a module. In step (7.d.i), a check prevents other modules’ default exports from being re-exported.↩
