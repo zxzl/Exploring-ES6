@@ -693,9 +693,7 @@ System.import('some_module')
 
 > System.import() enables you to:
 
-> Use modules inside <script> elements (where module syntax is not supported, consult the section on modules versus scripts for details).
-Load modules conditionally.
-System.import() retrieves a single module, you can use Promise.all() to import several modules:
+스크립트 포함 구문~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ```js
 Promise.all(
