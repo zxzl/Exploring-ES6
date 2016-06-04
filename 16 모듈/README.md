@@ -4,7 +4,7 @@
 ### 16.1 개요
 > 16.1 Overview
 
-자바스크립트는 오랫동안 모듈을 가지고 있었다. 그러나 모듈은 라이브러리를 통해서만 구현되었었고 언어에 내장된 것은 아니었다. 자바스크립트가 내장된 모듈을 가지는 것은 ES6가 처음이다.
+자바스크립트는 오랫동안 모듈을 가지고 있었다. 그러나 모듈은 라이브러리를 통해서만 구현되었고 언어에 내장된 것은 아니었다. 자바스크립트가 내장된 모듈을 가지는 것은 ES6가 처음이다.
 
 > JavaScript has had modules for a long time. However, they were implemented via libraries, not built into the language. ES6 is the first time that JavaScript has built-in modules.
 
@@ -90,7 +90,9 @@ This approach to modules avoids global variables, the only things that are globa
 
 ### 16.2.1 ECMAScript 5 모듈 시스템
 > 16.2.1 ECMAScript 5 module systems
-It is impressive how well ES5 module systems work without explicit support from the language. The two most important (and unfortunately incompatible) standards are:
+
+
+> It is impressive how well ES5 module systems work without explicit support from the language. The two most important (and unfortunately incompatible) standards are:
 
 + #### CommonJS Modules: The dominant implementation of this standard is in Node.js (Node.js modules have a few features that go beyond CommonJS). Characteristics:
 - Compact syntax
@@ -103,6 +105,7 @@ The above is but a simplified explanation of ES5 modules. If you want more in-de
 ## 16.2.2 ECMAScript 6 모듈
 > 16.2.2 ECMAScript 6 modules
 
+ECMAScript 6 모듈의 목적은 CommonJS 와 AMD 유저 모두를 만족시키는 포맷을 만드는 것이었다.
 > The goal for ECMAScript 6 modules was to create a format that both users of CommonJS and of AMD are happy with:
 
 + Similarly to CommonJS, they have a compact syntax, a preference for single exports and support for cyclic dependencies.
@@ -112,7 +115,10 @@ Being built into the language allows ES6 modules to go beyond CommonJS and AMD (
 + Their syntax is even more compact than CommonJS’s.
 + Their structure can be statically analyzed (for static checking, optimization, etc.).
 + Their support for cyclic dependencies is better than CommonJS’s.
-The ES6 module standard has two parts:
+ 
+ES6 모듈 표준은 다음 두 가지를 갖는다
+
+> The ES6 module standard has two parts:
 
 + Declarative syntax (for importing and exporting)
 + Programmatic loader API: to configure how modules are loaded and to conditionally load modules
@@ -120,10 +126,12 @@ The ES6 module standard has two parts:
 ## 16.3 ES6 모듈의 기본
 > 16.3 The basics of ES6 modules
 
+익스포트의 두 가지 종류 : 명명된 익스포트(several per module)와 디폴트 익스포트이다. 한 번에 둘 다 사용하는 것도 가능하지만 분리하는게 일반적으로 좋다. 
 > There are two kinds of exports: named exports (several per module) and default exports (one per module). As explained later, it is possible use both at the same time, but usually best to keep them separate.
 
-## 16.3.1 Named exports (several per module)
+## 명명 익스포트
 > 16.3.1 Named exports (several per module)
+
 > A module can export multiple things by prefixing its declarations with the keyword export. These exports are distinguished by their names and are called named exports.
 
 ```js
@@ -142,7 +150,8 @@ console.log(square(11)); // 121
 console.log(diag(4, 3)); // 5
 ```
 
-There are other ways to specify named exports (which are explained later), but I find this one quite convenient: simply write your code as if there were no outside world, then label everything that you want to export with a keyword.
+
+> There are other ways to specify named exports (which are explained later), but I find this one quite convenient: simply write your code as if there were no outside world, then label everything that you want to export with a keyword.
 
 If you want to, you can also import the whole module and refer to its named exports via property notation:
 
@@ -153,7 +162,8 @@ console.log(lib.square(11)); // 121
 console.log(lib.diag(4, 3)); // 5
 ```
 
-The same code in CommonJS syntax: For a while, I tried several clever strategies to be less redundant with my module exports in Node.js. Now I prefer the following simple but slightly verbose style that is reminiscent of the revealing module pattern:
+CommonJS 문법과 같은 코드 : 
+> The same code in CommonJS syntax: For a while, I tried several clever strategies to be less redundant with my module exports in Node.js. Now I prefer the following simple but slightly verbose style that is reminiscent of the revealing module pattern:
 
 ```js
 //------ lib.js ------
