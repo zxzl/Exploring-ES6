@@ -15,21 +15,20 @@ First, you can take an “all or nothing” approach and demand that, if a code 
 
 Second, you can permit a code base to contain code in multiple versions, by tagging code with versions. On the web, you could tag ECMAScript 6 code via a dedicated Internet media type. Such a media type can be associated with a file via an HTTP header:
 
-둘째, 코드에 버전을 명시함으로써 여러가지 버전의 코드를 포함하는 코드베이스를 허용할 수도 있다. 웹에서는 전용 (인터넷 미디어 타입)[http://en.wikipedia.org/wiki/Internet_media_type]을 통한 ECMAScript 6 코드를 태그할 수도 있다. 어떤 미디어 타입은 HTTP 해더를 통해 파일과 연결시킬 수 있다.
+둘째, 코드에 버전을 명시함으로써 여러가지 버전의 코드를 포함하는 코드베이스를 허용할 수도 있다. 웹에서는 전용 (인터넷 미디어 타입)[http://en.wikipedia.org/wiki/Internet_media_type] 을 통한 ECMAScript 6 코드를 태그할 수도 있다. 어떤 미디어 타입은 HTTP 해더를 통해 파일과 연결시킬 수 있다.
 
 ```
 Content-Type: application/ecmascript;version=6
 ```
 
-It can also be associated via the type attribute of the <script> element (whose default value is text/javascript):
+It can also be associated via the type attribute of the `<script>` element (whose default value is text/javascript):
 
-또한 <script> 요소( (기본 값)[http://www.w3.org/TR/html5/scripting-1.html#attr-script-type]은 text/javascript 이다)에 연결 시킬 수도 있다.
+또한 `<script>` 요소( (기본 값)[http://www.w3.org/TR/html5/scripting-1.html#attr-script-type] 은 text/javascript 이다)에 연결 시킬 수도 있다.
 
 ```
 <script type="application/ecmascript;version=6">
     ···
 </script>
-```
 ```
 
 This specifies the version out of band, externally to the actual content. Another option is to specify the version inside the content (in-band). For example, by starting a file with the following line:
