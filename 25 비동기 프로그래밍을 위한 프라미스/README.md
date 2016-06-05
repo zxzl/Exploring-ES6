@@ -15,7 +15,7 @@ Promise 는 비동기 계산 결과를 전달받기 위한 콜백의 대안이�
 
 다음 함수는 Promise를 통해 비동기 결과를 반환한다.
 
-The following function returns a result asynchronously, via a Promise:
+<sub>The following function returns a result asynchronously, via a Promise:</sub>
 
 ```javascript
 function asyncFunc() {
@@ -60,13 +60,13 @@ asyncFunc1()
 });
 ```
 
-then() 으로 반환되는 Promise P가 어떨지는 calback 이 뭘 하냐에 달려 있다.
+then() 으로 반환되는 Promise P 가 어떨지는 calback 이 뭘 하냐에 달려 있다.
 
 How the Promise P returned by then() is settled depends on what its callback does:
 
+- 만일 then()안에서 Promise 를 반환한다면 (A 라인처럼), 그 Promsie 의 처리는 Promise P 에 전달된다. 그게 라인 B에서 asyncFunction 의 Promise를 처리할 수 있는 이유이다.
 
-
-If it returns a Promise (as in line A), the settlement of that Promise is forwarded to P. That’s why the callback from line B can pick up the settlement of asyncFunction2’s Promise.
+- If it returns a Promise (as in line A), the settlement of that Promise is forwarded to P. That’s why the callback from line B can pick up the settlement of asyncFunction2’s Promise.
 If it returns a different value, that value is used to settle P.
 If throws an exception then P is rejected with that exception.
 Furthermore, note how catch() handles the errors of two asynchronous function calls (asyncFunction1() and asyncFunction2()). That is, uncaught errors are passed on until there is an error handler.
