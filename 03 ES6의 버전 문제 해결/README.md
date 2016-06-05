@@ -1,135 +1,114 @@
-## 3. One JavaScript: avoiding versioning in ECMAScript 6
+## 3. 단일 자바스크립트 : ECMAScript 6에서 버저닝을 피하기(One JavaScript: avoiding versioning in ECMAScript 6)
 
-What is the best way to add new features to a language? This chapter describes the approach taken by ECMAScript 6. It is called One JavaScript, because it avoids versioning.
+What is the best way to add new features to a language? This chapter describes the approach taken by ECMAScript 6. It is called _One JavaScript_, because it avoids versioning.
 
-언어에 새로운 features를 추가하는 가장 좋은 방법은 무엇일까? 3장에서는 ECMAScript6에 접근하는 법을 설명한다. versioning을 피해야 하기 때문에 이를 One JavaScript라고 한다. 
+언어에 새로운 기능을 추가하는 가장 좋은 방법은 무엇일까? 3장에서는 ECMAScript6에 다가가는 법을 설명한다. 버저닝(versioning)을 피해야 하기 때문에 이를 _단일 자바스크립트(One JavaScript)_라고 한다. 
 
-### 3.1 Versioning
+### 3.1 버저닝(Versioning)
 In principle, a new version of a language is a chance to clean it up, by removing outdated features or by changing how features work. That means that new code doesn’t work in older implementations of the language and that old code doesn’t work in a new implementation. Each piece of code is linked to a specific version of the language. Two approaches are common for dealing with versions being different.
 
+원칙적으로 한 언어의 새로운 버전은 오래된 기능을 제거하거나, 동작 방식을 변경함으로써 언어를 정비할 수 있는 기회가 된다. 이는 곧 새로운 코드가 해당 언어의 옛 구현체에서는 동작하지 않거나, 오래된 코드가 새로운 구현체에서 동작하지 않게 됨을 의미한다. 각각의 코드 조각들은 언어의 특정 버전과 연결되어 있다. 서로 다른 버전을 다루는 데는 흔히 두 가지 접근법이 사용된다.
+
 First, you can take an “all or nothing” approach and demand that, if a code base wants to use the new version, it must be upgraded completely. Python took that approach when upgrading from Python 2 to Python 3. A problem with it is that it may not be feasible to migrate all of an existing code base at once, especially if it is large. Furthermore, the approach is not an option for the web, where you’ll always have old code and where JavaScript engines are updated automatically.
+
+첫째, "전부 아니면 아무것도(all or nothing)" 전략을 선택할 수 있다. 만약 코드 베이스(code base)를 새로운 버전으로 사용하기 원한다면 완벽한 업그레이드가 필요하다. 파이썬은 2에서 3으로 버전을 올릴 때 이 방법을 사용했다. 이 방법이 가진 문제점 중 하나는 현실적으로 코드 베이스의 모든 것을 한번에 통합하는 것이 불가능 하다는 것이다. 특히 규모가 크다면 더더욱 어렵다. 더군다나 언제나 오래된 코드가 존재하고, 자바스크립트 엔진이 자동으로 업데이트되는 웹에서는 선택할 수 있는 방법이 아니다.
 
 Second, you can permit a code base to contain code in multiple versions, by tagging code with versions. On the web, you could tag ECMAScript 6 code via a dedicated Internet media type. Such a media type can be associated with a file via an HTTP header:
 
+둘째, 코드에 버전을 명시함으로써 여러가지 버전의 코드를 포함하는 코드베이스를 허용할 수도 있다. 웹에서는 전용 (인터넷 미디어 타입)[http://en.wikipedia.org/wiki/Internet_media_type]을 통한 ECMAScript 6 코드를 태그할 수도 있다. 어떤 미디어 타입은 HTTP 해더를 통해 파일과 연결시킬 수 있다.
+
+```
 Content-Type: application/ecmascript;version=6
-It can also be associated via the type attribute of the <script> element (whose default value is text/javascript):
-
-<script type="application/ecmascript;version=6">
-    ···
-</script>
-This specifies the version out of band, externally to the actual content. Another option is to specify the version inside the content (in-band). For example, by starting a file with the following line:
-
-use version 6;
-Both ways of tagging are problematic: out-of-band versions are brittle and can get lost, in-band versions add clutter to code.
-
-A more fundamental issue is that allowing multiple versions per code base effectively forks a language into sub-languages that have to be maintained in parallel. This causes problems:
-
-Engines become bloated, because they need to implement the semantics of all versions. The same applies to tools analyzing the language (e.g. style checkers such as JSLint).
-Programmers need to remember how the versions differ.
-Code becomes harder to refactor, because you need to take versions into consideration when you move pieces of code.
-Therefore, versioning is something to avoid, especially for JavaScript and the web.
-
-3.1.1 Evolution without versioning
-But how can we get rid of versioning? By always being backwards-compatible. That means we must give up some of our ambitions w.r.t. cleaning up JavaScript: We can’t introduce breaking changes. Being backwards-compatible means not removing features and not changing features. The slogan for this principle is: “don’t break the web”.
-
-We can, however, add new features and make existing features more powerful.
-
-As a consequence, no versions are needed for new engines, because they can still run all old code. David Herman calls this approach to avoiding versioning One JavaScript (1JS) [1], because it avoids splitting up JavaScript into different versions or modes. As we shall see later, 1JS even undoes some of a split that already exists, due to strict mode.
-
-One JavaScript does not mean that you have to completely give up on cleaning up the language. Instead of cleaning up existing features, you introduce new, clean, features. One example for that is let, which declares block-scoped variables and is an improved version of var. It does not, however, replace var, it exists alongside it, as the superior option.
-
-One day, it may even be possible to eliminate features that nobody uses, anymore. Some of the ES6 features were designed by surveying JavaScript code on the web. Two examples are:
-
-let-declarations are difficult to add to non-strict mode, because let is not a reserved word in that mode. The only variant of let that looks like valid ES5 code is:
-  let[x] = arr;
-Research yielded that no code on the web uses a variable let in non-strict mode in this manner. That enabled TC39 to add let to non-strict mode. Details of how this was done are described later in this chapter.
-
-Function declarations do occasionally appear in non-strict blocks, which is why the ES6 specification describes measures that web browsers can take to ensure that such code doesn’t break. Details are explained later.
-
-
-원론적으로, 언어의 새로운 버전은 오래된 특징을 제거하거나 동작하는 방법을 바꾸기 위한 찬스다. 
-In principle, a new version of a language is a chance to clean it up, by removing outdated features or by changing how features work. 
-이 말은 곧 새로운 코드가 그 언어의 더 오래된 구현물에서 동작하지 않거나 오래된 코드가 새로운 구현에서 동작하지 않는다는 것을 의미한다.
-That means that new code doesn’t work in older implementations of the language and that old code doesn’t work in a new implementation.
-각각의 코드 조각들은 언어의 특정 버전에 연결되어 있다. 다른 버전을 다루기 위한 두 가지 접근법이 흔히 사용된다.
-Each piece of code is linked to a specific version of the language. Two approaches are common for dealing with versions being different.
-
-첫 째, 코드 베이스가 새로운 버전을 사용길 원한다면 "all or nothing" 접근을 선택 할 수 있다. 이것은 완전히 업그레이드 되어야만 한다. 파이썬은 2에서 3버전으로 올라갈 때 이러한 접근법을 적용했다. 이 방법의 한 가지 문제점은 존재하는 코드베이스의 모든것을 통합하는 것이 실현 불가능 할 수도 있다. 특히 규모가 크다면 더더욱 그렇다. 더군다나 이 방법은 오래된 코드가 항상 있고 자바스크립트 엔진이 자동으로 업데이트되는 웹에서 선택 가능한 방법은 아니다. 
-First, you can take an “all or nothing” approach and demand that, if a code base wants to use the new version, it must be upgraded completely. Python took that approach when upgrading from Python 2 to Python 3. A problem with it is that it may not be feasible to migrate all of an existing code base at once, especially if it is large. Furthermore, the approach is not an option for the web, where you’ll always have old code and where JavaScript engines are updated automatically.
-
-둘 째, 코드에 버전을 명시하는 것으로써 여러가지 버전에서의 코드를 포함하는 코드베이스를 허용 할 수도 있다. 웹에서는, 전용 인터넷 미디어 타입을 통한 ECMAScript 6 코드를 태그할 수도 있다. 미디어 타입은 HTTP header 를 통한 파일과 연관된 것일 수 있다.
-Second, you can permit a code base to contain code in multiple versions, by tagging code with versions. On the web, you could tag ECMAScript 6 code via a dedicated Internet media type. Such a media type can be associated with a file via an HTTP header:
-
-Content-Type: application/ecmascript;version=6
-
-이것은 스크립트 태그의 타입 속성을 통해 관련될수도 있다. (기본값은 text/javascript) :
-It can also be associated via the type attribute of the <script> element (whose default value is text/javascript):
-
-<script type="application/ecmascript;version=6">
-    ···
-</script>
-
-이것은 외부적으로 실제 컨텐츠에 the version out of band를 명시한다. 또 다른 옵션은 컨텐츠 내부에 버전을 명시하는 것이다.(in-band). 예를 들어 다음의 예처럼 파일을 시작하는것에 의해 :
-This specifies the version out of band, externally to the actual content. Another option is to specify the version inside the content (in-band). For example, by starting a file with the following line:
-
-use version 6;
-
-태깅하는 두 가지 방법 모두 문제점이 있다 : out-of-band versions는 잘 깨지고 잃어버리기 쉽고 in-band 버전은 코드를 지저분하게 한다. 
-Both ways of tagging are problematic: out-of-band versions are brittle and can get lost, in-band versions add clutter to code.
-
-더욱 근본적인 이슈는, 코드 베이스 마다 언어를 효과적으로 fork하   여러 버전을 허용하는 것 .....후..... 동시에 유지보수되어야만 하는 서브 랭귀지  후... 나의 번역은 여기까지 인가...
-A more fundamental issue is that allowing multiple versions per code base effectively forks a language into sub-languages that have to be maintained in parallel. This causes problems:
-
-엔진들은 모든 버전의 의미해석을 구현해야하기 때문에 비대해진다. 언어분석 툴에도 똑같이 적용된다.
-Engines become bloated, because they need to implement the semantics of all versions. The same applies to tools analyzing the language (예: JSLint) (e.g. style checkers such as JSLint).
-프로그래머는 버전들이 어떻게 다른지 기억해야한다.
-Programmers need to remember how the versions differ.
-코드는 더욱 리팩토링하기 어려워진다. 왜냐하면 
-Code becomes harder to refactor, because you need to take versions into consideration when you move pieces of code.
-
-그러므로 versioning 은 피해야하는 것이다. 특히 JavaScript와 웹을 위해서 말이다. 
-Therefore, versioning is something to avoid, especially for JavaScript and the web.
-
-### 3.1.1 versioning이 없는 점진적 발전 
-### 3.1.1 Evolution without versioning 
-그러나 어떻게 versioning을 제거 할 수 있을까? 항상 이전 버전과 호환이 되어야하는데. 우리는 자바스크립트를 정화하는 그런 야망을 포기해야만 한다. 우리는 breaking changes를 소개 할 수 없다. 이전 버전과 호환이 된다는 것은 이전 버전의 특성을 바꾸거나 지우지 않는 것을 의미한다. 이 원칙에 의거한 슬로건이 바로 "dont' break the wb" 이다.
-
-But how can we get rid of versioning? By always being backwards-compatible. That means we must give up some of our ambitions w.r.t. cleaning up JavaScript: We can’t introduce breaking changes. Being backwards-compatible means not removing features and not changing features. The slogan for this principle is: “don’t break the web”.
-
-We can, however, add new features and make existing features more powerful.
-
-이러한 결과로써, 새로운 엔진을 위한 버전은 필요가 없다. 엔진은 여전히 오래된 모든 코드를 실행할 수 있기 때문에 말이다. David Herman 은 versioning을 피하기 위한 접근을 One JavaScript (1JS) 을 부른다. 그렇게 부르는 이유는 자바스크립트가 다른 버전이나 다른 모드로 분열되는 것을 피할 수 있기 때문이다. 나중에 보게 되겠지만, 1JS는 stric mode 로 인해 이미 분열된 것들을 다시 원상태로 돌리기도 한다.
-As a consequence, no versions are needed for new engines, because they can still run all old code. David Herman calls this approach to avoiding versioning One JavaScript (1JS) [1], because it avoids splitting up JavaScript into different versions or modes. As we shall see later, 1JS even undoes some of a split that already exists, due to strict mode.
-
-One JavaScript 는 우리가 언어를 cleaning up 하는 걸 완전히 포기해야만 한다는 의미는 아니다. 이미 존재하는 특징들을 없애는 대신에 새롭고 클린한 특징을 접하게 된다. 그러한 예의 한 가지로써 let 을 들 수 있다. 이것은 var 의 향상된 버전이며 블록 스코프 변수를 선언한다. 그러나 이것이 var를 대체하는 것은 아니다. let 은 더 상위 옵션으로써 var 와 나란히 존재한다.
-One JavaScript does not mean that you have to completely give up on cleaning up the language. Instead of cleaning up existing features, you introduce new, clean, features. One example for that is let, which declares block-scoped variables and is an improved version of var. It does not, however, replace var, it exists alongside it, as the superior option.
-
-더 이상 아무도 사용하지 않는 특징들은 언젠가 제거 될 수도 있다. ES6 특징의 몇 가지는 웹에서의 자바스크립트 코드의 측정에 의해 고안되었다. 다음의 두 가지 예제가 있다.
-One day, it may even be possible to eliminate features that nobody uses, anymore. Some of the ES6 features were designed by surveying JavaScript code on the web. Two examples are:
-
-let 선언은 non-strict 모드에 추가하기는 어렵다. 왜냐하면 non-strict 모드에서 let은 에약어가 아니기 때문이다. ES5 코드로 유효한 let의 변형은 다음과 같다.
-let-declarations are difficult to add to non-strict mode, because let is not a reserved word in that mode. The only variant of let that looks like valid ES5 code is:
-```javascript
-  let[x] = arr;
 ```
 
-Research yielded that no code on the web uses a variable let in non-strict mode in this manner. That enabled TC39 to add let to non-strict mode. 자세한 내용은 이 챕터 후반부에 설명한다. Details of how this was done are described later in this chapter.
+It can also be associated via the type attribute of the <script> element (whose default value is text/javascript):
 
-함수 선언은 때때로 non-strict blocks에서 나타난다. 
-Function declarations do occasionally appear in non-strict blocks, which is why the ES6 specification describes measures that web browsers can take to ensure that such code doesn’t break. Details are explained later.
+또한 <script> 요소( (기본 값)[http://www.w3.org/TR/html5/scripting-1.html#attr-script-type]은 text/javascript 이다)에 연결 시킬 수도 있다.
 
-###3.2 Strict 모드 그리고 ECMAScript6
-###3.2 Strict mode and ECMAScript 6
-Strict 모드는 ECMAScript 5에서 언어를 더욱 클린업 시키기 위해 소개되었다. 파일이나 함수의 첫 번째 줄에 아래와 같이 추가하면 strict 모드로 전환된다.
+```
+<script type="application/ecmascript;version=6">
+    ···
+</script>
+```
+```
+
+This specifies the version out of band, externally to the actual content. Another option is to specify the version inside the content (in-band). For example, by starting a file with the following line:
+
+이것은 실제 컨텐츠의 외부에(out of band) 버전을 따로 명시하는 것이다. 또 다른 옵션은 컨텐츠 내부에 버전을 명시하는 것이다.(in-band). 예를 들어 다음과 같이 파일을 시작하면 된다.
+
+```
+use version 6;
+```
+
+Both ways of tagging are problematic: out-of-band versions are brittle and can get lost, in-band versions add clutter to code.
+
+두 방법 모두 문제가 있는데, 외부에 버전을 표시하는 방법은 다루기 힘들고 유실될 염려가 있다. 내부에 표시하는 방법은 코드를 어지럽힌다.
+
+A more fundamental issue is that allowing multiple versions per code base effectively forks a language into sub-languages that have to be maintained in parallel. This causes problems:
+
+또한 더욱 근본적인 문제는 코드 베이스마다 여러 버전을 허용하는 것은 한 언어를 동시에 유지 보수해야 하는 다른 하위-언어(sub-languages)로 효과적으로 포크할 수 있게 한다. 이는 다음과 같은 문제를 일으킨다.
+
+* Engines become bloated, because they need to implement the semantics of all versions. The same applies to tools analyzing the language (e.g. style checkers such as JSLint).
+* Programmers need to remember how the versions differ.
+* Code becomes harder to refactor, because you need to take versions into consideration when you move pieces of code.
+
+Therefore, versioning is something to avoid, especially for JavaScript and the web.
+
+* 모든 버전의 구문을 해석할 수 있어야 하기 때문에 엔진이 비대해진다. 이는 언어 분석 도구도 마찬가지다. (예. JSLint 같은 스타일 점검 도구)
+* 프로그래머는 버전별 차이점을 기억해야 한다.
+* 코드 조각을 움직이는 순간 버전을 고려해야하기 때문에 코드 리팩토링이 어려워진다.
+
+그러므로, 버저닝은 피해야 한다. 특히나 자바스크립트와 웹에서라면 더더욱 그러하다.
+
+### 3.1.1 버저닝 없는 진화(Evolution without versioning)
+But how can we get rid of versioning? By always being backwards-compatible. That means we must give up some of our ambitions w.r.t. cleaning up JavaScript: We can’t introduce breaking changes. Being backwards-compatible means not removing features and not changing features. The slogan for this principle is: “don’t break the web”.
+
+그렇다면 어떻게 버저닝을 제거 할 수 있을까? 항상 이전 버전과 호환이 되야 하기 때문에, 우리는 자바스크립트를 정화하겠다는 야망을 포기해야만 한다. 즉, 주요 변경 사항을 도입할 수 없다는 것이다. 이전 버전과 호환이 된다는 것은 이전 버전의 기능을 변경하거나 없애지 않는 것을 의미한다. 이 원칙에 의거한 슬로건이 바로 "웹을 망가뜨리지 말라(don't break the web)"이다.
+
+We can, however, add new features and make existing features more powerful.
+하지만 우리는 새로운 기능을 추가하고, 기존의 기능을 더 강력하게 만들 수 있다.
+
+As a consequence, no versions are needed for new engines, because they can still run all old code. David Herman calls this approach to avoiding versioning One JavaScript (1JS) [1], because it avoids splitting up JavaScript into different versions or modes. As we shall see later, 1JS even undoes some of a split that already exists, due to strict mode.
+
+결론적으로, 엔진이 여전히 이전 버전의 모든 코드를 실행할 수 있기 때문에 새로운 엔진을 위한 버전은 필요가 없다. 데이비드 허만(David Herman) 은 버저닝을 피하기 위한 이러한 접근법을 '단일 자바스크립트((One JavaScript, 1JS)[http://exploringjs.com/es6/ch_one-javascript.html#one-js_1])[1]'라고 한다. 이는 자바스크립트가 다른 버전이나 다른 모드로 분열되는 것을 피할 수 있기 때문이다. 이후 다시 살펴보겠지만, 1JS는 strict 모드로 인해 이미 분리된 것을 다시 원상태로 복구하기도 한다.
+
+One JavaScript does not mean that you have to completely give up on cleaning up the language. Instead of cleaning up existing features, you introduce new, clean, features. One example for that is let, which declares block-scoped variables and is an improved version of var. It does not, however, replace var, it exists alongside it, as the superior option.
+
+단일 자바스크립트는 우리가 언어를 정돈하는 것을 완전히 포기해야 한다는 것을 뜻하지 않는다. 이미 존재하는 기능들을 없애는 대신에 새롭고, 말끔한 기능을 도입할 수 있다. 예를 들어 let은 블록 스코프 변수를 선언하는 기능을 하고 var의 향상된 버전이다. 그러나 let은 var를 대체하는 것이 아니라 더 상위 선택지로서 var와 나란히 존재한다.
+
+One day, it may even be possible to eliminate features that nobody uses, anymore. Some of the ES6 features were designed by surveying JavaScript code on the web. Two examples are:
+
+언젠가 더 이상 아무도 사용하지 않는 기능들은 제거 될 수도 있다. ES6의 기능 중 몇 가지는 웹에서 자바스크립트 코드를 조사함으로써 고안되었다. 다음 두 예제를 보자.
+
+* let-declarations are difficult to add to non-strict mode, because let is not a reserved word in that mode. The only variant of let that looks like valid ES5 code is:
+
+* `let` 선언은 non-strict 모드에 추가하기는 어렵다. 왜냐하면 non-strict에서는 `let`이 에약어가 아니기 때문이다. `let`을 유효한 ES5 코드로 변형하여 쓰면 다음과 같다.
+
+    ```javascript
+      let[x] = arr;
+    ```
+
+    Research yielded that no code on the web uses a variable let in non-strict mode in this manner. That enabled TC39 to add let to non-strict mode. Details of how this was done are described later in this chapter.
+
+    웹에서 조사해보니 non-strict 모드에서 이 방법으로 `let`을 사용한 코드는 찾아 볼 수 없었다. 그래서 TC39는 non-stric 모드에 `let`을 추가할 수 있었다. 자세한 방법은 이 장의 뒷부분에서 설명하겠다.
+
+* Function declarations do occasionally appear in non-strict blocks, which is why the ES6 specification describes measures that web browsers can take to ensure that such code doesn’t break. Details are explained later.
+
+함수 선언은 때때로 non-strict 블록에서 나타나는데, 이는 ES6의 스펙이 자세한 내용은 이후 설명하겠다. 
+
+###3.2 strict 모드와 ECMAScript6(Strict mode and ECMAScript 6)
 Strict mode was introduced in ECMAScript 5 to clean up the language. It is switched on by putting the following line first in a file or in a function:
+
+strict 모드는 ECMAScript 5에서 언어를 더욱 깔끔하게 만들기 위해 도입되었다. 파일이나 함수의 첫줄에 아래와 같이 추가하면 strict 모드로 전환된다.
 
 ```javascript
 'use strict';
 ```
-Strict 모드는 3가지 braking cahnges를 소개한다.
-Strict mode introduces three kinds of breaking changes:
 
-문법적 변화 : 이전의 몇가지 유효한 문법이 스트릭트 모드에서는 금지된다. 예:
+Strict mode introduces three kinds of breaking changes:
+strict 모드는 3가지 주요 변경 사항을 도입했다.
+
+* 문법적 변화 : 이전의 몇가지 유효한 문법이 스트릭트 모드에서는 금지된다. 예:
 Syntactic changes: some previously legal syntax is forbidden in strict mode. For example:
 
 with 문은 금지된다. with문은 사용자가 임의의 객체를 변수 스코프 체인에 추가하게 한다. 이것은 실행을 느리게 하고 변수 참조를 알아보기 어렵게 만든다. 
@@ -140,8 +119,8 @@ Deleting an unqualified identifier (a variable, not a property) is forbidden.
 Functions can only be declared at the top level of a scope.
 더 많은 식별자들이 생겼다 : implements interface let package private protected public static yield
 More identifiers are reserved: implements interface let package private protected public static yield
-더 많은 오류. 예 :
-More errors. For example:
+
+* More errors. For example:
 선언되지 않는 변수에 할당하는 것은 ReferenceError 를 발생시킨다. non-strict mode 에서는 이와 같은 경웨 전역 변수가 생성된다.
 Assigning to an undeclared variable causes a ReferenceError. In non-strict mode, a global variable is created in this case.
 읽기전용 속성을 변경하는 것(string 의 length 변경 같은 것) 은 typeError 을 유발한다. non-strict mode 에서는 아무런 영향을 미치지 않는다.
@@ -154,7 +133,7 @@ arguments doesn’t track the current values of parameters, anymore.
 this is undefined in non-method functions. In non-strict mode, it refers to the global object (window), which meant that global variables were created if you called a constructor without new.
 Strict mode is a good example of why versioning is tricky: Even though it enables a cleaner version of JavaScript, its adoption is still relatively low. The main reasons are that it breaks some existing code, can slow down execution and is a hassle to add to files (let alone interactive command lines). I love the idea of strict mode and don’t nearly use it often enough.
 
-### 3.2.1 슬로피 모드 지원(non-strict)
+### 3.2.1 슬로피(sloppy(non-strict)) 모드 지원
 
 One JavaScript는 슬로피 모드를 포기 할 수 없다는 것을 의미한다. : 이것은 계속 될 것이다(예: HTML속성에서). 그러므로 우리는 스트릭트 모드 위에서 ECMAScript6의 빌드를 할 수 없고, 이 특징들을 스트릭트 모드와 슬로피 모드 양 쪽에 추가해야만한다. 그렇지 않으면 스트릭트 모드는 언어의 다른 버전이 될 수도 있고 우린 versioning을 다시 겪게 된다. 불행하게도, ECMAScript6 특징 중 2가지가 슬로피 모드에 추가되기에 어렵다. let선언과 블록레벨 함수 선언이다. 왜 이것들이 어렵고, 어떻게 추가하는지 알아보자.   means that we can’t give up on sloppy mode: it will continue to be around (e.g. in HTML attributes). Therefore, we can’t build ECMAScript 6 on top of strict mode, we must add its features to both strict mode and non-strict mode (a.k.a. sloppy mode). Otherwise, strict mode would be a different version of the language and we’d be back to versioning. Unfortunately, two ECMAScript 6 features are difficult to add to sloppy mode: let declarations and block-level function declarations. Let’s examine why that is and how to add them, anyway.
 
@@ -207,18 +186,23 @@ First, typeof null should return the string 'null' and not 'object'. TC39 tried 
 'symbol'
 Second, the global object (window in browsers) shouldn’t be in the scope chain of variables. But it is also much too late to change that now. At least, one won’t be in global scope in modules and let never creates properties of the global object, not even when used in global scope.
 
-### 3.3 Breaking changes in ES6
+### 3.3 ES6 주요 변경 사항(Breaking changes in ES6)
 ECMAScript 6 does introduce a few minor breaking changes (nothing you’re likely to encounter). They are listed in two annexes:
 
-Annex D: Corrections and Clarifications in ECMAScript 2015 with Possible Compatibility Impact
-Annex E: Additions and Changes That Introduce Incompatibilities with Prior Editions
+* Annex D: Corrections and Clarifications in ECMAScript 2015 with Possible Compatibility Impact
+* Annex E: Additions and Changes That Introduce Incompatibilities with Prior Editions
 
-### 3.4 결론
-One JavaScript 는 이전버전과 완벽히 호환되는 ECMAScript 6를 만드는 것을 의미한다. 
+### 3.4 결론(Conclusion)
 One JavaScript means making ECMAScript 6 completely backwards compatible. It is great that that succeeded. Especially appreciated is that modules (and thus most of our code) are implicitly in strict mode.
+
+단일 자바스크립트는 ECMAScript 6을 완전히 하위 호환 가능하게 만드는 것을 뜻한다. 성공적이라면 굉장한 것이다. 특히나 스트릭트 모드에서 모듈(뿐만 아니라 우리의 대부분의 코드도) 절대적이라는 것을 높이 평가한다.
 
 In the short term, adding ES6 constructs to both strict mode and sloppy mode is more work when it comes to writing the language specification and to implementing it in engines. In the long term, both the spec and engines profit from the language not being forked (less bloat etc.). Programmers profit immediately from One JavaScript, because it makes it easier to get started with ECMAScript 6.
 
-### 3.5 Further reading
+단기적으로는 ES6 생성자를 스트릭트 모드와 슬로피(sloppy) 모드에 추가 함으로써 . 장기적으로는 스펙과 엔진의 장점 포크되지 않을 것이다.(훨씬 적게 커질 것이다. etc) 프로그래머는 당장 단일 자바스크립트에 대한 이득을 볼 수 있다. 왜냐하면 이는 ECMAScript 6 로 시작하기 훨씬 수월하게 해주기 때문이다. 
+
+### 3.5 더 읽을거리(Further reading)
 [1] The original 1JS proposal (warning: out of date): “ES6 doesn’t need opt-in” by David Herman.
+
+[1] 데이비드 허먼(David Herman)의 1JS에 대한 제안(warning: out of date): “ES6 doesn’t need opt-in”, 
 
