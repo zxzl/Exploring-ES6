@@ -1,21 +1,14 @@
 # 25. 비동기 프로그래밍을 위한 Promise 
-<sub>Promises for asynchronous programming</sub>
 
 이번 장은 ECMAScript 6 Promise API 를 통한 비동기 프로그래밍 소개이다.
 
 이전 장에서는 자바스크립트의 비동기 프로그래밍 기초를 설명한다. 이 장에서 이해할 수 없는 것이 있다면 이전 장을 다시 보는 것도 좋다.
 
-<sub>This chapter is an introduction to asynchronous programming via Promises in general and the ECMAScript 6 Promise API in particular. The previous chapter explains the foundations of asynchronous programming in JavaScript. You can consult it whenever there is something that you don’t understand in this chapter.</sub>
-
 ## 25.1 개요 Overview
 
 Promise 는 비동기 계산 결과를 전달받기 위한 콜백의 대안이다. Promise 는 더이상 비동기 함수 구현을 할 필요가 없지만, 그 함수를 사용하는 부분에서 여러 장점을 제공한다.
 
-<sub>Promises are an alternative to callbacks for delivering the results of an asynchronous computation. They require more effort from implementors of asynchronous functions, but provide several benefits for users of those functions.</sub>
-
 다음 함수는 Promise를 통해 비동기 결과를 반환한다.
-
-<sub>The following function returns a result asynchronously, via a Promise:</sub>
 
 ```javascript
 function asyncFunc() {
@@ -31,19 +24,15 @@ function asyncFunc() {
 
 다음과 같이 asyncFunc() 호출하면
 
-You call asyncFunc() as follows:
-
 ```javascript
 asyncFunc()
 .then(value => { /* success */ })
 .catch(error => { /* failure */ });
 ```
 
-25.1.1 Chaining then() calls
+25.1.1 Then 의 호출 체이닝 
 
 then() 은 항상 메서드 체인을 할수있게 하는 Promise 를 반환한다.
-
-then() always returns a Promise, which enables you to chain method calls:
 
 ```javascript
 asyncFunc1()
@@ -60,14 +49,11 @@ asyncFunc1()
 });
 ```
 
-then() 으로 반환되는 Promise P 가 어떨지는 calback 이 뭘 하냐에 달려 있다.
+then() 으로 반환되는 Promise P 가 어떨지는 calback 이 뭘 하냐에 달려 있다.:
 
-How the Promise P returned by then() is settled depends on what its callback does:
-
-- 만일 then()안에서 Promise 를 반환한다면 (A 라인처럼), 그 Promsie 의 처리는 Promise P 에 전달된다. 그게 라인 B에서 asyncFunction 의 Promise를 처리할 수 있는 이유이다.
-
-- If it returns a Promise (as in line A), the settlement of that Promise is forwarded to P. That’s why the callback from line B can pick up the settlement of asyncFunction2’s Promise.
-If it returns a different value, that value is used to settle P.
+- 만일 then()안에서 Promise 를 반환한다면 (A 라인처럼), 그 Promsie 의 해결은 Promise P 에 전달된다. 그게 라인 B에서 asyncFunction 의 Promise를 처리할 수 있는 이유이다.
+- 만일 다른 값을 반환하면, 그 값은 P를 해결하는데 사용된다.
+- 만일 예외를 던진다면 그 다음 P는 예외와 함께 reject 된다.
 If throws an exception then P is rejected with that exception.
 Furthermore, note how catch() handles the errors of two asynchronous function calls (asyncFunction1() and asyncFunction2()). That is, uncaught errors are passed on until there is an error handler.
 
