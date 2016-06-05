@@ -3,7 +3,7 @@
 
 It took a long time to finish it, but ECMAScript 6, the next version of JavaScript, is finally a reality:
 
-그것 끝내기 위해서 오랜 시간이 걸렸지만, 자바스크립트 다음 버전인 ECMAScript 6은 마침내 현실이 되었다.:
+끝내기 위해서 오랜 시간이 걸렸지만, 자바스크립트 다음 버전인 ECMAScript 6은 마침내 현실이 되었다.:
 * It became a standard on 17 June 2015.
 * Its features are slowly appearing in JavaScript engines (as documented in kangax’ ES6 compatibility table).
 * Transpilers (such as Babel and Traceur) let you compile ES6 to ES5.
@@ -51,68 +51,124 @@ Work on ECMAScript 2016 (and later) has already begun, current proposals are lis
 
 ECMAScript 2016(그 이후) 작업은 이미 시작되었고, 현재 제안은 깃헙에 정리 되어 있다. 그 과정도 변경 되고 있으며, TC39 프로세서 문서에 기술되고 있다.
 
+## 1.3 JavaScript versus ECMAScript
 ## 1.3 자바스크립트 대 ECMAScript
-자바스크립트는 누구에게나 프로그램 언어로 불리지만 그 이름은 트레이드마크(오라클에 의한,sun으로 부터 받은 트레이드마크)다. 그러므로, 공식적인 자바스크립트 이름은 ECMAscript이다. 이 이름은 언어의 표준을 관리하는 표준 조직인 Ecma로 부터 왔다. ECMAscript 시작 이래로 조직의 이름은 약어 "ECMA"로 부터 고유명사인 "Ecma"로 변경되었다.
+JavaScript is what everyone calls the language, but that name is trademarked (by Oracle, which inherited the trademark from Sun). Therefore, the official name of JavaScript is ECMAScript. That name comes from the standards organization Ecma, which manages the language standard. Since ECMAScript’s inception, the name of the organization has changed from the acronym “ECMA” to the proper name “Ecma”.
 
-자바스크립트 버전은 언어의 공식적 이름을 수행하는 명세에 의해서 정의 된다. 따라서 처음 자바스크립트 표준 버전은 "ECMAScript Language Specification, Edition 1"를 줄여서 ECMAScript 1이다. ECMAScript X는 종종 ESX로 줄여 부른다.
+자바스크립트는 누구나 프로그램 언어로 생각하지만 그 이름은 상표(오라클에 의해, sun으로 부터 받은 상표)다. 따라서, 공식적인 자바스크립트 이름은 ECMAscript이다. 이 이름은 언어의 표준을 관리하는 조직인 Ecma로 부터 따 왔다. ECMAscript 시작 이후로 조직의 이름은 약어 "ECMA"로 부터 고유명사인 "Ecma"로 변경되었다.
 
-## 1.4 ES6으로 업그레이드
+Versions of JavaScript are defined by specifications that carry the official name of the language. Hence, the first standard version of JavaScript is ECMAScript 1 which is short for “ECMAScript Language Specification, Edition 1”. ECMAScript x is often abbreviated ESx.
+
+자바스크립트 버전은 언어의 공식적 이름을 가지고 명세에 의해서 정의 된다. 따라서 처음 자바스크립트 표준 버전은 "ECMAScript Language Specification, Edition 1"를 줄여서 ECMAScript 1이다. ECMAScript X는 종종 ESX로 줄여 부른다.
+
+## 1.4 Upgrading to ES6
+## 1.4 ES6로 업그레이드
+The stake holders on the web are:
+
+* Implementors of JavaScript engines
+* Developers of web applications
+* Users
+
 웹 이해 관계자들:
-* 자바스크립트 엔진 구현자
+* 자바스크립트 엔진 개발자
 * 웹 애플리케이션 개발자
 * 사용자
 
-이 그룹들은 서로 매우 작은 제어를 가진다. 그것이 왜 웹언어 업그레이드가 매우 도전적인 이유이다.
+These groups have remarkably little control over each other. That’s why upgrading a web language is so challenging.
 
-한편 엔진을 업그레이드하는 것은 도전이다. 왜냐하면 그들은 모든 종류의 웹코드와 때때로 매우 오래된 코드에 직면해 있기 때문이다. 당신 역시 자연스럽고 사용자가 인지하지 못하게 엔진 업그레이드되길 원한다. 그러므로 ES6은 ES5의 상위 집합으로 아무것도 제거 된 것이 없다. ES6는 언어를 버전이나 모드를 도입하지 않고 업그래이드 한다. 이것은 심지어 슬리피 모드와의 틈 없이 엄격모드를 사실상 기본값으로 관리 한다. 이 "하나의 자바스크립트"로 불리는 접근는 별도에 장에서 설명한다.
+이 그룹들은 서로 매우 적게 제어할 수 있다. 이것이 바로 왜 웹 언어 업그레이드가 매우 어려운 이유이다.
 
-반면에 코드를 업그레이드 하는것은 도전이다. 왜냐하면 당신의 코드는 반드시 당신이 타겟으로 하는 사용자가 사용하는 모든 자바스크립트 엔진에서 돌아야 하기 때문이다. 그러므로 만약 당신이 ES6을 당신의 코드에서 사용하길 원한다면 당신은 단지 두가지 선택이 있다. 당신은 당신의 타겟 사용자가 ES6를 지원하지 않는 엔진을 더이상 사용하지 않을 때까지 기다릴 수 있다. 그것은 몇 해 걸릴 것이다. 주요 ES5 2009년 11월 표준화 되었다.! 또는 당신은 ES6을 ES5로 컴파일 할 수 있다. 이 작업을 수행하는 자세한 방법은 "Setting up ES6"에 나와 있고 이것은 온라인에서 공짜다.
+On one hand, upgrading engines is challenging, because they are confronted with all kinds of code on the web, some of which is very old. You also want engine upgrades to be automatic and unnoticeable for users. Therefore, ES6 is a superset of ES5, nothing is removed1. ES6 upgrades the language without introducing versions or modes. It even manages to make strict mode the de-facto default (via modules), without increasing the rift between it and sloppy mode. The approach that was taken is called “One JavaScript” and explained in a separate chapter.
 
-ES6 설계에서 목표 와 요구사항의 충돌
+한편 엔진을 업그레이드하는 것은 어렵다. 왜냐하면 그들은 모든 종류의 웹상에서의 코드와 매우 오래된 코드와 맞닥뜨리기 때문이다. 당신 역시 자연스럽고 사용자 모르게 엔진 업그레이드 되길 원한다. 따라서 ES6은 ES5의 상위 집합으로 아무것도 제거 된 것이 없다. ES6는 언어를 버전이나 모드를 도입하지 않고 업그레이드 한다. 이것은 심지어 슬리피 모드와의 틈을 벌리지 않고, 스트릭트 모드를 사실상 기본(모듈을 통한)으로 관리 한다. 이 "하나의 자바스크립트"로 불리는 접근는 별도에 3장에서 설명하겠다.
 
+On the other hand, upgrading code is challenging, because your code must run on all JavaScript engines that are used by your target audience. Therefore, if you want to use ES6 in your code, you only have two choices: You can either wait until no one in your target audience uses a non-ES6 engine, anymore. That will take years; mainstream audiences were at that point w.r.t. ES5 when ES6 became a standard in June 2015. And ES5 was standardized in December 2009! Or you can compile ES6 to ES5 and use it now. More information on how to do that is given in the book “Setting up ES6”, which is free to read online.
+
+다른 한편 코드를 업그레이드 하는 것은 어렵다. 왜냐하면 당신의 코드는 반드시 원하는 사용자가 사용하는 모든 자바스크립트 엔진에서 돌아야 하기 때문이다. 그러므로 만약 당신이 ES6을 당신의 코드에서 사용하길 원한다면 당신은 단지 두 가지 선택 밖에 없다. 당신은 당신의 타겟 사용자가 ES6를 지원하지 않는 엔진을 더이상 사용하지 않을 때까지 기다릴 수 있다. 이것은 수년 걸릴 것이다. ES6이 2015년 6월에 표준이 되었을 때 주요 사용자는 ES5를 사용하였다. ES5는 2009년 11월 표준화 되었다.! 또는 당신은 ES6을 ES5로 컴파일 할 수 있다. 이 작업에 대한 자세한 방법은 "Setting up ES6"에 나와 있고 이것은 온라인에서 공짜로 볼 수 있다.
+
+Goals and requirements clash in the design of ES6:
+* Goals are fixing JavaScript’s pitfalls and adding new features.
+* Requirements are that both need to be done without breaking existing code and without changing the lightweight nature of the language.
+
+ES6 설계에서 목표와 요구사항의 충돌
 * 목표는 자바스크립트의 함정을 수정하고 새로운 기능을 추가
-* 요구 사항은 존재하는 코드의 깨짐이나 언어의 경량특성을 변경 없이 되는 것. 
+* 요구 사항은 존재하는 코드의 깨짐이나 언어의 경량특성을 변경 없이 되는 것 두 가지다. 
 
+## 1.5 Goals for ES6
 ## 1.5 ES6의 목표
-하모니/ES6의 원래 프로젝트 페이지는 몇몇개의 목표를 가진다. 다음 소단원에서 나는 목표의 몇개를 설명하겠다.
+The original project page for Harmony/ES6 includes several goals. In the following subsections, I’m taking a look at some of them.
 
-### 1.5.1 목표: 더나은 언어
+하모니/ES6의 원래 프로젝트 페이지는 몇 가지 목표를 가진다. 다음 소단원에서 목표를 설명하겠다.
 
-목표는 쓰기에 더 나은 언어:
+### 1.5.1 Goal: Be a better language
+### 1.5.1 목표: 더 나은 언어가 되기
+
+The goal is: Be a better language for writing:
+
+1. complex applications;
+2. libraries (possibly including the DOM) shared by those applications;
+3. code generators targeting the new edition.
+
+목표는 사용하기 더 나은 언어가 되는 것 이다.:
 
 1. 복잡한 어플리케이션;
 2. 애플리케이션에 의해 공유된 라이브러리(아마도 DOM을 포함);
 3. 새 판을 겨냥한 코드 생성기.
 
-소 목적 (1) 자바스크립트로 쓰여진 애플리케이션 사례는 크게 증가되었다. 목표를 실현하는 ES6 기능의 키는 내장 모듈이다.
+Sub-goal (i) acknowledges that applications written in JavaScript have grown huge. A key ES6 feature fulfilling this goal is built-in modules.
 
-모듈들은 또한 목표(2)의 해답이다. 반면에 DOM은 자바스크립트에서 구현하기 어렵기로 악명이 높다. ES6 프록시는 이것을 도와준다(이 쳅터에서 설명).
+소 목적 (1) 자바스크립트를 사용한 애플리케이션 사례는 크게 증가되었다. 목표를 실현하는 ES6 기능의 키는 내장 모듈이다.
 
-몇몇의 기능들은 자바스크립트 개선이 아닌 특별하게 추가 되었다. 그러나 이 기능은 자바스크립트로 컴파일을 쉽게 해준다. 두가지 예를 보면:
+Modules are also an answer to goal (ii). As an aside, the DOM is notoriously difficult to implement in JavaScript. ES6 Proxies should help here (as described in a separate chapter).
 
-```
-Math.fround() – rounding Numbers to 32 bit floats
-Math.imul() – multiplying two 32 bit ints
-```
+모듈들은 또한 목표(2)의 답이 된다. 여담으로 DOM은 자바스크립트에서 구현 어렵기로 악명이 높다. ES6 프록시는 여기에 도움을 준다(28장에서 설명).
 
+Several features were specifically added not to improve JavaScript, but to make it easier to compile to JavaScript. Two examples are:
+* Math.fround() – rounding Numbers to 32 bit floats
+* Math.imul() – multiplying two 32 bit ints
+
+몇개의 기능들은 자바스크립트 개선이 아닌 특별하게 추가 되었다. 그러나 이 기능은 자바스크립트로 컴파일을 쉽게 해준다. 두가지 예를 보면:
+* Math.fround() – 32비트 부동소수점으로 반올림한다.
+* Math.imul() – 32비트 정수을 곱한다.
+
+They are both useful for, e.g., compiling C/C++ to JavaScript via Emscripten.
 이것들은 예를 들면 C/C++을 Emscripten을 통해 자바스크립트로 컴파일 할때 유용하다. 
 
-### 1.5.2 목표: 상호 개선 
-이 목표는 상호 개선, 가능한 사실상의 표준을 채택이다.
+### 1.5.2 Goal: Improve interoperation
+### 1.5.2 목표: 상호 운영 개선 
+The goal is: Improve interoperation, adopting de facto standards where possible.
+
+이 목표는 상호운용 개선, 가능한 사실상의 표준을 채택이다.
+
+Examples are:
+
+* Classes: are based on how constructor functions are currently used.
+* Modules: picked up design ideas from the CommonJS module format.
+* Arrow functions: have syntax that is borrowed from CoffeeScript.
+* Named function parameters: There is no built-in support for named parameters. Instead, the existing practice of naming parameters via object literals is supported via destructuring in parameter definitions.
+
 예를 들면:
 
-* Classes: 는 생성자 함수들이 현재 사용되는 방법을 기반한다.
+* Classes: 는 생성자 함수들이 현재 사용되는 방법을 기반으로 한다.
 * Modules: 은 CommonJS 모델 포멧으로 부터 설계 아이디어를 가져왔다.
 * Arrow functions: 은 CoffeeScript로 부터 빌려온 문법을 가진다.
-* Named function parameters: 기명 파라미터에 대한 지원이 내장되어 있지 않다. 대신에 객체 리터럴를 통한 기명 파라미터의 기존 관행은 파라미터 정의 시 해체를 통해 제공된다.
+* Named function parameters: 기명 파라미터에 대한 지원이 내장되어 있지 않다. 대신에 객체 리터럴를 통한 기명 파라미터로 사용하는 기존 방법은 파라미터 정의 시 해체를 통해 제공 할 수 있다.
 
+### 1.5.3 Goal: Versioning
 ### 1.5.3 목표: 버져닝
+The goal is: Keep versioning as simple and linear as possible.
 목표는: 가능한 간단하고 선형적으로 버저닝을 유지 하는 것 이다.
 
-ES5에 대한 관련된 부분도 없으며, 모든것이 ES6이고, 이전에 언급했던것 처럼 ES6은 ES6코드 기반 안에서 "하나의 자바스크립트"를 통해 버저닝을 피한다.
+As mentioned previously, ES6 avoids versioning via “One JavaScript”: In an ES6 code base, everything is ES6, there are no parts that are ES5-specific.
+이전에 말했듯이, ES6은 "하나의 자바스크립트"를 통해 버저닝을 피하고, 모든것은 ES6이고 그곳에는 ES5의 특화된 부분은 아무것도 없다.
 
-## 1.6 ES6기능 개요
-ECMAScript 6 스팩의 도입을 인용:
+## 1.6 Categories of ES6 features
+## 1.6 ES6기능의 종류
+The introduction of the ES6 specification lists all new features:
+
+ECMAScript 6의 새로운 기능 사양 목록 소개:
+
+Some of [ECMAScript 6’s] major enhancements include modules, class declarations, lexical block scoping, iterators and generators, promises for asynchronous programming, destructuring patterns, and proper tail calls. The ECMAScript library of built-ins has been expanded to support additional data abstractions including maps, sets, and arrays of binary numeric values as well as additional support for Unicode supplemental characters in strings and regular expressions. The built-ins are now extensible via subclassing.
 
 모듈, 클래식 정의, 어휘적 블록 스코프, 반복자와 제너레이터, 비동기 프로그래밍을 위한 프로미스, 패턴 패체와 꼬리 재귀는 ECMAScript 6의 주요 개선의 일부로 포함된다. 내장된 ECMAScript 라이브러리는 맵, 셋, 문자열의 유니코드 보조문자, 정규표현식 표현식을 추가적으로 잘 제공하기 위한 바이너리 수형 배열을 포함한 추가적인 추상 데이터을 제공하기 위해서 확장되었다. 현재 내장 모듈은 서브클래스를 통해 확장 가능하다.
 
