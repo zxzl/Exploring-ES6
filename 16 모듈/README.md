@@ -55,8 +55,12 @@ export default function () { ··· } // no semicolon!
 //------ main1.js ------
 import myFunc from 'myFunc';
 myFunc();
-Or a class:
+```
 
+클래스도 가능하다.
+> Or a class:
+
+```js
 //------ MyClass.js ------
 export default class { ··· } // no semicolon!
 
@@ -65,6 +69,7 @@ import MyClass from 'MyClass';
 const inst = new MyClass();
 ```
 
+함수나 클래스를 기본 익스포트 할 경우 구문 끝에 세미콜론이 붙지 않는것에 주의하라(which are anonymous declarations)
 Note that there is no semicolon at the end if you default-export a function or a class (which are anonymous declarations).
 
 ### 16.1.3 브라우저: 스크립트 vs 모듈
@@ -73,13 +78,20 @@ Note that there is no semicolon at the end if you default-export a function or a
 ### 16.2 자바스크립트의 모듈
 > 16.2 Modules in JavaScript
 
-자바스크립는 내장된 모듈을 지원한 적이 없음에도 불구하고, 커뮤니티는 ES5와 그 이전 버전의 라이브러리에 의해 지원되는 간단한 모듈 스타일을 수렴해왔다. 이런 스타일이 ES6에도 채택되었다.
+자바스크립는 내장된 모듈을 지원한 적이 전혀 없음에도 불구하고, 커뮤니티는 ES5와 그 이전 버전의 라이브러리에 의해 지원되는 간단한 모듈 스타일을 수렴해왔다. 이런 스타일이 ES6에도 채택되었다.
 > Even though JavaScript never had built-in modules, the community has converged on a simple style of modules, which is supported by libraries in ES5 and earlier. This style has also been adopted by ES6:
 
 + 각각의 모듈은 일단 한 번 로드 되면 실행되는 코드의 조각이다.
 + 그 코드에서 선언이 있을 수 있다(변수 선언, 함수 선언 등)
- - 
-+ Each module is a piece of code that is executed once it is loaded.
+ - 자동적으로 이러한 선언은 모듈 내부에 유지된다.
+ - 익스포트 할 모듈을 표시 할 수 있고, 다른 모듈이 이 모듈을 임포트 할 수 있다.
++ 하나의 모듈은 다른 모듈들로부터 여러가지를 임포트 할 수 있다. 모듈 명시자를 통해서 임포트된 모듈들을 참조하며, strings that are either :
+ - 상대 경로('../model/user'): 이 경로는 임포팅하는 모듈의 위치를 상대적으로 해석한다. 파일 확장자인 .js 는 일반적으로 생략 될 수 있다.
+ - 절대 경로('/lib/js/helpers'): 임포트되는 모듈의 파일을 직접적으로 가르킨다.
+ - 이름('util'): 설정되어야 하는 참조 모듈의 이름
++ 모듈은 싱글톤이다. 모듈이 여러번 임포트된다고 할 지라도, 하나의 인스턴스만이 존재한다.
+
+> + Each module is a piece of code that is executed once it is loaded.
 + In that code, there may be declarations (variable declarations, function declarations, etc.).
  - By default, these declarations stay local to the module.
  - You can mark some of them as exports, then other modules can import them.
@@ -89,27 +101,45 @@ Note that there is no semicolon at the end if you default-export a function or a
  - Names ('util'): What modules names refer to has to be configured.
 + Modules are singletons. Even if a module is imported multiple times, only a single “instance” of it exists.
 
+이러한 모듈의 접근법은 전역 변수를 회피하고, 전역에는 모듈 명시자만이 있다.
 > This approach to modules avoids global variables, the only things that are global are module specifiers.
 
 ### 16.2.1 ECMAScript 5 모듈 시스템
 > 16.2.1 ECMAScript 5 module systems
 
-
+ES5 모듈 시스템이 언어의 명확한 지원없이도 얼마나 잘 동작하는지 인상적이다. 가장 중요한 두 가지(불행히도 호환 불가한) 명세는 다음과 같다.
 > It is impressive how well ES5 module systems work without explicit support from the language. The two most important (and unfortunately incompatible) standards are:
 
-+ #### CommonJS Modules: The dominant implementation of this standard is in Node.js (Node.js modules have a few features that go beyond CommonJS). Characteristics:
++ *커먼JS*: 이 명세의 주도적인 구현은 Node.js에서 볼 수 있다.(Node.js 모듈은 CommonJS를 능가하는 몇몇 기능을 가지고 있다.) 특징은 다음과 같다:
+ - 간결한 문법
+ - 동기 로딩과 서버를 위해 고안되었다
++ *비동기 모듈 정의*: 이 명세의 가장 유명한 구현은 RequireJS이다. 특징은 다음과 같다.
+ - 약간 더 복잡한 문법, eval()을 안쓰고도 비동기적인 모듈 정의를 가능게 한다. (또는 컴파인 단계에서)
+ - 비동기적인 로딩과 브라우저를 위해 고안되었다.
+
+> + *CommonJS Modules*: The dominant implementation of this standard is in Node.js (Node.js modules have a few features that go beyond CommonJS). Characteristics:
 - Compact syntax
 - Designed for synchronous loading and servers
-+ #### Asynchronous Module Definition (AMD): The most popular implementation of this standard is RequireJS. Characteristics:
++ *Asynchronous Module Definition (AMD)*: The most popular implementation of this standard is RequireJS. Characteristics:
 - Slightly more complicated syntax, enabling AMD to work without eval() (or a compilation step)
 - Designed for asynchronous loading and browsers
-The above is but a simplified explanation of ES5 modules. If you want more in-depth material, take a look at “Writing Modular JavaScript With AMD, CommonJS & ES Harmony” by Addy Osmani.
+
+위 내용은 ES5 모듈의 간략한 설명이다. 더 자세한 내용을 원한다면 "writing Modular JavaScript With AMD, CommonJS & Harmony" by Addy Osmani 를 살펴보길 권한다.
+> The above is but a simplified explanation of ES5 modules. If you want more in-depth material, take a look at “Writing Modular JavaScript With AMD, CommonJS & ES Harmony” by Addy Osmani.
 
 ## 16.2.2 ECMAScript 6 모듈
 > 16.2.2 ECMAScript 6 modules
 
 ECMAScript 6 모듈의 목적은 CommonJS 와 AMD 유저 모두를 만족시키는 포맷을 만드는 것이었다.
 > The goal for ECMAScript 6 modules was to create a format that both users of CommonJS and of AMD are happy with:
+
++ CommonJS와 유사하게, CommonJS는 간결한 문법, single exports의 선호, 상호?순환 의존성을 지원한다.
++ AMD와 유사하게, AMD는 비동기 로딩과 설정가능한 모듈로딩을 직접적으로 지원한다.
+언어에 내장되는것은 CommonJS와 AMD를 넘어서는 ES6모듈을 허용한다. (자세한 내용은 나중에 설명한다.)
+
++ 문법은 CommonJS 보다 간결하다.
++ 구조는 전략적으로 분석될 수 있다.(정적 체킹, 최적화 등등)
++ 상호의존을 위한 지원은 CommonJS보다 낫다.
 
 + Similarly to CommonJS, they have a compact syntax, a preference for single exports and support for cyclic dependencies.
 + Similarly to AMD, they have direct support for asynchronous loading and configurable module loading.
@@ -119,9 +149,12 @@ Being built into the language allows ES6 modules to go beyond CommonJS and AMD (
 + Their structure can be statically analyzed (for static checking, optimization, etc.).
 + Their support for cyclic dependencies is better than CommonJS’s.
  
-ES6 모듈 표준은 다음 두 가지를 갖는다
+ES6 모듈 명세는 다음 두 가지를 갖는다
 
 > The ES6 module standard has two parts:
+
++ 선언적 문법(임포트와 익스포트를 위한)
++ 프로그래밍적 로더 API(모듈이 로드 되는 방법 설정과 조건적으로 모듈을 로드하기 위해)
 
 + Declarative syntax (for importing and exporting)
 + Programmatic loader API: to configure how modules are loaded and to conditionally load modules
@@ -132,9 +165,10 @@ ES6 모듈 표준은 다음 두 가지를 갖는다
 익스포트의 두 가지 종류 : 명명된 익스포트(several per module)와 디폴트 익스포트이다. 한 번에 둘 다 사용하는 것도 가능하지만 분리하는게 일반적으로 좋다. 
 > There are two kinds of exports: named exports (several per module) and default exports (one per module). As explained later, it is possible use both at the same time, but usually best to keep them separate.
 
-## 명명 익스포트
+## 명명 익스포트(several per module)
 > 16.3.1 Named exports (several per module)
 
+모듈은 export 키워드와 함께 쓰이는 선언문에 접두어를 붙임으로써 여러개를 익스포트 할 수 있다. 이러한 익스포트는 이름으로 구별되고 명명된 익스포트라고 불린다.
 > A module can export multiple things by prefixing its declarations with the keyword export. These exports are distinguished by their names and are called named exports.
 
 ```js
