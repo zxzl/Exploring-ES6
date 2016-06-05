@@ -419,8 +419,11 @@ arr.map(x => x()); // [0,1,2]
 > `for` 루프의 평가는 `var`를 두번째로 처리하고 `let`, `const`를 세번째로 처리합니다. `let`으로 선언된 변수만이 `ForBodyEvaluation()`에 두번째 이후의 파라미터 `perIterationBindings`로 전달되는 `perIterationLets`( 9장 참고 ) 리스트에 추가됩니다.  
 > `The evaluation of the for loop handles var as the second case and let/const as the third case. Only let-declared variables are added to the list perIterationLets (step 9), which is passed to ForBodyEvaluation() as the second-to-last parameter, perIterationBindings.`
 
-### 9.5.2 for-of loop 와 for-in loop
-for-of 루프에서는 var 는 싱글 바인딩을 생성한다.
+### 9.5.2 for-of loop 와 for-in loop `for-of loop and for-in loop`
+
+`for-of` 루프에서 `var`는 하나의 바인딩을 생성합니다.
+
+`In a for-of loop, var creates a single binding:`
 
 ```javascript
 const arr = [];
@@ -430,7 +433,9 @@ for (var i of [0, 1, 2]) {
 arr.map(x => x()); // [2,2,2]
 ```
 
-let 은 이터레이션마다 하나의 바인딩을 생성한다.
+`let`은 반복마다 바인딩을 하나씩 생성합니다.
+
+`let creates one binding per iteration:`
 
 ```javascript
 const arr = [];
@@ -440,22 +445,34 @@ for (let i of [0, 1, 2]) {
 arr.map(x => x()); // [0,1,2]
 ```
 
-const 또한 각 이터레이션마다 하나의 바인딩을 생성하지만, 불변으로 생성된 바인딩이다.
+`const` 또한 반복마다 하나의 바인딩을 생성하지만, 생성된 바인딩은 불변입니다.
 
-for-in 루프는 for-of 루프와 비슷한 동작을 한다.
+`const also creates one binding per iteration, but the bindings it creates are immutable.`
 
-:notebook: *for-of loop: 스펙안에서의 이터레이션의 바인딩*
-for-of의 반복 바인딩은 [ForIn/OfBodyEvaluation](http://www.ecma-international.org/ecma-262/6.0/#sec-runtime-semantics-forin-div-ofbodyevaluation-lhs-stmt-iterator-lhskind-labelset) 으로 처리된다. 단계 5.B에서 새로운 환경(Environment)가 만들어지고 바인딩은 [BindingInstantiation](http://www.ecma-international.org/ecma-262/6.0/#sec-runtime-semantics-bindinginstantiation) 을 통해 그것에 추가된다  (let 을 위한 가변, const 를 위한 불변). 현재 반복 값은 nextValue 변수에 저장되고, 바인딩을 초기화하여 사용하는 두가지 방법 중 하나의 방법을 사용한다:
+`for-in` 루프는 `for-of` 루프와 비슷하게 작동합니다.
 
-+ 싱글 변수의 선언(단계 5.hi) : [InitializeReferencedBinding](http://www.ecma-international.org/ecma-262/6.0/#sec-initializereferencedbinding) 을 통해 처리된다.
-+ 해체(단계 5.i.iii를) : [BindingInitialization (ForDeclaration)](http://www.ecma-international.org/ecma-262/6.0/#sec-for-in-and-for-of-statements-runtime-semantics-bindinginitialization) 을 통해 처리되거나, 다른 경우 [BindingInitialization (BindingPattern)](http://www.ecma-international.org/ecma-262/6.0/#sec-destructuring-binding-patterns-runtime-semantics-bindinginitialization) 로 처리된다.
+`The for-in loop works similarly to the for-of loop.`
 
-### 9.5.3 왜 이터레이션 마다의 바인딩으 유용할까?
-다음은 세가지 링크를 표현하는 HTML 페이지이다.
+> :notebook: for-of loop: 반복마다 바인딩되는 스펙 `for-of loop: per-iteration bindings in the spec`  
+> `for-of`에서 반복마다 바인딩은 `ForIn/OfBodyEvaluation`에서 제어합니다. 5.b장을 보면, `BindingInstantiation`( 가변 `let`, 불변 `const` )을 통해서 새로운 환경이 생성되고 바인딩이 추가됩니다. 현재 반복 변수가 `nextValue` 변수에 저장되고 둘 중 하나의 방법으로 바인딩 초기화에 사용됩니다.  
+> `Per-iteration bindings in for-of are handled by ForIn/OfBodyEvaluation. In step 5.b, a new environment is created and bindings are added to it via BindingInstantiation (mutable for let, immutable for const). The current iteration value is stored in the variable nextValue and used to initialize the bindings in either one of two ways:`
+> + 하나의 변수 선언(5.h.i장)은 `InitializeReferencedBinding`을 통해 제어됩니다.  
+> + `Declaration of single variable (step 5.h.i): is handled via InitializeReferencedBinding`  
+> + 해체(5.i.iii장)는 `BindingInitialization` (`BindingPattern`)라는 다른 케이스를 초기화하는 `BindingInitialization`(`ForDeclaration`)에서 하나의 케이스로 처리됩니다.  
+> + `Destructuring (step 5.i.iii): is handled via one case of BindingInitialization (ForDeclaration), which invokes another case of BindingInitialization (BindingPattern).`
 
-1. 당신이 yes 를 클릭하면 그것은 일본어(ja) 로 번역된다.
-2. 당신이 no 를 클릭하면 그것은 러시아어(nein) 로 번역된다.
-3. 당신이 perhaps 를 클릭하면 그것은 독일어(vielleicht) 로 번역된다.
+### 9.5.3 왜 반복 마다 바인딩은 유용할까? `Why are per-iteration bindings useful?`
+
+다음은 세 개의 링크를 보여주는 `HTML`페이지입니다.
+
+`The following is an HTML page that displays three links:`
+
+1. yes를 클릭하면 일본어(ja)로 번역됩니다.  
+  `If you click on “yes”, it is translated to “ja”.`
+2. no를 클릭하면 러시아어(nein)로 번역됩니다.  
+  `If you click on “no”, it is translated to “nein”.`
+3. perhaps를 클릭하면 독일어(vielleicht)로 번역됩니다.  
+  `If you click on “perhaps”, it is translated to “vielleicht”.`
 
 ```html
 <!doctype html>
@@ -486,15 +503,21 @@ for-of의 반복 바인딩은 [ForIn/OfBodyEvaluation](http://www.ecma-internati
 </html>
 ```
 
-무엇이 표시될지는 target 변수(B 라인) 에 의존한다.
-let 대신 var 를 사용하는 경우(A 라인), 루프 전체의 target 은 'vielleicht' 만을 가지는 단일 결합이 존재하게 된다.
-따라서 어찌되었든 당신이 몇번 링크를 클릭해도는 항상 'vielleicht' 번역만 얻을 것이다.
+무엇이 보여질지는 B라인에 있는 `target`변수에 따라 다릅니다. A라인에서 `let` 대신 `var`를 사용했다면, 모든 루프 반복에서 하나의 바인딩을 사용했을 것이고 `target`의 값은 `vielleicht`가 되었을 것입니다. 그래서 어떤 링크를 클릭하더라도 항상 독일어로 번역이 되었을 것입니다.
 
-고맙게도, let 과 함께라면 우리는 루프 반복마다 하나의 결합을 얻고, 제대로 번역이 된다.
+`What is displayed depends on the variable target (line B). If we were to use var instead of let in line (A), there would be a single binding for the whole loop and target would have the value 'vielleicht', afterwards. Therefore, no matter what link you click on, you would always get the translation 'vielleicht'.`
 
-## 9.6 파라미터
-### 9.6.1 파라미터 대 로컬 변수
-만일 당신이 파라미터와 같은 이름의 변수를 let 으로 선언하면 정적 오류(load-time) 에러를 얻는다.
+고맙게도 `let`은 루프 반복마다 하나의 바인딩을 가지기 때문에 코드는 제대로 동작합니다.
+
+`Thankfully, with let, we get one binding per loop iteration and the translations are displayed correctly.`
+
+## 9.6 파라미터 `Parameters`
+
+### 9.6.1 파라미터 와 로컬 변수 `Parameters versus local variables`
+
+만약 `let`으로 선언한 변수가 파라미터와 같은 이름으로 선언되면 정적 오류(load-time)가 발생합니다.
+
+`If you let-declare a variable that has the same name as a parameter, you get a static (load-time) error:`
 
 ```javascript
 function func(arg) {
@@ -502,7 +525,9 @@ function func(arg) {
 }
 ```
 
-같은 일을 블럭 안에서 하면 파라미터를 가린다(shadow).
+블록 안에서 같은 이름으로 선언하면 파라미터는 가려집니다.
+
+`Doing the same inside a block shadows the parameter:`
 
 ```javascript
 function func(arg) {
@@ -512,7 +537,9 @@ function func(arg) {
 }
 ```
 
-이와는 대조적으로, 매개 변수와 같은 이름의 var 변수를 다시 선언해도 괜찮고, 같은 경우로 같은 스코프 안에서 같은 변수를 선언해도 괜찮다.
+반면, `var`로 선언한 변수가 파라미터와 같은 이름으로 선언되면 아무 일도 일어나지 않습니다. 함수 스코프 내에서 `var`변수를 재선언한 것과 같습니다.
+
+`In contrast, var-declaring a variable that has the same name as a parameter does nothing, just like re-declaring a var variable within the same scope does nothing.`
 
 ```javascript
 function func(arg) {
@@ -527,8 +554,11 @@ function func(arg) {
 }
 ```
 
-### 9.6.2 파라미터 기본값과 임시 사각 지대
-파라미터 기본값을 가질 경우, 그것들은 let 문과 임시 사각 지대의 대상의 시퀀스처럼 취급된다.
+### 9.6.2 파라미터 기본값과 TMZ `Parameter default values and the temporal dead zone`
+
+파라미터가 기본값을 가지는 경우, `let` 선언문처럼 취급되고 TMZ를 갖게 됩니다.
+
+`If parameters have default values, they are treated like a sequence of let statements and are subject to temporal dead zones:`
 
 ```javascript
 // OK: `y` accesses `x` after it has been declared
@@ -544,8 +574,11 @@ function bar(x=y, y=2) {
 bar(); // ReferenceError
 ```
 
-### 9.6.3 파라미터 기본값은 함수 바디의 스코프를 보지 않는다.
-파라미터 기본값 스코프는 함수 바디의 스코프(전자가 후자를 둘러싼)와는 다른 것이다. 즉, 메소드 혹은 함수에 정의 된 내부 파라미터 기본값은 함수 바디의 로컬 변수가 보이지 않는다는걸 의미한다.
+### 9.6.3 파라미터의 기본값은 바디의 스코프를 알지 못한다.  `Parameter default values don’t see the scope of the body`
+
+파라미터의 기본값 스코프는 바디의 스코프와 는 다릅니다. 파라미터 기본값으로 선언된 메소드나 함수는 바디 내의 지역 변수를 참조할 수 없습니다.
+
+`The scope of parameter default values is separate from the scope of the body (the former surrounds the latter). That means that methods or functions defined “inside” parameter default values don’t see the local variables of the body:`
 
 ```javascript
 const foo = 'outer';
@@ -556,9 +589,13 @@ function bar(func = x => foo) {
 bar();
 ```
 
-## 9.7 전역 객체
+## 9.7 전역 객체 `The global object`
 
 JavaScript의 전역 객체 (웹브라우저에 window, Node.js의 global)는 특히, 성능면에서 특징보다 버그라고 할 수 있다. 그건 ES6 소개에도 구별되는 특징으로 대변된다.
+
+자바스크립트의 전역 객체( 웹 브라우저의 `window`, Node.js의 `global` )는 특히 성능적인 면에서 기능이라기 보다 버그로 볼 수 있습니다.
+
+`JavaScript’s global object (window in web browsers, global in Node.js) is more a bug than a feature, especially with regard to performance. That’s why it makes sense that ES6 introduces a distinction:`
 
 + 전역 개체의 모든 속성은 전역 변수이다. 글로벌 범위에서 다음의 선언은 각각 이런 특성을 생성한다.
  + var 선언
