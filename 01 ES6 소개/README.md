@@ -3,7 +3,7 @@
 
 It took a long time to finish it, but ECMAScript 6, the next version of JavaScript, is finally a reality:
 
-그것 끝내기 위해서 오랜 시간이 걸렸지만, 자바스크립트 다음 버전인 ECMAScript 6은 마침내 현실이 되었다.:
+끝내기 위해서 오랜 시간이 걸렸지만, 자바스크립트 다음 버전인 ECMAScript 6은 마침내 현실이 되었다.:
 * It became a standard on 17 June 2015.
 * Its features are slowly appearing in JavaScript engines (as documented in kangax’ ES6 compatibility table).
 * Transpilers (such as Babel and Traceur) let you compile ES6 to ES5.
@@ -121,33 +121,54 @@ Sub-goal (i) acknowledges that applications written in JavaScript have grown hug
 
 Modules are also an answer to goal (ii). As an aside, the DOM is notoriously difficult to implement in JavaScript. ES6 Proxies should help here (as described in a separate chapter).
 
-모듈들은 또한 목표(2)의 답이 된다. 여담으로 DOM은 자바스크립트에서 구현 어렵기로 악명이 높다. ES6 프록시는 어려움을 도와준다(28장에서 설명).
+모듈들은 또한 목표(2)의 답이 된다. 여담으로 DOM은 자바스크립트에서 구현 어렵기로 악명이 높다. ES6 프록시는 여기에 도움을 준다(28장에서 설명).
 
-몇몇의 기능들은 자바스크립트 개선이 아닌 특별하게 추가 되었다. 그러나 이 기능은 자바스크립트로 컴파일을 쉽게 해준다. 두가지 예를 보면:
+Several features were specifically added not to improve JavaScript, but to make it easier to compile to JavaScript. Two examples are:
+* Math.fround() – rounding Numbers to 32 bit floats
+* Math.imul() – multiplying two 32 bit ints
 
-```
-Math.fround() – rounding Numbers to 32 bit floats
-Math.imul() – multiplying two 32 bit ints
-```
+몇개의 기능들은 자바스크립트 개선이 아닌 특별하게 추가 되었다. 그러나 이 기능은 자바스크립트로 컴파일을 쉽게 해준다. 두가지 예를 보면:
+* Math.fround() – 32비트 부동소수점으로 반올림한다.
+* Math.imul() – 32비트 정수을 곱한다.
 
+They are both useful for, e.g., compiling C/C++ to JavaScript via Emscripten.
 이것들은 예를 들면 C/C++을 Emscripten을 통해 자바스크립트로 컴파일 할때 유용하다. 
 
-### 1.5.2 목표: 상호 개선 
-이 목표는 상호 개선, 가능한 사실상의 표준을 채택이다.
+### 1.5.2 Goal: Improve interoperation
+### 1.5.2 목표: 상호 운영 개선 
+The goal is: Improve interoperation, adopting de facto standards where possible.
+
+이 목표는 상호운용 개선, 가능한 사실상의 표준을 채택이다.
+
+Examples are:
+
+* Classes: are based on how constructor functions are currently used.
+* Modules: picked up design ideas from the CommonJS module format.
+* Arrow functions: have syntax that is borrowed from CoffeeScript.
+* Named function parameters: There is no built-in support for named parameters. Instead, the existing practice of naming parameters via object literals is supported via destructuring in parameter definitions.
+
 예를 들면:
 
-* Classes: 는 생성자 함수들이 현재 사용되는 방법을 기반한다.
+* Classes: 는 생성자 함수들이 현재 사용되는 방법을 기반으로 한다.
 * Modules: 은 CommonJS 모델 포멧으로 부터 설계 아이디어를 가져왔다.
 * Arrow functions: 은 CoffeeScript로 부터 빌려온 문법을 가진다.
-* Named function parameters: 기명 파라미터에 대한 지원이 내장되어 있지 않다. 대신에 객체 리터럴를 통한 기명 파라미터의 기존 관행은 파라미터 정의 시 해체를 통해 제공된다.
+* Named function parameters: 기명 파라미터에 대한 지원이 내장되어 있지 않다. 대신에 객체 리터럴를 통한 기명 파라미터로 사용하는 기존 방법은 파라미터 정의 시 해체를 통해 제공 할 수 있다.
 
+### 1.5.3 Goal: Versioning
 ### 1.5.3 목표: 버져닝
+The goal is: Keep versioning as simple and linear as possible.
 목표는: 가능한 간단하고 선형적으로 버저닝을 유지 하는 것 이다.
 
-ES5에 대한 관련된 부분도 없으며, 모든것이 ES6이고, 이전에 언급했던것 처럼 ES6은 ES6코드 기반 안에서 "하나의 자바스크립트"를 통해 버저닝을 피한다.
+As mentioned previously, ES6 avoids versioning via “One JavaScript”: In an ES6 code base, everything is ES6, there are no parts that are ES5-specific.
+이전에 말했듯이, ES6은 "하나의 자바스크립트"를 통해 버저닝을 피하고, 모든것은 ES6이고 그곳에는 ES5의 특화된 부분은 아무것도 없다.
 
-## 1.6 ES6기능 개요
-ECMAScript 6 스팩의 도입을 인용:
+## 1.6 Categories of ES6 features
+## 1.6 ES6기능의 종류
+The introduction of the ES6 specification lists all new features:
+
+ECMAScript 6의 새로운 기능 사양 목록 소개:
+
+Some of [ECMAScript 6’s] major enhancements include modules, class declarations, lexical block scoping, iterators and generators, promises for asynchronous programming, destructuring patterns, and proper tail calls. The ECMAScript library of built-ins has been expanded to support additional data abstractions including maps, sets, and arrays of binary numeric values as well as additional support for Unicode supplemental characters in strings and regular expressions. The built-ins are now extensible via subclassing.
 
 모듈, 클래식 정의, 어휘적 블록 스코프, 반복자와 제너레이터, 비동기 프로그래밍을 위한 프로미스, 패턴 패체와 꼬리 재귀는 ECMAScript 6의 주요 개선의 일부로 포함된다. 내장된 ECMAScript 라이브러리는 맵, 셋, 문자열의 유니코드 보조문자, 정규표현식 표현식을 추가적으로 잘 제공하기 위한 바이너리 수형 배열을 포함한 추가적인 추상 데이터을 제공하기 위해서 확장되었다. 현재 내장 모듈은 서브클래스를 통해 확장 가능하다.
 
