@@ -629,8 +629,8 @@ JavaScript의 전역 객체 (웹브라우저에 window, Node.js의 global)는 �
 + 전역 객체의 속성을 만들지 않는다
 + 호이스팅되지 않는다
 
-Classes not being hoisted may be surprising, because, under the hood, they create functions. The rationale for this behavior is that the values of their extends clauses are defined via expressions and those expressions have to be executed at the appropriate times.
-(번역불가...)
+`Classes not being hoisted may be surprising, because, under the hood, they create functions. The rationale for this behavior is that the values of their extends clauses are defined via expressions and those expressions have to be executed at the appropriate times.`
+클래스 선언이 hoist되지 않는다는 사실이 놀라울 수 있다. 왜냐하면 결국 클래스 문법은 함수를 만들어주는 장치이기 때문이다. 하지만 extends 부분에서 다른 변수나 함수를 참조해야하기 때문에 클래스 선언은 적절한 시점에 실행되어야만 한다.
 
 ```javascript
 { // Enter a new scope
