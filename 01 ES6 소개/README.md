@@ -170,7 +170,21 @@ ECMAScript 6의 새로운 기능 사양 목록 소개:
 
 Some of [ECMAScript 6’s] major enhancements include modules, class declarations, lexical block scoping, iterators and generators, promises for asynchronous programming, destructuring patterns, and proper tail calls. The ECMAScript library of built-ins has been expanded to support additional data abstractions including maps, sets, and arrays of binary numeric values as well as additional support for Unicode supplemental characters in strings and regular expressions. The built-ins are now extensible via subclassing.
 
-모듈, 클래식 정의, 어휘적 블록 스코프, 반복자와 제너레이터, 비동기 프로그래밍을 위한 프로미스, 패턴 패체와 꼬리 재귀는 ECMAScript 6의 주요 개선의 일부로 포함된다. 내장된 ECMAScript 라이브러리는 맵, 셋, 문자열의 유니코드 보조문자, 정규표현식 표현식을 추가적으로 잘 제공하기 위한 바이너리 수형 배열을 포함한 추가적인 추상 데이터을 제공하기 위해서 확장되었다. 현재 내장 모듈은 서브클래스를 통해 확장 가능하다.
+모듈, 클래식 정의, 어휘적 블록 스코프, 이터레이터와 제너레이터, 비동기 프로그래밍을 위한 프로미스, 해체 패턴와 꼬리 재귀는 ECMAScript 6의 주요 개선의 일부로 포함된다. 내장된 ECMAScript 라이브러리는 맵, 셋, 이진 숫자 값의 배열뿐만 아니라 문자열과 정규표현식에서 유니코드 보조문자 대한 추가 지원을 포함한 추가 데이터 추상화를 지원하도록 확장되었다. 현재 내장 모듈은 서브클래스를 통해 확장 가능하다.
+
+There are three major categories of features:
+
+* Better syntax for features that already exist (e.g. via libraries). For example:
+   * Classes
+   * Modules
+* New functionality in the standard library. For example:
+   * New methods for strings and Arrays
+   * Promises
+   * Maps, Sets
+* Completely new features. For example:
+   * Generators
+   * Proxies
+   * WeakMaps
 
 여기 세개의 주요 기능의 기능 그룹이 있다.:
 
@@ -186,7 +200,10 @@ Some of [ECMAScript 6’s] major enhancements include modules, class declaration
    * 프록시
    * 위크맵
   
-## 1.7 ECMAScript 역사 요약
+## 1.7 A brief history of ECMAScript
+## 1.7 ECMAScript의 역사 요약
+This section describes what happened on the road to ECMAScript 6.
+
 이 섹션은 ECMAScript 6으로 가는길에서 무슨일이 있었는지 설명한다.
 
 ### 1.7.1 초기: ECMAScript 1-3
