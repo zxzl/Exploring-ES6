@@ -190,7 +190,7 @@ console.log(diag(4, 3)); // 5
 
 > There are other ways to specify named exports (which are explained later), but I find this one quite convenient: simply write your code as if there were no outside world, then label everything that you want to export with a keyword.
 
-If you want to, you can also import the whole module and refer to its named exports via property notation:
+> If you want to, you can also import the whole module and refer to its named exports via property notation:
 
 ```js
 //------ main.js ------
@@ -229,7 +229,8 @@ console.log(diag(4, 3)); // 5
 
 > Modules that only export single values are very popular in the Node.js community. But they are also common in frontend development where you often have classes for models and components, with one class per module. An ES6 module can pick a default export, the main exported value. Default exports are especially easy to import.
 
-The following ECMAScript 6 module “is” a single function:
+아래 ECMAScript 6 모듈은 단일 함수이다.
+> The following ECMAScript 6 module “is” a single function:
 
 ```js
 //------ myFunc.js ------
@@ -238,8 +239,11 @@ export default function () {} // no semicolon!
 //------ main1.js ------
 import myFunc from 'myFunc';
 myFunc();
-An ECMAScript 6 module whose default export is a class looks as follows:
+```
 
+> An ECMAScript 6 module whose default export is a class looks as follows:
+
+```js
 //------ MyClass.js ------
 export default class {} // no semicolon!
 
@@ -248,13 +252,17 @@ import MyClass from 'MyClass';
 const inst = new MyClass();
 ```
 
+기본 익스포트는 두 가지 스타일이 있다.
 > There are two styles of default exports:
 
 + Labeling declarations
 + Default-exporting values directly
 
-## 16.3.2.1 Default export style 1: labeling declarations
+
+## 16.3.2.1 기본 익스포트 스타일1 : labeling declarations
 > 16.3.2.1 Default export style 1: labeling declarations
+
+기본 익스포트를 위해 함수 선언(또는 제너레이터 함수)이나 클래스 선언에 export default 접두어를 붙일 수 있다. 
 > You can prefix any function declaration (or generator function declaration) or class declaration with the keywords export default to make it the default export:
 
 ```js
@@ -262,24 +270,34 @@ export default function foo() {} // no semicolon!
 export default class Bar {} // no semicolon!
 ```
 
-You can also omit the name in this case. That makes default exports the only place where JavaScript has anonymous function declarations and anonymous class declarations:
+위 경우에는 이름을 생략 할 수 있다. 이름을 생략하면 기본 익스포트는 익명 함수 선언과 익명 클래스 선언으로 위치한다.
+> You can also omit the name in this case. That makes default exports the only place where JavaScript has anonymous function declarations and anonymous class declarations:
+
 ```js
 export default function () {} // no semicolon!
 export default class {} // no semicolon!
 ```
+
 ## 16.3.2.1.1 Why anonymous function declarations and not anonymous function expressions?
 > 16.3.2.1.1 Why anonymous function declarations and not anonymous function expressions?
+
+이 전의 코드 두 줄을 보면, 기본 익스포트의 피연산자부가 표현식이 되는 것도 예상 할 수 있다. 
 > When you look at the previous two lines of code, you’d expect the operands of export default to be expressions. They are only declarations for reasons of consistency: operands can be named declarations, interpreting their anonymous versions as expressions would be confusing (even more so than introducing new kinds of declarations).
 
+피 연산자부가 표현식으로 해석되길 원한다면 괄호를 써야한다.
 > If you want the operands to be interpreted as expressions, you need to use parentheses:
 
 ```js
 export default (function () {});
 export default (class {});
 ```
-## 16.3.2.2 Default export style 2: default-exporting values directly
+
+### 16.3.2.2 기본 익스포트 스타일 2 : default-exporting values directly
 > 16.3.2.2 Default export style 2: default-exporting values directly
-The values are produced via expressions:
+
+값은 표현식을 통해 생산된다.
+
+> The values are produced via expressions:
 
 ```js
 export default 'abc';
@@ -301,11 +319,13 @@ export default «표현식»;
 const __default__ = «표현식»;
 > const __default__ = «expression»;
 
-
+```js
 export { __default__ as default }; // (A)
+```
+라인 A구문은 익스포트 절이다.(이것은 뒤에 있을 섹션에서 설명된다.)
 The statement in line A is an export clause (which is explained in a later section).
 
-## 16.3.2.2.1 두 가지 기본 익스포트 스타일의 이유
+### 16.3.2.2.1 두 가지 기본 익스포트 스타일의 이유
 > 16.3.2.2.1 Why two default export styles?
 
 > The second default export style was introduced because variable declarations can’t be meaningfully turned into default exports if they declare multiple variables:
